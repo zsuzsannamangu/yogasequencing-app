@@ -1,0 +1,25 @@
+# Root level ignores
+
+# Ignore node_modules (general)
+node_modules/
+
+# Ignore environment variables
+.env
+.env.local
+.env.*.local
+
+# Ignore Python backend files
+__pycache__/
+*.pyc
+
+# Ignore logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore system files
+.DS_Store
+
+# Ignore IDE/editor settings
+.vscode/
+.idea/
