@@ -1,1 +1,1 @@
-# yogasequencing-app
+# Yoga Sequencing App
