@@ -9,16 +9,16 @@
 - Allows exporting the sequence as a printable PDF
 
 ## Technologies used
-- React                     Frontend UI Library (TypeScript)
-- Next.js                   React framework for routing and rendering
-- Python	                Runs server-side backend code
-- FastAPI	                Defines backend API endpoints (e.g., upload videos, pose detection)
-- Uvicorn	                ASGI server that runs FastAPI
-- PostgreSQL (planned)      Database to store user-generated data
-- MoveNet + Tensorflow      Detects human keypoints (pose estimation)
-- OpenCV (cv2)              Video processing (frame capture, motion detection)
-- PyTorch + DeepLabV3       Semantic segmentation for background removal
-- potrace                   Converts binary masks into scalable vector images (SVGs)
+- React:                    Frontend UI Library (TypeScript)
+- Next.js:                  React framework for routing and rendering
+- Python:	                Runs server-side backend code
+- FastAPI:	                Defines backend API endpoints (e.g., upload videos, pose detection)
+- Uvicorn:	                ASGI server that runs FastAPI
+- PostgreSQL (planned):     Database to store user-generated data
+- MoveNet + Tensorflow:     Detects human keypoints (pose estimation)
+- OpenCV (cv2):             Video processing (frame capture, motion detection)
+- PyTorch + DeepLabV3:      Semantic segmentation for background removal
+- potrace:                  Converts binary masks into scalable vector images (SVGs)
 
 ## How does it work?
 - The program detects moments of stillness in the video, captures a frame of the person holding a pose, removes the background, and converts the image into a clean vector silhouette.
@@ -53,16 +53,16 @@
 
 ## Getting started
 - Backend:
-    cd backend
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-    uvicorn main:app --reload
+cd backend
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+uvicorn main:app --reload
 
 - Frontend:
-    cd frontend
-    npm install
-    npm run dev
+cd frontend
+npm install
+npm run dev
 
 ## Project Structure
     backend/
