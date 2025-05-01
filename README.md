@@ -15,9 +15,9 @@
 - FastAPI:	                Defines backend API endpoints (e.g., upload videos, pose detection)
 - Uvicorn:	                ASGI server that runs FastAPI
 - PostgreSQL (planned):     Database to store user-generated data
-- MoveNet + Tensorflow:     Detects human keypoints (pose estimation)
+- MoveNet + Tensorflow:     Detects human keypoints (pose estimation) using MoveNet, a ML model. It detects 17 keypoints (e.g, wrist, elbow, knee...) from each frame of the video.
 - OpenCV (cv2):             Video processing (frame capture, motion detection)
-- PyTorch + DeepLabV3:      Semantic segmentation for background removal
+- PyTorch + DeepLabV3:      Semantic segmentation for background removal using DeepLabV3, a ML model. It analyzes the image and outputs a pixel-wise classification, identifying where the human is.
 - potrace:                  Converts binary masks into scalable vector images (SVGs)
 
 ## How does it work?
