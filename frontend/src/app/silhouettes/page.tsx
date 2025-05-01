@@ -71,33 +71,41 @@ const SilhouettesPage = () => {
   };
 
   return (
-    <main className="flex flex-col items-center p-8">
-      <h1 className="text-3xl font-bold mb-6">Generated Pose Silhouettes</h1>
+    <main className="bg-white text-green-700 font-sans min-h-screen px-6 py-16 max-w-7xl mx-auto">
+      <h1 className="text-4xl font-bold mb-10 text-green-800 text-center">Generate Your Pose Sequence</h1>
 
       {/* Upload + Generate Buttons */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 mb-6">
-        <input
-          type="file"
-          accept="video/mp4"
-          onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
-        />
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
+        <label className="px-6 py-2 bg-green-600 text-white rounded-full cursor-pointer hover:bg-green-700 transition">
+          Choose File
+          <input
+            type="file"
+            accept="video/mp4"
+            onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+            className="hidden"
+          />
+        </label>
+        {selectedFile && (
+          <span className="text-sm text-gray-700 mt-2 block text-center">{selectedFile.name}</span>
+        )}
+
         <button
           onClick={handleUpload}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-6 py-2 rounded-full bg-green-600 text-white hover:bg-green-700 transition"
         >
           Upload
         </button>
         <button
           onClick={handleGenerate}
           disabled={!filename}
-          className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          className="px-6 py-2 rounded-full bg-green-800 text-white hover:bg-green-900 transition disabled:opacity-40"
         >
           Create Sequence
         </button>
         {silhouettes.length > 0 && (
           <button
             onClick={handleDownloadPDF}
-            className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+            className="px-6 py-2 rounded-full bg-green-500 text-white hover:bg-green-600 transition"
           >
             Download as PDF
           </button>
@@ -106,27 +114,28 @@ const SilhouettesPage = () => {
 
       {/* Render Silhouettes */}
       {loading ? (
-        <p>Generating sequence...</p>
+        <p className="text-center text-lg">Generating sequence...</p>
       ) : silhouettes.length === 0 ? (
-        <p>No silhouettes found.</p>
+        <p className="text-center text-gray-500">No silhouettes found. Please upload and generate.</p>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {silhouettes.map((filePath, idx) => (
             <div
               key={idx}
-              className="flex flex-col items-center bg-white aspect-square overflow-hidden"
+              className="flex flex-col items-center border rounded shadow bg-white p-4"
             >
               <img
                 src={`http://localhost:8000/${filePath}`}
                 alt={`Pose ${idx + 1}`}
-                className="w-full max-w-[300px] h-auto"
+                className="w-full max-w-[250px] h-auto"
               />
-              <p className="text-sm mt-2">{idx + 1}</p>
+              <p className="text-sm mt-2 text-green-700 font-medium">Pose {idx + 1}</p>
             </div>
           ))}
         </div>
       )}
     </main>
+
   );
 };
 
