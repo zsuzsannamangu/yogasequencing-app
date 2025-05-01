@@ -55,14 +55,14 @@
 - Backend:
     - cd backend
     - python3 -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
-    uvicorn main:app --reload
+    - source venv/bin/activate
+    - pip install -r requirements.txt
+   - uvicorn main:app --reload
 
 - Frontend:
-    cd frontend
-    npm install
-    npm run dev
+    - cd frontend
+    - npm install
+    - npm run dev
 
 ## Project Structure
     backend/
