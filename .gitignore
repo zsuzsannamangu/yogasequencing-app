@@ -23,3 +23,6 @@ yarn-error.log*
 # Ignore IDE/editor settings
 .vscode/
 .idea/
+
+backend/venv/
+yogasequencing-app.git/

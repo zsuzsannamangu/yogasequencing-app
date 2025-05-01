@@ -104,7 +104,7 @@ const SilhouettesPage = () => {
         )}
       </div>
 
-      {/* Render Silhouettes */}
+      {/* Render Silhouettes/Vector images */}
       {loading ? (
         <p>Generating sequence...</p>
       ) : silhouettes.length === 0 ? (
