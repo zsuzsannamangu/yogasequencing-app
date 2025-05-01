@@ -30,7 +30,6 @@
     - It calculates the percentage of pixels that changed (i.e., motion): motion = np.sum(diff > 10) / diff.size
     - If motion is below a certain threshold (e.g., motion < 0.02) for multiple consecutive frames, we assume: "The person is holding still, so they’re in a pose."
     - It collects all frames that meet this "stillness" rule and selects the middle one as the best representative of the pose.
-    
     - This works because when someone transitions into a yoga pose there is motion, but when they pause and hold the posture, motion between frames drops.
     - This natural drop in motion is used to identify 'held' poses. These are the moments captured and included in the final printed yoga sequence.
 
