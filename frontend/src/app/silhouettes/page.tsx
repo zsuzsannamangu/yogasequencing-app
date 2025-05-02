@@ -10,6 +10,8 @@ const SilhouettesPage = () => {
   const [filename, setFilename] = useState<string>(''); // for dynamic uploads
   const [silhouettes, setSilhouettes] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [poseNames, setPoseNames] = useState<string[]>([]);
+  const labelHeight = 16;
 
   const handleUpload = async () => {
     if (!selectedFile) return;
@@ -44,12 +46,17 @@ const SilhouettesPage = () => {
   const handleDownloadPDF = async () => {
     const pdf = new jsPDF('p', 'pt', 'a4');
     const pageWidth = pdf.internal.pageSize.getWidth();
-    const spacing = 20;
-    const maxWidth = 150;
-    let x = spacing;
-    let y = spacing;
+    const pageHeight = pdf.internal.pageSize.getHeight();
 
-    for (const filePath of silhouettes) {
+    const maxWidth = 100; // pose size
+    const spacingX = 5;  // horizontal spacing
+    const spacingY = 10;  // vertical spacing
+
+    let x = spacingX;
+    let y = spacingY;
+
+    for (let i = 0; i < silhouettes.length; i++) {
+      const filePath = silhouettes[i];
       const res = await fetch(`http://localhost:8000/${filePath}`);
       const svgText = await res.text();
       const parser = new DOMParser();
@@ -60,14 +67,43 @@ const SilhouettesPage = () => {
 
       await svg2pdf(svgDoc, pdf, { x, y });
 
-      x += maxWidth + spacing;
+      if (poseNames[i]) {
+        pdf.setFontSize(10);
+        const textWidth = pdf.getTextWidth(poseNames[i]);
+        const centerX = x + maxWidth / 2 - textWidth / 2;
+        pdf.setFontSize(9); // font size
+        pdf.setTextColor(100); // Subtle gray (0–255)
+        pdf.text(poseNames[i], centerX, y + maxWidth - 4);
+
+      }
+
+      x += maxWidth + spacingX;
       if (x + maxWidth > pageWidth) {
-        x = spacing;
-        y += maxWidth + spacing;
+        x = spacingX;
+        y += maxWidth + spacingY;
+        if (y + maxWidth > pageHeight) {
+          pdf.addPage();
+          y += maxWidth + labelHeight + spacingY;
+        }
       }
     }
 
     pdf.save('yoga_sequence_vector.pdf');
+  };
+
+  const handlePoseNameChange = (index: number, value: string) => {
+    const updatedNames = [...poseNames];
+    updatedNames[index] = value;
+    setPoseNames(updatedNames);
+  };
+
+  const handleDeletePose = (index: number) => {
+    const updatedSilhouettes = [...silhouettes];
+    const updatedPoseNames = [...poseNames];
+    updatedSilhouettes.splice(index, 1);
+    updatedPoseNames.splice(index, 1);
+    setSilhouettes(updatedSilhouettes);
+    setPoseNames(updatedPoseNames);
   };
 
   return (
@@ -122,14 +158,28 @@ const SilhouettesPage = () => {
           {silhouettes.map((filePath, idx) => (
             <div
               key={idx}
-              className="flex flex-col items-center border rounded shadow bg-white p-4"
+              className="relative flex flex-col items-center border rounded shadow bg-white p-4"
             >
               <img
                 src={`http://localhost:8000/${filePath}`}
                 alt={`Pose ${idx + 1}`}
                 className="w-full max-w-[250px] h-auto"
               />
-              <p className="text-sm mt-2 text-green-700 font-medium">Pose {idx + 1}</p>
+              <input
+                type="text"
+                value={poseNames[idx] || ''}
+                onChange={(e) => handlePoseNameChange(idx, e.target.value)}
+                placeholder={`Pose ${idx + 1}`}
+                className="mt-2 text-sm border rounded px-2 py-1 w-full text-green-800"
+              />
+              <button
+                onClick={() => handleDeletePose(idx)}
+                className="absolute top-1 right-2 text-red-500 hover:text-red-700 text-lg font-bold"
+                title="Delete Pose"
+              >
+                ✕
+              </button>
+
             </div>
           ))}
         </div>
