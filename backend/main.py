@@ -38,8 +38,9 @@ async def upload_file(file: UploadFile = File(...)):
         shutil.copyfileobj(file.file, buffer)
     return {"info": f"file '{file.filename}' saved at '{file_location}'"}
 
-# movenet = hub.load("https://tfhub.dev/google/movenet/singlepose/lightning/4")
-movenet = hub.load("https://www.kaggle.com/models/google/movenet/TensorFlow2/singlepose-lightning/4")
+#movenet = hub.load("https://tfhub.dev/google/movenet/singlepose/lightning/4")
+movenet = hub.load("./models/movenet_lightning")
+
 
 input_size = 192
 
