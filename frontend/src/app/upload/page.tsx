@@ -6,6 +6,70 @@ import jsPDF from 'jspdf';
 import { svg2pdf } from 'svg2pdf.js';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import Swal from 'sweetalert2';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { GripVertical } from 'lucide-react';
+
+const DraggablePose = ({ id, poseName, image, index, onDelete, onNameChange }) => {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    zIndex: isDragging ? 50 : 'auto',
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`relative flex flex-col items-center border border-[#111827] rounded shadow bg-white p-2 ${isDragging ? 'ring-2 ring-[#6b7280]' : ''}`}
+    >
+      <div className="absolute top-1 left-2 text-[#6b7280] cursor-grab" {...attributes} {...listeners}>
+        <GripVertical size={18} />
+      </div>
+      <img
+        src={`http://localhost:8000/${image}`}
+        alt={`Pose ${index + 1}`}
+        className="w-full max-w-[400px] h-auto mt-4"
+      />
+      <input
+        type="text"
+        value={poseName}
+        onChange={(e) => onNameChange(index, e.target.value)}
+        placeholder={`Pose ${index + 1}`}
+        className="mt-2 text-sm border border-[#111827] rounded px-2 py-1 w-full text-[#111827] focus:outline-none focus:ring-0 focus:border-[#111827]"
+      />
+      <button
+        onClick={() => onDelete(index)}
+        className="absolute top-1 right-2 text-red-500 hover:text-red-700 text-lg font-bold"
+        title="Delete Pose"
+      >
+        ✕
+      </button>
+    </div>
+  );
+};
 
 const UploadPage = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -14,25 +78,49 @@ const UploadPage = () => {
   const [loading, setLoading] = useState(false);
   const [poseNames, setPoseNames] = useState<string[]>([]);
   const labelHeight = 16;
+  const [uploading, setUploading] = useState(false);
+
+  const sensors = useSensors(useSensor(PointerSensor));
 
   const handleUpload = async () => {
     if (!selectedFile) return;
     const formData = new FormData();
     formData.append('file', selectedFile);
+    setUploading(true);  // Start loading indicator
     try {
-      await axios.post('http://localhost:8000/upload', formData);
-      setFilename(selectedFile.name);
-      alert('Upload successful!');
+      const res = await axios.post('http://localhost:8000/upload', formData);
+      setFilename(res.data.filename); // Use actual .mp4 filename from server
+      Swal.fire({
+        title: 'Success!',
+        text: 'Upload successful!',
+        icon: 'success',
+        confirmButtonColor: '#f87171',
+        confirmButtonText: 'OK',
+      });
     } catch (err) {
       console.error('Upload failed', err);
-      alert('Upload failed');
+      Swal.fire({
+        title: 'Error',
+        text: 'Upload failed',
+        icon: 'error',
+        confirmButtonColor: '#f87171',
+      });
+    } finally {
+      setUploading(false);  // Stop loading indicator
+      setSilhouettes([]);
+      setPoseNames([]);
     }
-    setSilhouettes([]);
-    setPoseNames([]);
   };
 
   const handleGenerate = async () => {
-    if (!filename) return alert('Please upload a file first!');
+    if (!filename) {
+      return Swal.fire({
+        title: 'No File',
+        text: 'Please upload a file first!',
+        icon: 'warning',
+        confirmButtonColor: '#facc15',
+      });
+    }
     setLoading(true);
     try {
       const res = await axios.post('http://localhost:8000/extract-silhouettes', null, {
@@ -41,7 +129,12 @@ const UploadPage = () => {
       setSilhouettes(res.data.files);
     } catch (err) {
       console.error('Failed to generate silhouettes', err);
-      alert('Error generating silhouettes');
+      Swal.fire({
+        title: 'Error',
+        text: 'Error generating silhouettes',
+        icon: 'error',
+        confirmButtonColor: '#f87171',
+      });
     } finally {
       setLoading(false);
     }
@@ -106,7 +199,7 @@ const UploadPage = () => {
   };
 
   return (
-    <main className="bg-[#fde68a] text-[#111827] font-sans min-h-screen flex flex-col">
+    <main className="bg-white text-[#111827] font-sans min-h-screen flex flex-col">
       <Navbar />
 
       <section className="flex-grow px-2 py-16 max-w-6xl mx-auto text-center">
@@ -120,15 +213,13 @@ const UploadPage = () => {
             Choose File
             <input
               type="file"
-              accept="video/mp4"
+              accept="video/mp4,video/quicktime,video/x-m4v,video/webm,video/ogg"
               onChange={(e) => {
                 const file = e.target.files?.[0] || null;
                 setSelectedFile(file);
                 setSilhouettes([]);
                 setPoseNames([]);
-                setFilename('');
               }}
-
               className="hidden"
             />
           </label>
@@ -141,10 +232,15 @@ const UploadPage = () => {
           >
             Upload
           </button>
+          {uploading && (
+            <p className="text-center text-yellow-600 font-semibold mt-4 animate-pulse">
+              Uploading & converting video… please wait
+            </p>
+          )}
           <button
             onClick={handleGenerate}
             disabled={!filename}
-            className="px-6 py-2 rounded-full bg-[#60a5fa] text-white hover:bg-[#3b82f6] transition disabled:opacity-40"
+            className="px-6 py-2 rounded-full bg-[#facc15] text-[#111827] hover:bg-[#eab308] transition disabled:opacity-40"
           >
             Create Sequence
           </button>
@@ -159,40 +255,40 @@ const UploadPage = () => {
         </div>
 
         {loading ? (
-          <p className="text-center text-lg">Generating sequence...</p>
+          <p className="text-center text-md">Generating sequence...</p>
         ) : silhouettes.length === 0 ? (
-          <p className="text-center text-[#4b5563]">Please upload and generate.</p>
+          <p className="text-center text-[#4b5563]">Create your sequence!</p>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-10">
-            {silhouettes.map((filePath, idx) => (
-              <div
-                key={idx}
-                className="relative flex flex-col items-center border border-[#111827] rounded shadow bg-white p-2"
-              >
-                <img
-                  src={`http://localhost:8000/${filePath}`}
-                  alt={`Pose ${idx + 1}`}
-                  className="w-full max-w-[400px] h-auto"
-                />
-                <input
-                  type="text"
-                  value={poseNames[idx] || ''}
-                  onChange={(e) => handlePoseNameChange(idx, e.target.value)}
-                  placeholder={`Pose ${idx + 1}`}
-                  className="mt-2 text-sm border border-[#111827] rounded px-2 py-1 w-full text-[#111827]"
-                />
-                <button
-                  onClick={() => handleDeletePose(idx)}
-                  className="absolute top-1 right-2 text-red-500 hover:text-red-700 text-lg font-bold"
-                  title="Delete Pose"
-                >
-                  ✕
-                </button>
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={({ active, over }) => {
+              if (active.id !== over.id) {
+                const oldIndex = silhouettes.findIndex((id) => id === active.id);
+                const newIndex = silhouettes.findIndex((id) => id === over.id);
+                setSilhouettes(arrayMove(silhouettes, oldIndex, newIndex));
+                setPoseNames(arrayMove(poseNames, oldIndex, newIndex));
+              }
+            }}
+          >
+            <SortableContext items={silhouettes} strategy={verticalListSortingStrategy}>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 mt-10">
+                {silhouettes.map((filePath, idx) => (
+                  <DraggablePose
+                    key={filePath}
+                    id={filePath}
+                    poseName={poseNames[idx] || ''}
+                    image={filePath}
+                    index={idx}
+                    onDelete={handleDeletePose}
+                    onNameChange={handlePoseNameChange}
+                  />
+                ))}
               </div>
-            ))}
-          </div>
-
+            </SortableContext>
+          </DndContext>
         )}
+
         <div className="bg-[#fef3c7] border border-[#111827] rounded-lg p-6 mb-12 text-left mx-auto my-12">
           <h2 className="text-2xl font-bold mb-4">🎥 Video Guidelines</h2>
           <ul className="list-disc list-inside space-y-2 text-[#1f2937] text-base leading-relaxed">
@@ -200,7 +296,7 @@ const UploadPage = () => {
             <li>Avoid <strong>direct sunlight</strong> or strong shadow contrast. Consistent lighting helps generate clean silhouettes.</li>
             <li>Ensure your <strong>full body remains in the frame</strong> throughout the sequence.</li>
             <li>Wear clothes that contrast well with the background.</li>
-            <li>Currently, only <strong>MP4 files</strong> are supported.</li>
+            <li>For faster upload and processing, we recommend uploading <strong>MP4 files</strong> (smaller and instantly compatible).</li>
             <li>Maximum file size: <strong>100MB</strong>. For best results, keep videos under 2 minutes.</li>
           </ul>
         </div>

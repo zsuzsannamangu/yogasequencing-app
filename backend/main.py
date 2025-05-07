@@ -11,6 +11,25 @@ from torchvision import models, transforms
 from PIL import Image
 from skimage.measure import label, regionprops
 
+def convert_to_mp4(input_path):
+    base, _ = os.path.splitext(input_path)
+    output_path = f"{base}.mp4"
+    counter = 1
+
+    # Generate unique filename if needed
+    while os.path.exists(output_path):
+        output_path = f"{base}_{counter}.mp4"
+        counter += 1
+
+    subprocess.run([
+        'ffmpeg', '-i', input_path,
+        '-vcodec', 'libx264', '-preset', 'fast',
+        '-acodec', 'aac', '-strict', 'experimental',
+        output_path
+    ])
+
+    return output_path
+
 app = FastAPI()
 
 # CORS setup
@@ -34,9 +53,27 @@ deeplab_model = models.segmentation.deeplabv3_resnet101(pretrained=True).to(devi
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
     file_location = os.path.join(UPLOAD_DIR, file.filename)
+    
+    # Save uploaded file
     with open(file_location, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
-    return {"info": f"file '{file.filename}' saved at '{file_location}'"}
+
+    # If it's not an .mp4 file, convert it
+    if not file_location.lower().endswith(".mp4"):
+        mp4_path = convert_to_mp4(file_location)
+        if not os.path.exists(mp4_path):
+            raise ValueError("FFmpeg conversion failed. Output .mp4 file not found.")
+
+        os.remove(file_location)  # optional: delete original .mov/.webm/etc.
+        filename = os.path.basename(mp4_path)
+    else:
+        filename = file.filename
+
+    # Return actual usable filename for frontend
+    return {
+        "info": f"File '{filename}' is ready.",
+        "filename": filename
+    }
 
 #movenet = hub.load("https://tfhub.dev/google/movenet/singlepose/lightning/4")
 movenet = hub.load("./models/movenet_lightning")
@@ -77,10 +114,22 @@ async def detect_poses(filename: str):
 
 @app.post("/extract-silhouettes")
 def extract_silhouettes(filename: str):
-    video_path = os.path.join(UPLOAD_DIR, filename)
+    # video_path = os.path.join(UPLOAD_DIR, filename)
+    # cap = cv2.VideoCapture(video_path)
+    original_path = os.path.join(UPLOAD_DIR, filename)
+    base, _ = os.path.splitext(original_path)
+    video_path = f"{base}.mp4"
+
+    if not os.path.exists(video_path):
+        video_path = original_path  # fallback to original if .mp4 not found
+
     cap = cv2.VideoCapture(video_path)
+
     if not cap.isOpened():
-        return {"error": "Could not open video."}
+        raise ValueError("Unsupported video format or corrupted file")
+
+    if not cap.isOpened():
+        raise ValueError("Unsupported video format or corrupted file")
 
     # Detect stillness sequences
     prev_gray, still_ranges = None, []
@@ -116,6 +165,7 @@ def extract_silhouettes(filename: str):
 
     for i, (start, end) in enumerate(still_ranges):
         cap = cv2.VideoCapture(video_path)
+        print("Opened:", cap.isOpened())
         mid_frame = (start + end) // 2
         cap.set(cv2.CAP_PROP_POS_FRAMES, mid_frame)
         ret, frame = cap.read()
