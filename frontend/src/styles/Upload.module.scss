@@ -1,0 +1,280 @@
+@use './variables.scss' as vars;
+
+.main {
+  background-color: vars.$background-color;
+  color: vars.$text-color;
+  font-family: vars.$font-family;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  flex-grow: 1;
+  padding: 0 0.5rem 4rem;
+  max-width: 72rem;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.title {
+  font-size: 3rem;
+  font-weight: 900;
+  margin-bottom: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+.description {
+  font-size: 1.125rem;
+  margin-bottom: 2.5rem;
+  max-width: 48rem;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 4rem;
+}
+
+.fileLabel {
+  padding: 0.5rem 1.5rem;
+  background-color: vars.$accent-color;
+  color: white;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: vars.$transition;
+  font-family: vars.$font-family;
+  font-weight: 600;
+
+  &:hover {
+    background-color: #ef4444;
+  }
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileName {
+  font-size: 0.875rem;
+  color: vars.$text-color;
+  margin-top: 0.5rem;
+  display: block;
+}
+
+.uploadButton {
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  background-color: vars.$accent-color;
+  color: white;
+  transition: vars.$transition;
+  font-family: vars.$font-family;
+
+  &:hover {
+    background-color: #ef4444;
+  }
+}
+
+.generateButton {
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  background-color: vars.$highlight-color;
+  color: vars.$text-color;
+  transition: vars.$transition;
+  font-family: vars.$font-family;
+
+  &:hover {
+    background-color: #eab308;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+  }
+}
+
+.downloadButton {
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  background-color: vars.$highlight-color;
+  color: vars.$text-color;
+  transition: vars.$transition;
+  font-family: vars.$font-family;
+
+  &:hover {
+    background-color: #eab308;
+  }
+}
+
+.uploadingText {
+  text-align: center;
+  color: #d97706;
+  font-weight: 600;
+  margin-top: 1rem;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.loadingText {
+  text-align: center;
+  font-size: 1rem;
+}
+
+.emptyText {
+  text-align: center;
+  color: #4b5563;
+}
+
+.helpMessage {
+  background-color: #fef3c7;
+  border: 1px solid vars.$text-color;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+
+  p {
+    margin: 0;
+    color: #1f2937;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+}
+
+.draggablePose {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid vars.$text-color;
+  border-radius: 0.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: white;
+  padding: 0.5rem;
+
+  &.dragging {
+    ring: 2px solid #6b7280;
+  }
+}
+
+.gripHandle {
+  position: absolute;
+  top: 0.25rem;
+  left: 0.5rem;
+  color: #6b7280;
+  cursor: grab;
+}
+
+.poseImage {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  margin-top: 1rem;
+}
+
+.poseInput {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  border: 1px solid vars.$text-color;
+  border-radius: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  width: 100%;
+  color: vars.$text-color;
+  font-family: vars.$font-family;
+
+  &:focus {
+    outline: none;
+    ring: 0;
+    border-color: vars.$text-color;
+  }
+}
+
+.deleteButton {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.5rem;
+  color: #ef4444;
+  font-size: 1.125rem;
+  font-weight: bold;
+  transition: vars.$transition;
+
+  &:hover {
+    color: #dc2626;
+  }
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+
+.guidelines {
+  background-color: #fef3c7;
+  border: 1px solid vars.$text-color;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin-bottom: 3rem;
+  text-align: left;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 3rem;
+}
+
+.guidelinesTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.guidelinesList {
+  list-style-type: disc;
+  list-style-position: inside;
+  space-y: 0.5rem;
+  color: #1f2937;
+  font-size: 1rem;
+  line-height: 1.625;
+}
+
+@media (min-width: 640px) {
+  .buttonContainer {
+    flex-direction: row;
+  }
+
+  .fileName {
+    display: inline;
+  }
+
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}

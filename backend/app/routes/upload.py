@@ -2,6 +2,7 @@ from fastapi import APIRouter, UploadFile, File
 import os, shutil, subprocess
 from app.database import database
 from app.models import videos
+import asyncio
 
 router = APIRouter()
 
@@ -42,7 +43,7 @@ async def upload_file(file: UploadFile = File(...)):
     Returns saved filename and video_id.
     """
     file_location = os.path.join(UPLOAD_DIR, file.filename)
-    
+
     with open(file_location, "wb") as buffer:
         shutil.copyfileobj(file.file, buffer)
 
@@ -53,19 +54,29 @@ async def upload_file(file: UploadFile = File(...)):
             raise ValueError("FFmpeg conversion failed.")
         os.remove(file_location)
         filename = os.path.basename(mp4_path)
+        final_path = mp4_path
     else:
         filename = file.filename
+        final_path = file_location
 
     # Insert into Supabase
     query = videos.insert().values(
         filename=filename,
         status="uploaded",
-        total_frames=None  # to be updated later
+        total_frames=None
     )
     video_id = await database.execute(query)
+
+    # Schedule deletion of the final file after 5 minutes
+    asyncio.create_task(delete_file_later(final_path))
 
     return {
         "message": f"File '{filename}' uploaded successfully.",
         "filename": filename,
         "video_id": video_id
     }
+
+async def delete_file_later(path, delay=300):
+    await asyncio.sleep(delay)
+    if os.path.exists(path):
+        os.remove(path)
