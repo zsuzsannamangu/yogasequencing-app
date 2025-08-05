@@ -14,7 +14,7 @@
 - Python:	                Runs server-side backend code
 - FastAPI:	                Defines backend API endpoints (e.g., upload videos, pose detection)
 - Uvicorn:	                ASGI server that runs FastAPI
-- PostgreSQL (planned):     Database to store user-generated data
+- PostgreSQL + Supabase     Database to store user-generated data               
 - MoveNet + Tensorflow:     Detects human keypoints (pose estimation) using MoveNet, a ML model. It detects 17 keypoints (e.g, wrist, elbow, knee...) from each frame of the video.
 - OpenCV (cv2):             Video processing (frame capture, motion detection)
 - PyTorch + DeepLabV3:      Semantic segmentation for background removal using DeepLabV3, a ML model. It analyzes the image and outputs a pixel-wise classification, identifying where the human is.
@@ -56,7 +56,7 @@
     - python3 -m venv venv
     - source venv/bin/activate
     - pip install -r requirements.txt
-   - uvicorn main:app --reload
+   - uvicorn app.main:app --reload
 
 - Frontend:
     - cd frontend
