@@ -1,0 +1,42 @@
+@use './variables.scss' as vars;
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.10rem 3rem;
+  background-color: vars.$muted-bg;
+  color: white;
+  min-height: 40px;
+  border-bottom: 1px solid vars.$primary-color;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  
+  img {
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+}
+
+.nav {
+  display: flex;
+  gap: 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+  font-family: vars.$font-family;
+}
+
+.navLink {
+  color: vars.$primary-color;
+  text-decoration: none;
+  transition: vars.$transition;
+  font-family: vars.$font-family;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}

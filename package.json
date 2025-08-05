@@ -5,6 +5,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "jspdf": "^3.0.1",
+    "sass": "^1.89.2",
     "svg2pdf.js": "^2.5.0",
     "tailwind-merge": "^3.2.0"
   },

@@ -1,17 +1,26 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
+import styles from '../styles/Navbar.module.scss';
 
 export default function Navbar() {
   return (
-    <header className="flex justify-between items-center px-8 py-6 bg-[#f87171] text-white">
-      <div className="text-2xl font-black">YogaFlow</div>
-      <nav className="space-x-6 text-md font-semibold">
-        <Link href="/home" className="hover:underline">Home</Link>
-        <Link href="/upload" className="hover:underline">Upload</Link>
-        <Link href="/home/#contact" className="hover:underline">Contact</Link>
-        <Link href="/register" className="hover:underline">Register</Link>
-        <Link href="/login" className="hover:underline">Login</Link>
+    <header className={styles.header}>
+      <Link href="/" className={styles.logo}>
+        <Image 
+          src="/logo/movemosaiclogo.png" 
+          alt="YogaFlow Logo" 
+          width={100} 
+          height={20}
+          priority
+        />
+      </Link>
+      <nav className={styles.nav}>
+        <Link href="/upload" className={styles.navLink}>Upload</Link>
+        <Link href="/#contact" className={styles.navLink}>Contact</Link>
+        <Link href="/register" className={styles.navLink}>Register</Link>
+        <Link href="/login" className={styles.navLink}>Login</Link>
       </nav>
     </header>
   );

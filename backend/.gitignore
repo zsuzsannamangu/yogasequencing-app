@@ -1,1 +1,20 @@
+# ───────────────
+# Auto-generated content
+# ───────────────
+uploads/
+frames/
+poses/
+silhouettes/
+
+# Optional: model files if large or stored locally
+models/movenet_lightning/
+
+# Bytecode and environments
+__pycache__/
+*.py[cod]
+venv/
+
+# Logs or OS clutter
+.DS_Store
+
 .env
