@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import styles from '@/styles/HomePage.module.scss';
 
-const FadeInSection = ({ children }) => {
+const FadeInSection = ({ children }: { children: React.ReactNode }) => {
     const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.2 });
 
     return (
@@ -24,9 +24,22 @@ const FadeInSection = ({ children }) => {
 };
 
 export default function HomePage() {
+    // Mock authentication state - in real app this would come from auth context
+    const isAuthenticated = false; // Change to true to test signed-in state
+    const userData = {
+        firstName: 'John',
+        lastName: 'Doe',
+        profileImage: null
+    };
+
     return (
         <main className={styles.main}>
-            <Navbar />
+            <Navbar 
+                showUserMenu={isAuthenticated} 
+                firstName={isAuthenticated ? userData.firstName : ''} 
+                lastName={isAuthenticated ? userData.lastName : ''}
+                profileImage={isAuthenticated ? userData.profileImage : undefined}
+            />
 
             {/* HERO SECTION */}
             <section className={styles.heroSection}>
@@ -75,11 +88,16 @@ export default function HomePage() {
                         <p className={styles.sectionText}>
                             MoveMosaic helps you remember the sequences that live in your body. We turn your recorded practice into clear, printable visual guides, so your teaching can grow from your lived experience.
                         </p>
-                        <Link href="/upload">
-                            <button className={styles.primaryButton}>
-                                Try for Free
-                            </button>
-                        </Link>
+                        <button 
+                            className={styles.primaryButton}
+                            onClick={() => {
+                                document.getElementById('upload')?.scrollIntoView({ 
+                                    behavior: 'smooth' 
+                                });
+                            }}
+                        >
+                            Try for Free
+                        </button>
                     </div>
                 </FadeInSection>
             </section>
@@ -116,11 +134,11 @@ export default function HomePage() {
                 <div className={styles.uploadButtons}>
                     <Link href="/upload">
                         <button className={styles.outlineButton}>
-                            Use as Guest
+                            Start Free Trial
                         </button>
                     </Link>
                     <button className={styles.primaryButton}>
-                        Login / Register
+                        Login
                     </button>
                 </div>
             </section>

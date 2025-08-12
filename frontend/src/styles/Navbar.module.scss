@@ -5,10 +5,23 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.10rem 3rem;
-  background-color: vars.$muted-bg;
+  background-color: transparent;
   color: white;
   min-height: 40px;
-  border-bottom: 1px solid vars.$primary-color;
+  border-bottom: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
+
+  &.scrolled {
+    background-color: white;
+    color: vars.$text-color;
+    border-bottom: 1px solid vars.$primary-color;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
 }
 
 .logo {

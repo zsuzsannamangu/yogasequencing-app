@@ -1,0 +1,11 @@
+@use './variables.scss' as vars;
+
+.footer {
+  text-align: center;
+  font-size: 0.875rem;
+  color: white;
+  padding: 1.5rem 0;
+  background-color: vars.$primary-color;
+  border-top: 4px solid vars.$accent-color;
+  margin-top: 4rem; // Add significant top margin
+}

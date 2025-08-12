@@ -1,0 +1,308 @@
+@use './variables.scss' as vars;
+
+.main {
+  background-color: vars.$background-color;
+  color: vars.$text-color;
+  font-family: vars.$font-family;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 60px;
+}
+
+.authSection {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background-color: #f5f5f5;
+  margin-top: -60px;
+  padding-top: 60px;
+  min-height: 100vh;
+}
+
+.authContainer {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 3rem;
+  width: 100%;
+  max-width: 480px;
+}
+
+.tabs {
+  display: flex;
+  background-color: #f5f5f5;
+  border-radius: 0.5rem;
+  padding: 0.25rem;
+  margin-bottom: 2rem;
+}
+
+.tab {
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  text-align: center;
+  text-decoration: none;
+  color: vars.$text-color;
+  border-radius: 0.375rem;
+  transition: vars.$transition;
+  font-weight: 600;
+  font-size: 0.875rem;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+.activeTab {
+  background-color: white;
+  color: vars.$text-color;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: vars.$text-color;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inputGroup {
+  position: relative;
+}
+
+.label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: vars.$text-color;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: vars.$font-family;
+  transition: vars.$transition;
+  background-color: white;
+
+  &:focus {
+    outline: none;
+    border-color: vars.$primary-color;
+    box-shadow: 0 0 0 3px rgba(0, 50, 33, 0.1);
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+}
+
+.showPassword {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: vars.$transition;
+
+  &:hover {
+    color: vars.$text-color;
+  }
+}
+
+.primaryButton {
+  width: 100%;
+  padding: 1rem;
+  background-color: vars.$primary-color;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: vars.$font-family;
+  cursor: pointer;
+  transition: vars.$transition;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &:hover {
+    background-color: vars.$accent-color;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.forgotPassword {
+  text-align: center;
+  color: vars.$text-color;
+  text-decoration: underline;
+  font-size: 0.875rem;
+  transition: vars.$transition;
+
+  &:hover {
+    color: vars.$accent-color;
+  }
+}
+
+.divider {
+  position: relative;
+  text-align: center;
+  margin: 1.5rem 0;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background-color: #e5e7eb;
+  }
+
+  span {
+    background-color: white;
+    padding: 0 1rem;
+    color: #9ca3af;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+}
+
+.socialButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.socialButton {
+  width: 100%;
+  padding: 0.875rem;
+  background-color: white;
+  color: vars.$text-color;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: vars.$font-family;
+  cursor: pointer;
+  transition: vars.$transition;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+
+  &:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+.appleIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.facebookIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.googleIcon {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.localeButtons {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.localeButton {
+  flex: 1;
+  padding: 0.75rem;
+  background-color: white;
+  color: vars.$text-color;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: vars.$font-family;
+  cursor: pointer;
+  transition: vars.$transition;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+
+  &:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+  }
+}
+
+.terms {
+  text-align: center;
+  font-size: 0.75rem;
+  color: #9ca3af;
+  line-height: 1.5;
+  margin-top: 1rem;
+}
+
+.link {
+  color: vars.$text-color;
+  text-decoration: underline;
+  font-weight: 700;
+  transition: vars.$transition;
+
+  &:hover {
+    color: vars.$accent-color;
+  }
+}
+
+@media (max-width: 640px) {
+  .authContainer {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .localeButtons {
+    flex-direction: column;
+  }
+}

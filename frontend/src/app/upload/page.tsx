@@ -4,8 +4,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import { svg2pdf } from 'svg2pdf.js';
-import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
+import UserMenu from '@/components/UserMenu';
 import Swal from 'sweetalert2';
 import {
   DndContext,
@@ -115,11 +116,11 @@ const UploadPage = () => {
 
   const handleGenerate = async () => {
     if (!filename) {
-      return Swal.fire({
+      return       Swal.fire({
         title: 'No File',
         text: 'Please upload a file first!',
         icon: 'warning',
-        confirmButtonColor: '#facc15',
+        confirmButtonColor: '#003221',
       });
     }
     setLoading(true);
@@ -200,10 +201,10 @@ const UploadPage = () => {
   };
 
   return (
-    <main className={styles.main}>
-      <Navbar />
+            <main className={styles.main}>
+          <Navbar showUserMenu={true} firstName="User" lastName="Name" profileImage={null} />
 
-      <section className={styles.section}>
+          <section className={styles.section}>
         <h1 className={styles.title}>Upload and Visualize Your Practice</h1>
         <p className={styles.description}>
           Upload your recorded flow to generate a printable visual sequence. As a guest, you can create and download your sequences. If you want to save your flows and return to them later, register for an account and build your own library.

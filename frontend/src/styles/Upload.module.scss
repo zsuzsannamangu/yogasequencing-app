@@ -9,11 +9,14 @@
   flex-direction: column;
 }
 
+
+
 .section {
   flex-grow: 1;
   padding: 0 0.5rem 4rem;
   max-width: 72rem;
   margin: 0 auto;
+  margin-top: 3rem;
   text-align: center;
 }
 
@@ -21,7 +24,7 @@
   font-size: 3rem;
   font-weight: 900;
   margin-bottom: 1.5rem;
-  margin-top: 2.5rem;
+  margin-top: 6rem;
 }
 
 .description {
@@ -44,7 +47,7 @@
 
 .fileLabel {
   padding: 0.5rem 1.5rem;
-  background-color: vars.$accent-color;
+  background-color: vars.$primary-color;
   color: white;
   border-radius: 9999px;
   cursor: pointer;
@@ -53,7 +56,7 @@
   font-weight: 600;
 
   &:hover {
-    background-color: #ef4444;
+    background-color: vars.$accent-color;
   }
 }
 
@@ -84,13 +87,13 @@
 .generateButton {
   padding: 0.5rem 1.5rem;
   border-radius: 9999px;
-  background-color: vars.$highlight-color;
-  color: vars.$text-color;
+  background-color: vars.$primary-color;
+  color: white;
   transition: vars.$transition;
   font-family: vars.$font-family;
 
   &:hover {
-    background-color: #eab308;
+    background-color: vars.$accent-color;
   }
 
   &:disabled {
@@ -101,13 +104,13 @@
 .downloadButton {
   padding: 0.5rem 1.5rem;
   border-radius: 9999px;
-  background-color: vars.$highlight-color;
-  color: vars.$text-color;
+  background-color: vars.$primary-color;
+  color: white;
   transition: vars.$transition;
   font-family: vars.$font-family;
 
   &:hover {
-    background-color: #eab308;
+    background-color: vars.$accent-color;
   }
 }
 
@@ -139,8 +142,8 @@
 }
 
 .helpMessage {
-  background-color: #fef3c7;
-  border: 1px solid vars.$text-color;
+  background-color: rgba(0, 50, 33, 0.1);
+  border: 1px solid vars.$primary-color;
   border-radius: 0.5rem;
   padding: 1rem;
   margin-bottom: 1.5rem;
@@ -151,7 +154,7 @@
 
   p {
     margin: 0;
-    color: #1f2937;
+    color: vars.$text-color;
     font-size: 1rem;
     line-height: 1.5;
   }
@@ -227,8 +230,8 @@
 }
 
 .guidelines {
-  background-color: #fef3c7;
-  border: 1px solid vars.$text-color;
+  background-color: rgba(0, 50, 33, 0.1);
+  border: 1px solid vars.$primary-color;
   border-radius: 0.5rem;
   padding: 1.5rem;
   margin-bottom: 3rem;

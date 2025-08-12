@@ -1,0 +1,311 @@
+@use './variables.scss' as vars;
+
+.main {
+  background-color: vars.$background-color;
+  color: vars.$text-color;
+  font-family: vars.$font-family;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.sequencesSection {
+  flex: 1;
+  padding: 2rem 1rem;
+  background-color: #f5f5f5;
+  padding-top: 8rem;
+  min-height: 100vh;
+}
+
+.sequencesContainer {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 5rem;
+
+  .title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: vars.$primary-color;
+    margin-bottom: 0.5rem;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    color: #6b7280;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
+.controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.searchContainer {
+  flex: 1;
+  max-width: 400px;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: vars.$font-family;
+  transition: vars.$transition;
+
+  &:focus {
+    outline: none;
+    border-color: vars.$primary-color;
+    box-shadow: 0 0 0 3px rgba(0, 50, 33, 0.1);
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+}
+
+.filterContainer {
+  min-width: 150px;
+}
+
+.filterSelect {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: vars.$font-family;
+  background-color: white;
+  cursor: pointer;
+  transition: vars.$transition;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  appearance: none;
+
+  &:focus {
+    outline: none;
+    border-color: vars.$primary-color;
+    box-shadow: 0 0 0 3px rgba(0, 50, 33, 0.1);
+  }
+}
+
+.createButton {
+  padding: 0.75rem 1.5rem;
+  background-color: vars.$accent-color;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: vars.$font-family;
+  text-decoration: none;
+  transition: vars.$transition;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: vars.$primary-color;
+    transform: translateY(-1px);
+  }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: white;
+  border-radius: 1rem;
+  border: 2px dashed #e5e7eb;
+
+  .emptyIcon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: vars.$text-color;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: #6b7280;
+    margin-bottom: 2rem;
+  }
+}
+
+.emptyButton {
+  padding: 0.75rem 1.5rem;
+  background-color: vars.$primary-color;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: vars.$font-family;
+  text-decoration: none;
+  transition: vars.$transition;
+
+  &:hover {
+    background-color: vars.$accent-color;
+    transform: translateY(-1px);
+  }
+}
+
+.sequencesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.sequenceCard {
+  background-color: white;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: vars.$transition;
+  cursor: pointer;
+  border: 2px solid transparent;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+    border-color: vars.$accent-color;
+  }
+
+  &:nth-child(3n+1) {
+    border-left: 3px solid vars.$accent-color;
+  }
+}
+
+
+
+.sequenceName {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: vars.$text-color;
+  margin-bottom: 0.375rem;
+}
+
+.sequenceDescription {
+  color: #6b7280;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+  font-size: 0.875rem;
+}
+
+.sequenceMeta {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.sequenceActions {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.actionButton {
+  padding: 0.375rem;
+  background-color: #f3f4f6;
+  color: #6b7280;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: vars.$transition;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+
+  &:hover {
+    background-color: vars.$primary-color;
+    color: white;
+  }
+
+  &:nth-child(4):hover {
+    background-color: #ef4444;
+    color: white;
+  }
+
+  // Tooltip styles
+  &::before {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: vars.$dark-color;
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 1000;
+    margin-bottom: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: vars.$dark-color;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    margin-bottom: -0.25rem;
+  }
+
+  &:hover::before,
+  &:hover::after {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+@media (max-width: 768px) {
+  .controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchContainer {
+    max-width: none;
+  }
+
+  .sequencesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .header .title {
+    font-size: 2rem;
+  }
+}

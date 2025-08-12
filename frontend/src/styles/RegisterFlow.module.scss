@@ -1,0 +1,478 @@
+@use './variables.scss' as vars;
+
+.main {
+  background-color: vars.$background-color;
+  color: vars.$text-color;
+  font-family: vars.$font-family;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 60px;
+}
+
+.flowSection {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background-color: #f5f5f5;
+  margin-top: -60px;
+  padding-top: 60px;
+  min-height: 100vh;
+}
+
+.flowContainer {
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 3rem;
+  width: 100%;
+  max-width: 480px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: vars.$text-color;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: vars.$transition;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    background-color: #f3f4f6;
+  }
+}
+
+.progressBar {
+  flex: 1;
+  height: 0.5rem;
+  background-color: #e5e7eb;
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: vars.$primary-color;
+  transition: width 0.3s ease;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: 900;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  color: vars.$text-color;
+}
+
+.subtitle {
+  text-align: center;
+  color: #6b7280;
+  margin-bottom: 2rem;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: vars.$text-color;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.input {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: vars.$font-family;
+  transition: vars.$transition;
+  background-color: white;
+
+  &:focus {
+    outline: none;
+    border-color: vars.$primary-color;
+    box-shadow: 0 0 0 3px rgba(0, 50, 33, 0.1);
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+}
+
+.passwordInput {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.showPassword {
+  position: absolute;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: vars.$transition;
+
+  &:hover {
+    color: vars.$text-color;
+  }
+}
+
+.requirements {
+  background-color: #f9fafb;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  margin: 1rem 0;
+
+  h3 {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: vars.$text-color;
+    margin-bottom: 1rem;
+  }
+}
+
+.requirement {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.checkmark {
+  font-size: 1rem;
+  color: #9ca3af;
+  transition: vars.$transition;
+
+  &.valid {
+    color: #10b981;
+  }
+}
+
+.primaryButton {
+  width: 100%;
+  padding: 1rem;
+  background-color: vars.$primary-color;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 700;
+  font-family: vars.$font-family;
+  cursor: pointer;
+  transition: vars.$transition;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &:hover:not(.disabled) {
+    background-color: vars.$accent-color;
+  }
+
+  &:active:not(.disabled) {
+    transform: translateY(1px);
+  }
+
+  &.disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+}
+
+.categoryGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.categoryButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem 1rem;
+  background-color: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 1rem;
+  cursor: pointer;
+  transition: vars.$transition;
+  font-family: vars.$font-family;
+
+  &:hover {
+    border-color: vars.$primary-color;
+    background-color: #f9fafb;
+  }
+
+  &.selected {
+    border-color: vars.$primary-color;
+    background-color: rgba(0, 50, 33, 0.05);
+  }
+}
+
+.categoryIcon {
+  font-size: 2.5rem;
+}
+
+.categoryName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: vars.$text-color;
+  text-align: center;
+}
+
+.otherCategories {
+  margin-bottom: 2rem;
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 1rem;
+  }
+}
+
+.otherList {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.otherCategory {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  background: none;
+  border: none;
+  border-bottom: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: vars.$transition;
+  font-family: vars.$font-family;
+  color: vars.$text-color;
+  font-size: 0.875rem;
+
+  &:hover {
+    background-color: #f9fafb;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.arrow {
+  color: #9ca3af;
+  font-size: 1rem;
+}
+
+.phoneInput {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.prefixSelect {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  background-color: white;
+  min-width: 100px;
+}
+
+.flag {
+  font-size: 1.25rem;
+}
+
+.prefix {
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: vars.$text-color;
+  cursor: pointer;
+  font-family: vars.$font-family;
+
+  &:focus {
+    outline: none;
+  }
+}
+
+.phoneNumber {
+  flex: 1;
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: vars.$font-family;
+  transition: vars.$transition;
+  background-color: white;
+
+  &:focus {
+    outline: none;
+    border-color: vars.$primary-color;
+    box-shadow: 0 0 0 3px rgba(0, 50, 33, 0.1);
+  }
+
+  &::placeholder {
+    color: #9ca3af;
+  }
+}
+
+.pricingCard {
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 2px solid #e5e7eb;
+}
+
+.priceHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.price {
+  font-size: 3rem;
+  font-weight: 900;
+  color: vars.$primary-color;
+  margin-bottom: 1rem;
+
+  .currency {
+    font-size: 2rem;
+    vertical-align: top;
+  }
+
+  .amount {
+    font-size: 3rem;
+  }
+
+  .period {
+    font-size: 1.5rem;
+    color: #6b7280;
+    font-weight: 600;
+  }
+}
+
+.trialBadge {
+  background-color: vars.$accent-color;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-weight: 600;
+  font-size: 0.875rem;
+  display: inline-block;
+}
+
+.features {
+  margin-bottom: 2rem;
+
+  h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: vars.$text-color;
+    margin-bottom: 1rem;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    padding: 0.5rem 0;
+    color: #6b7280;
+    font-size: 0.875rem;
+  }
+}
+
+.cancelNotice {
+  text-align: center;
+  margin-bottom: 2rem;
+  
+  p {
+    color: #6b7280;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+}
+
+.processing {
+  background-color: #9ca3af !important;
+  cursor: not-allowed;
+}
+
+.securityNotice {
+  text-align: center;
+  margin-top: 1.5rem;
+  
+  p {
+    color: #6b7280;
+    font-size: 0.75rem;
+    margin: 0.25rem 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .flowContainer {
+    padding: 2rem 1.5rem;
+    margin: 1rem;
+  }
+
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .categoryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .phoneInput {
+    flex-direction: column;
+  }
+
+  .prefixSelect {
+    min-width: auto;
+    justify-content: center;
+  }
+}

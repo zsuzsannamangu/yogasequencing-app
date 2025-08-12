@@ -1,6 +1,8 @@
+import styles from '@/styles/Footer.module.scss';
+
 export default function Footer() {
     return (
-      <footer className="text-center text-sm text-[#111827]/60 py-6 bg-[#fcd34d] border-t-4 border-[#111827]">
+      <footer className={styles.footer}>
         © {new Date().getFullYear()} MoveMosaic. All rights reserved.
       </footer>
     );
