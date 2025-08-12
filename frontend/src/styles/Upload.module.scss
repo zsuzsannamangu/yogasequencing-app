@@ -1,7 +1,7 @@
 @use './variables.scss' as vars;
 
 .main {
-  background-color: vars.$background-color;
+  background-color: #f5f5f5; // Grey background for entire page
   color: vars.$text-color;
   font-family: vars.$font-family;
   min-height: 100vh;
@@ -9,40 +9,50 @@
   flex-direction: column;
 }
 
-
-
 .section {
   flex-grow: 1;
-  padding: 0 0.5rem 4rem;
-  max-width: 72rem;
+  padding: 0 1rem 8rem; // Increased bottom padding
+  max-width: 1200px;
   margin: 0 auto;
-  margin-top: 3rem;
+  margin-top: 8rem;
   text-align: center;
 }
 
-.title {
-  font-size: 3rem;
-  font-weight: 900;
-  margin-bottom: 1.5rem;
-  margin-top: 6rem;
+.header {
+  text-align: center;
+  margin-bottom: 4rem;
+
+  .title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: vars.$primary-color;
+    margin-bottom: 1rem;
+    margin-top: 0;
+  }
+
+  .subtitle {
+    font-size: 1.125rem;
+    color: #6b7280;
+    max-width: 800px;
+    margin: 3rem auto;
+    line-height: 1.5;
+  }
 }
 
-.description {
-  font-size: 1.125rem;
-  margin-bottom: 2.5rem;
-  max-width: 48rem;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: center;
-}
+/* Description styles moved to header.subtitle */
 
 .buttonContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.5rem;
   margin-bottom: 4rem;
+  padding: 2.5rem;
+  border-radius: 1rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .fileLabel {
@@ -123,9 +133,12 @@
 }
 
 @keyframes pulse {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
   }
+
   50% {
     opacity: 0.5;
   }
@@ -142,15 +155,14 @@
 }
 
 .helpMessage {
-  background-color: rgba(0, 50, 33, 0.1);
-  border: 1px solid vars.$primary-color;
-  border-radius: 0.5rem;
-  padding: 1rem;
-  margin-bottom: 1.5rem;
+  background-color: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  margin: 3rem auto;
   text-align: center;
   max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
 
   p {
     margin: 0;
@@ -225,26 +237,30 @@
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  margin-top: 2.5rem;
+  gap: 2rem;
+  margin: 3rem auto;
+  max-width: 1000px;
 }
 
 .guidelines {
-  background-color: rgba(0, 50, 33, 0.1);
-  border: 1px solid vars.$primary-color;
-  border-radius: 0.5rem;
-  padding: 1.5rem;
-  margin-bottom: 3rem;
-  text-align: left;
+  background-color: white;
+  border-radius: 1rem;
+  padding: 2.5rem;
+  margin-top: 4rem;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 3rem;
+  text-align: left;
 }
 
 .guidelinesTitle {
   font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 1rem;
+  font-weight: 700;
+  color: vars.$primary-color;
+  margin-bottom: 1.5rem;
+  text-align: center;
 }
 
 .guidelinesList {

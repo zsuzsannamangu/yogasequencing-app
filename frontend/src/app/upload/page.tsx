@@ -41,36 +41,36 @@ const DraggablePose = ({ id, poseName, image, index, onDelete, onNameChange }) =
     zIndex: isDragging ? 50 : 'auto',
   };
 
-      return (
-      <div
-        ref={setNodeRef}
-        style={style}
-        className={`${styles.draggablePose} ${isDragging ? styles.dragging : ''}`}
-      >
-        <div className={styles.gripHandle} {...attributes} {...listeners}>
-          <GripVertical size={18} />
-        </div>
-        <img
-          src={`http://localhost:8000/${image}`}
-          alt={`Pose ${index + 1}`}
-          className={styles.poseImage}
-        />
-        <input
-          type="text"
-          value={poseName}
-          onChange={(e) => onNameChange(index, e.target.value)}
-          placeholder={`Pose ${index + 1}`}
-          className={styles.poseInput}
-        />
-        <button
-          onClick={() => onDelete(index)}
-          className={styles.deleteButton}
-          title="Delete Pose"
-        >
-          ✕
-        </button>
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`${styles.draggablePose} ${isDragging ? styles.dragging : ''}`}
+    >
+      <div className={styles.gripHandle} {...attributes} {...listeners}>
+        <GripVertical size={18} />
       </div>
-    );
+      <img
+        src={`http://localhost:8000/${image}`}
+        alt={`Pose ${index + 1}`}
+        className={styles.poseImage}
+      />
+      <input
+        type="text"
+        value={poseName}
+        onChange={(e) => onNameChange(index, e.target.value)}
+        placeholder={`Pose ${index + 1}`}
+        className={styles.poseInput}
+      />
+      <button
+        onClick={() => onDelete(index)}
+        className={styles.deleteButton}
+        title="Delete Pose"
+      >
+        ✕
+      </button>
+    </div>
+  );
 };
 
 const UploadPage = () => {
@@ -116,7 +116,7 @@ const UploadPage = () => {
 
   const handleGenerate = async () => {
     if (!filename) {
-      return       Swal.fire({
+      return Swal.fire({
         title: 'No File',
         text: 'Please upload a file first!',
         icon: 'warning',
@@ -201,14 +201,16 @@ const UploadPage = () => {
   };
 
   return (
-            <main className={styles.main}>
-          <Navbar showUserMenu={true} firstName="User" lastName="Name" profileImage={null} />
+    <main className={styles.main}>
+      <Navbar showUserMenu={true} firstName="User" lastName="Name" profileImage={null} />
 
-          <section className={styles.section}>
-        <h1 className={styles.title}>Upload and Visualize Your Practice</h1>
-        <p className={styles.description}>
-          Upload your recorded flow to generate a printable visual sequence. As a guest, you can create and download your sequences. If you want to save your flows and return to them later, register for an account and build your own library.
-        </p>
+      <section className={styles.section}>
+        <div className={styles.header}>
+          <h1 className={styles.title}>Upload and Visualize Your Practice</h1>
+          <p className={styles.subtitle}>
+            Upload your recorded flow to generate a printable visual sequence. As a guest, you can create and download your sequences. If you want to save your flows and return to them later, register for an account and build your own library.
+          </p>
+        </div>
 
         <div className={styles.buttonContainer}>
           <label className={styles.fileLabel}>

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { Upload, List, HelpCircle } from 'lucide-react';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import UserMenu from '@/components/UserMenu';
@@ -27,19 +28,25 @@ export default function DashboardPage() {
             <h2>Quick Actions</h2>
             <div className={styles.actionGrid}>
               <Link href="/upload" className={styles.actionCard}>
-                <div className={styles.actionIcon}>📹</div>
+                <div className={styles.actionIcon}>
+                  <Upload size={32} />
+                </div>
                 <h3>Upload Video</h3>
                 <p>Create a new sequence from your video</p>
               </Link>
               
               <Link href="/sequences" className={styles.actionCard}>
-                <div className={styles.actionIcon}>📚</div>
+                <div className={styles.actionIcon}>
+                  <List size={32} />
+                </div>
                 <h3>View Sequences</h3>
                 <p>Browse your saved sequences</p>
               </Link>
               
               <Link href="/help" className={styles.actionCard}>
-                <div className={styles.actionIcon}>❓</div>
+                <div className={styles.actionIcon}>
+                  <HelpCircle size={32} />
+                </div>
                 <h3>Help & Support</h3>
                 <p>Get help with using MoveMosaic</p>
               </Link>
