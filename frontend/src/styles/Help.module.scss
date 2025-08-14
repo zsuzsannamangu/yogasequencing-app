@@ -3,7 +3,7 @@
 .main {
   background-color: vars.$background-color;
   color: vars.$text-color;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -29,13 +29,13 @@
   .title {
     font-size: 2.5rem;
     font-weight: 900;
-    color: vars.$primary-color;
+    color: vars.$accent-color;
     margin-bottom: 0.5rem;
   }
 
   .subtitle {
     font-size: 1.125rem;
-    color: #6b7280;
+    color: vars.$text-color-2;
     max-width: 600px;
     margin: 0 auto;
   }
@@ -56,7 +56,7 @@
   border: 2px solid #e5e7eb;
   border-radius: 0.75rem;
   font-size: 1rem;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   transition: vars.$transition;
   background-color: white;
 
@@ -74,7 +74,7 @@
 .sectionTitle {
   font-size: 1.75rem;
   font-weight: 700;
-  color: vars.$primary-color;
+  color: vars.$subtitle-color;
   margin-bottom: 1.5rem;
   text-align: center;
 }
@@ -131,7 +131,7 @@
   border-top: 1px solid #f3f4f6;
 
   p {
-    color: #6b7280;
+    color: vars.$text-color-2;
     line-height: 1.6;
     margin: 0;
   }
@@ -143,7 +143,7 @@
 
 .contactSubtitle {
   text-align: center;
-  color: #6b7280;
+  color: vars.$text-color-2;
   margin-bottom: 2rem;
   font-size: 1.125rem;
 }
@@ -175,7 +175,7 @@
   }
 
   p {
-    color: #6b7280;
+    color: vars.$text-color-2;
     margin-bottom: 1rem;
     line-height: 1.5;
   }
@@ -210,14 +210,14 @@
 .responseTime {
   display: block;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: vars.$text-color-2;
   font-weight: 500;
 }
 
 .availability {
   display: block;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: vars.$text-color-2;
   font-weight: 500;
   margin-bottom: 0.5rem;
 }
@@ -253,7 +253,7 @@
   }
 
   p {
-    color: #6b7280;
+    color: vars.$text-color-2;
     margin-bottom: 1rem;
     line-height: 1.5;
     font-size: 0.875rem;
@@ -268,13 +268,47 @@
   border-radius: 0.5rem;
   font-size: 0.875rem;
   font-weight: 600;
-  font-family: vars.$font-family;
   cursor: pointer;
   transition: vars.$transition;
 
   &:hover {
     background-color: vars.$accent-color;
     transform: translateY(-1px);
+  }
+}
+
+.simpleContactSection {
+  text-align: center;
+  margin: 3rem 0;
+  padding: 2rem;
+  background-color: vars.$muted-bg;
+  border-radius: 0.75rem;
+}
+
+.contactText {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: vars.$text-color;
+  margin: 0;
+}
+
+.emailLink {
+  color: vars.$accent-color;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.homepageLink {
+  color: vars.$primary-color;
+  text-decoration: none;
+  font-weight: 600;
+
+  &:hover {
+    text-decoration: underline;
   }
 }
 

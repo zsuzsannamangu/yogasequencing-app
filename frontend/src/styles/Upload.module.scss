@@ -3,7 +3,7 @@
 .main {
   background-color: #f5f5f5; // Grey background for entire page
   color: vars.$text-color;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -25,14 +25,14 @@
   .title {
     font-size: 2.5rem;
     font-weight: 900;
-    color: vars.$primary-color;
+    color: vars.$accent-color;
     margin-bottom: 1rem;
     margin-top: 0;
   }
 
   .subtitle {
     font-size: 1.125rem;
-    color: #6b7280;
+    color: vars.$text-color-2;
     max-width: 800px;
     margin: 3rem auto;
     line-height: 1.5;
@@ -62,7 +62,7 @@
   border-radius: 9999px;
   cursor: pointer;
   transition: vars.$transition;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   font-weight: 600;
 
   &:hover {
@@ -87,7 +87,7 @@
   background-color: vars.$accent-color;
   color: white;
   transition: vars.$transition;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
 
   &:hover {
     background-color: #ef4444;
@@ -100,7 +100,7 @@
   background-color: vars.$primary-color;
   color: white;
   transition: vars.$transition;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
 
   &:hover {
     background-color: vars.$accent-color;
@@ -117,7 +117,7 @@
   background-color: vars.$primary-color;
   color: white;
   transition: vars.$transition;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
 
   &:hover {
     background-color: vars.$accent-color;
@@ -184,7 +184,7 @@
   padding: 0.5rem;
 
   &.dragging {
-    ring: 2px solid #6b7280;
+    ring: 2px solid vars.$text-color-2;
   }
 }
 
@@ -192,7 +192,7 @@
   position: absolute;
   top: 0.25rem;
   left: 0.5rem;
-  color: #6b7280;
+  color: vars.$text-color-2;
   cursor: grab;
 }
 
@@ -211,7 +211,7 @@
   padding: 0.25rem 0.5rem;
   width: 100%;
   color: vars.$text-color;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
 
   &:focus {
     outline: none;

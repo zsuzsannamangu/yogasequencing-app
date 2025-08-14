@@ -3,7 +3,7 @@
 .main {
   background-color: vars.$background-color;
   color: vars.$text-color;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -80,7 +80,7 @@
 
 .subtitle {
   text-align: center;
-  color: #6b7280;
+  color: vars.$text-color-2;
   margin-bottom: 2rem;
   font-size: 1rem;
   line-height: 1.5;
@@ -112,7 +112,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   font-size: 1rem;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   transition: vars.$transition;
   background-color: white;
 
@@ -169,7 +169,7 @@
   gap: 0.75rem;
   margin-bottom: 0.75rem;
   font-size: 0.875rem;
-  color: #6b7280;
+  color: vars.$text-color-2;
 
   &:last-child {
     margin-bottom: 0;
@@ -195,7 +195,7 @@
   border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 700;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   cursor: pointer;
   transition: vars.$transition;
   text-transform: uppercase;
@@ -234,7 +234,7 @@
   border-radius: 1rem;
   cursor: pointer;
   transition: vars.$transition;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
 
   &:hover {
     border-color: vars.$primary-color;
@@ -264,7 +264,7 @@
   h3 {
     font-size: 1rem;
     font-weight: 600;
-    color: #6b7280;
+    color: vars.$text-color-2;
     margin-bottom: 1rem;
   }
 }
@@ -285,7 +285,7 @@
   border-bottom: 1px solid #e5e7eb;
   cursor: pointer;
   transition: vars.$transition;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   color: vars.$text-color;
   font-size: 0.875rem;
 
@@ -330,7 +330,7 @@
   font-weight: 600;
   color: vars.$text-color;
   cursor: pointer;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
 
   &:focus {
     outline: none;
@@ -343,7 +343,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   font-size: 1rem;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   transition: vars.$transition;
   background-color: white;
 
@@ -388,7 +388,7 @@
 
   .period {
     font-size: 1.5rem;
-    color: #6b7280;
+    color: vars.$text-color-2;
     font-weight: 600;
   }
 }
@@ -421,7 +421,7 @@
 
   li {
     padding: 0.5rem 0;
-    color: #6b7280;
+    color: vars.$text-color-2;
     font-size: 0.875rem;
   }
 }
@@ -431,7 +431,7 @@
   margin-bottom: 2rem;
   
   p {
-    color: #6b7280;
+    color: vars.$text-color-2;
     font-size: 0.875rem;
     margin: 0;
   }
@@ -447,7 +447,7 @@
   margin-top: 1.5rem;
   
   p {
-    color: #6b7280;
+    color: vars.$text-color-2;
     font-size: 0.75rem;
     margin: 0.25rem 0;
   }

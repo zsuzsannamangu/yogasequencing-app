@@ -58,7 +58,7 @@ export default function HomePage() {
                         Breathe. Move. Remember.
                     </motion.h1>
                     <p className={styles.heroSubtitle}>
-                        Your sequence visualized.
+                        Visualize movement into a sequence.
                     </p>
                     <button 
                         className={styles.heroButton}
@@ -75,105 +75,131 @@ export default function HomePage() {
 
             {/* ABOUT SECTION */}
             <section id="about" className={styles.aboutSection}>
-                <FadeInSection>
-                    <img
-                        src="/images/yoga5.jpg"
-                        alt="Yoga Pose"
-                        className={styles.aboutImage}
-                    />
-                </FadeInSection>
-                <FadeInSection>
-                    <div>
-                        <h2 className={styles.sectionTitle}>About Us</h2>
-                        <p className={styles.sectionText}>
-                            MoveMosaic helps you remember the sequences that live in your body. We turn your recorded practice into clear, printable visual guides, so your teaching can grow from your lived experience.
-                        </p>
-                        <p className={styles.sectionText}>
-                            Every movement professional has experienced that moment when a student asks, "Can you show me that sequence again?" or "What was that flow we did last week?" With MoveMosaic, you'll never have to rely on memory alone. Your embodied knowledge becomes a tangible, shareable resource that grows with every practice session.
-                        </p>
-                        <button 
-                            className={styles.primaryButton}
-                            onClick={() => {
-                                document.getElementById('upload')?.scrollIntoView({ 
-                                    behavior: 'smooth' 
-                                });
-                            }}
-                        >
-                            Try for Free
-                        </button>
+                <div className={styles.container}>
+                    <div className={styles.section}>
+                        <div className={styles.content}>
+                            <h2 className={styles.sectionTitle}>About Us</h2>
+                            <p className={styles.sectionText}>
+                                MoveMosaic helps you remember the sequences that live in your body. We turn your recorded practice into clear, printable visual guides, so your teaching can grow from your lived experience.
+                            </p>
+                            <p className={styles.sectionText}>
+                                Every movement professional has experienced that moment when a student asks, "Can you show me that sequence again?" or "What was that flow we did last week?" With MoveMosaic, you'll never have to rely on memory alone. Your embodied knowledge becomes a tangible, shareable resource that grows with every practice session.
+                            </p>
+                            <button 
+                                className={styles.primaryButton}
+                                onClick={() => {
+                                    document.getElementById('upload')?.scrollIntoView({ 
+                                        behavior: 'smooth' 
+                                    });
+                                }}
+                            >
+                                Try for Free
+                            </button>
+                        </div>
+                        <div className={styles.imageContainer}>
+                            <img
+                                src="/images/yoga5.jpg"
+                                alt="Yoga Pose"
+                                className={styles.aboutImage}
+                            />
+                        </div>
                     </div>
-                </FadeInSection>
+                </div>
             </section>
 
             {/* WHO IS THIS FOR SECTION - FULL WIDTH */}
             <section className={styles.whoIsThisForSection}>
                 <div className={styles.contentContainer}>
                     <FadeInSection>
-                        <h2 className={styles.sectionTitle}>Who Is It For?</h2>
-                        <p className={styles.sectionText}>
-                            Our app is designed for movement and wellness professionals who want to create clear, personalized visual sequences from their own video demonstrations — making it easier to communicate, teach, and support their clients' progress.
-                        </p>
                         
                         <div className={styles.professionalsHeader}>
                             <div className={styles.professionalsTitle}>
-                                <h3>Professional Categories</h3>
-                                <p>Find your perfect fit below</p>
-                            </div>
-                            <div className={styles.navigationArrows}>
-                                <button className={styles.navArrow} onClick={() => document.getElementById('professionalsGrid')?.scrollBy({ left: -1180, behavior: 'smooth' })}>
-                                    ←
-                                </button>
-                                <button className={styles.navArrow} onClick={() => document.getElementById('professionalsGrid')?.scrollBy({ left: 1180, behavior: 'smooth' })}>
-                                    →
-                                </button>
+                                <h3>Who is it for?</h3>
+                                <p>Our app is designed for movement and wellness professionals who want to create clear, personalized visual sequences from their own video demonstrations, making it easier to communicate, teach, and support their clients' progress.</p>
                             </div>
                         </div>
                     </FadeInSection>
                 </div>
                 
+                <div className={styles.navigationArrows}>
+                    <button className={styles.navArrow} onClick={() => document.getElementById('professionalsGrid')?.scrollBy({ left: -1180, behavior: 'smooth' })}>
+                        ←
+                    </button>
+                    <button className={styles.navArrow} onClick={() => document.getElementById('professionalsGrid')?.scrollBy({ left: 1180, behavior: 'smooth' })}>
+                        →
+                    </button>
+                </div>
+                
                 <div id="professionalsGrid" className={styles.professionalsGrid}>
                     <div className={styles.professionalCard}>
+                        <div className={styles.cardIcon}>
+                            <img src="/images/yogaicon.png" alt="Yoga" />
+                        </div>
                         <h4>Yoga Teachers & Therapists</h4>
                         <p>Capture your flows and therapeutic sequences in a printable format to share with students for home practice or rehab.</p>
                     </div>
                     
                     <div className={styles.professionalCard}>
+                        <div className={styles.cardIcon}>
+                            <img src="/images/pilatesicon.png" alt="Pilates" />
+                        </div>
                         <h4>Pilates Instructors</h4>
                         <p>Turn your Pilates routines into easy-to-follow visual guides to support client learning and technique.</p>
                     </div>
                     
                     <div className={styles.professionalCard}>
-                        <h4>Physical Therapists & Rehab Specialists</h4>
+                        <div className={styles.cardIcon}>
+                            <img src="/images/pystherapyicon.png" alt="Physical Therapy" />
+                        </div>
+                        <h4>Physical Therapists</h4>
                         <p>Generate customized exercise sheets from live demonstrations to enhance patient recovery and compliance.</p>
                     </div>
                     
                     <div className={styles.professionalCard}>
+                        <div className={styles.cardIcon}>
+                            <img src="/images/oticon.png" alt="Occupational Therapy" />
+                        </div>
                         <h4>Occupational Therapists</h4>
                         <p>Create tailored activity sequences that help clients build functional movement skills at their own pace.</p>
                     </div>
                     
                     <div className={styles.professionalCard}>
+                        <div className={styles.cardIcon}>
+                            <img src="/images/dancericon.png" alt="Dance" />
+                        </div>
                         <h4>Dance Teachers & Choreographers</h4>
                         <p>Document choreography with precise pose visuals, helping dancers learn and rehearse complex sequences.</p>
                     </div>
                     
                     <div className={styles.professionalCard}>
+                        <div className={styles.cardIcon}>
+                            <img src="/images/trainericon.png" alt="Fitness Training" />
+                        </div>
                         <h4>Personal Trainers & Fitness Coaches</h4>
                         <p>Build workout plans with clear visual cues to improve client engagement and form.</p>
                     </div>
                     
                     <div className={styles.professionalCard}>
+                        <div className={styles.cardIcon}>
+                            <img src="/images/martialartsicon.png" alt="Martial Arts" />
+                        </div>
                         <h4>Martial Arts Instructors</h4>
                         <p>Break down forms, katas, and techniques into step-by-step pose sequences for student mastery.</p>
                     </div>
                     
                     <div className={styles.professionalCard}>
-                        <h4>Athletic Trainers & Sports Coaches</h4>
+                        <div className={styles.cardIcon}>
+                            <img src="/images/coachicon.png" alt="Sports Training" />
+                        </div>
+                        <h4>Sports Coaches</h4>
                         <p>Visualize sport-specific drills and preventive exercises for optimal performance and injury prevention.</p>
                     </div>
                     
                     <div className={styles.professionalCard}>
-                        <h4>Chiropractors & Bodywork Professionals</h4>
+                        <div className={styles.cardIcon}>
+                            <img src="/images/chiroicon.png" alt="Chiropractic" />
+                        </div>
+                        <h4>Chiropractors</h4>
                         <p>Provide patients with simple visual exercise guides to support spinal health and mobility.</p>
                     </div>
                 </div>
@@ -182,27 +208,29 @@ export default function HomePage() {
             <div className={styles.contentContainer}>
                 {/* WHY MOVEMOSAIC SECTION */}
                 <section className={styles.whySection}>
-                    <FadeInSection>
-                        <div className={styles.whyContent}>
-                            <h2 className={styles.sectionTitle}>Why MoveMosaic?</h2>
-                            <p className={styles.sectionText}>
-                                In the world of movement education, there's a gap between what you know in your body and what you can share with your students. Traditional methods like written notes or generic diagrams often fall short of capturing the nuance and flow of your practice.
-                            </p>
-                            <p className={styles.sectionText}>
-                                MoveMosaic bridges this gap by using advanced AI pose detection to capture the exact moments of your sequences. Our technology doesn't just record poses—it understands movement patterns, identifies key transitions, and creates visual representations that preserve the essence of your teaching style.
-                            </p>
-                            <p className={styles.sectionText}>
-                                What sets us apart is our commitment to personalization. Every sequence you create becomes part of your unique library, reflecting your teaching philosophy, your students' needs, and your evolving practice. This isn't a one-size-fits-all solution—it's a tool that grows with you.
-                            </p>
+                    <div className={styles.container}>
+                        <div className={`${styles.section} ${styles.reverse}`}>
+                            <div className={styles.content}>
+                                <h2 className={styles.sectionTitle}>Why MoveMosaic?</h2>
+                                <p className={styles.sectionText}>
+                                    In the world of movement education, there's a gap between what you know in your body and what you can share with your students. Traditional methods like written notes or generic diagrams often fall short of capturing the nuance and flow of your practice.
+                                </p>
+                                <p className={styles.sectionText}>
+                                    MoveMosaic bridges this gap by capturing the exact moments of your sequences. Our technology creates visual representations that preserve the essence of your teaching style.
+                                </p>
+                                <p className={styles.sectionText}>
+                                    What sets us apart is our commitment to personalization. Every sequence you create becomes part of your unique library, reflecting your teaching philosophy, your students' needs, and your evolving practice.
+                                </p>
+                            </div>
+                            <div className={styles.imageContainer}>
+                                <img
+                                    src="/images/4.jpg"
+                                    alt="Why MoveMosaic"
+                                    className={styles.whyImage}
+                                />
+                            </div>
                         </div>
-                    </FadeInSection>
-                    <FadeInSection>
-                        <img
-                            src="/images/1.jpg"
-                            alt="Why MoveMosaic"
-                            className={styles.whyImage}
-                        />
-                    </FadeInSection>
+                    </div>
                 </section>
 
                 {/* HOW IT WORKS */}
@@ -216,9 +244,9 @@ export default function HomePage() {
                                     <p>
                                         {[
                                             "Record yourself moving through a sequence and upload the video. Your embodied flow becomes a visual reference.",
-                                            "The tool detects moments of pause — the held postures — and captures them for you.",
-                                            "Each held pose is transformed into a simple silhouette — clean and ready to print or share.",
-                                            "Export your sequence as a printable file — to teach, to share, or to keep for inspiration."
+                                            "The tool detects moments of pause, the held postures, and captures them for you.",
+                                            "Each held pose is transformed into a simple silhouette, clean and ready to print or share.",
+                                            "Export your sequence as a printable file, to teach, to share, or to keep for inspiration."
                                         ][idx]}
                                     </p>
                                 </div>
@@ -229,54 +257,59 @@ export default function HomePage() {
 
                 {/* FEATURES SECTION */}
                 <section className={styles.featuresSection}>
-                    <FadeInSection>
+                    <div className={styles.featuresContent}>
+                        <h2 className={styles.sectionTitle}>Powerful Features for Movement Professionals</h2>
+                        <div className={styles.featureList}>
+                            <div className={styles.featureItem}>
+                                <h4>Pose Detection</h4>
+                                <p>Our advanced machine learning algorithms automatically identify and capture key poses from your video, ensuring nothing important is missed.</p>
+                            </div>
+                            <div className={styles.featureItem}>
+                                <h4>Customizable Sequences</h4>
+                                <p>Edit, reorder, and personalize your sequences. Add notes, modify poses, and create variations for different skill levels.</p>
+                            </div>
+                            <div className={styles.featureItem}>
+                                <h4>Professional Export Options</h4>
+                                <p>Download your sequences in multiple formats including PDF, SVG, and high-resolution images perfect for printing or digital sharing.</p>
+                            </div>
+                            <div className={styles.featureItem}>
+                                <h4>Client Management</h4>
+                                <p>Organize sequences by client, class type, or therapeutic focus. Build comprehensive libraries that grow with your practice.</p>
+                            </div>
+                            <div className={styles.featureItem}>
+                                <h4>Mobile-First Design</h4>
+                                <p>Record and upload videos directly from your phone, then access your sequences anywhere, anytime.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={styles.imageContainer}>
                         <img
-                            src="/images/2.jpg"
+                            src="/images/9.jpg"
                             alt="App Features"
                             className={styles.featuresImage}
                         />
-                    </FadeInSection>
-                    <FadeInSection>
-                        <div className={styles.featuresContent}>
-                            <h2 className={styles.sectionTitle}>Powerful Features for Movement Professionals</h2>
-                            <div className={styles.featureList}>
-                                <div className={styles.featureItem}>
-                                    <h4>AI-Powered Pose Detection</h4>
-                                    <p>Our advanced machine learning algorithms automatically identify and capture key poses from your video, ensuring nothing important is missed.</p>
-                                </div>
-                                <div className={styles.featureItem}>
-                                    <h4>Customizable Sequences</h4>
-                                    <p>Edit, reorder, and personalize your sequences. Add notes, modify poses, and create variations for different skill levels.</p>
-                                </div>
-                                <div className={styles.featureItem}>
-                                    <h4>Professional Export Options</h4>
-                                    <p>Download your sequences in multiple formats including PDF, SVG, and high-resolution images perfect for printing or digital sharing.</p>
-                                </div>
-                                <div className={styles.featureItem}>
-                                    <h4>Client Management</h4>
-                                    <p>Organize sequences by client, class type, or therapeutic focus. Build comprehensive libraries that grow with your practice.</p>
-                                </div>
-                                <div className={styles.featureItem}>
-                                    <h4>Mobile-First Design</h4>
-                                    <p>Record and upload videos directly from your phone, then access your sequences anywhere, anytime.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </FadeInSection>
+                    </div>
                 </section>
 
                 {/* BENEFITS SECTION */}
                 <section className={styles.benefitsSection}>
                     <FadeInSection>
+                        <img
+                            src="/images/8.jpg"
+                            alt="Teaching Benefits"
+                            className={styles.benefitsImage}
+                        />
+                    </FadeInSection>
+                    <FadeInSection>
                         <div className={styles.benefitsContent}>
                             <h2 className={styles.sectionTitle}>Transform Your Teaching Practice</h2>
                             <p className={styles.sectionText}>
-                                MoveMosaic isn't just another app—it's a fundamental shift in how movement professionals document and share their knowledge. By digitizing your embodied expertise, you're creating a legacy that extends far beyond individual sessions.
+                                SequenceFlow is a fundamental shift in how movement professionals document and share their knowledge. By digitizing your embodied expertise, you're creating a legacy that extends far beyond individual sessions.
                             </p>
                             <div className={styles.benefitsGrid}>
                                 <div className={styles.benefitCard}>
                                     <h4>Enhanced Client Engagement</h4>
-                                    <p>Provide students with clear, visual references that support their home practice and accelerate their progress.</p>
+                                    <p>Provide clients or students with clear, visual references that support their home practice and accelerate their progress.</p>
                                 </div>
                                 <div className={styles.benefitCard}>
                                     <h4>Professional Development</h4>
@@ -293,35 +326,62 @@ export default function HomePage() {
                             </div>
                         </div>
                     </FadeInSection>
-                    <FadeInSection>
-                        <img
-                            src="/images/2.jpg"
-                            alt="Teaching Benefits"
-                            className={styles.benefitsImage}
-                        />
-                    </FadeInSection>
                 </section>
 
                 {/* START UPLOADING */}
                 <section id="upload" className={styles.uploadSection}>
-                    <h2 className={styles.sectionTitle}>Start Uploading</h2>
+                    <h2 className={styles.sectionTitle}>Start Creating</h2>
                     <p className={styles.sectionText}>
-                        Record your flow, upload it, and receive a printable sequence you can download right away. You can use YogaFlow as a guest — no signup needed — but your past sequences won't be saved. Create an account to keep a library of your recordings and printable files.
+                        Upload your video and receive a printable sequence. Keep a library of your sequences, share with others, and browse sequences from the community. Start building your digital movement library.
                     </p>
-                    <p className={styles.sectionText}>
-                        Our platform is designed to be intuitive and accessible. Whether you're tech-savvy or prefer simplicity, you'll find the upload process straightforward and rewarding. Start with a simple sequence, and as you become more comfortable with the platform, explore advanced features like sequence editing, client organization, and custom branding.
-                    </p>
+                    
+                    <div className={styles.pricingSection}>
+                        <h3 className={styles.pricingTitle}>Simple, Transparent Pricing</h3>
+                        <div className={styles.pricingGrid}>
+                            <div className={styles.pricingCard}>
+                                <h4 className={styles.pricingPlan}>Free Trial</h4>
+                                <p className={styles.pricingDuration}>2 weeks</p>
+                                <p className={styles.pricingPrice}>$0</p>
+                                <p className={styles.pricingDescription}>Try all features with no commitment</p>
+                            </div>
+                            
+                            <div className={styles.pricingCard}>
+                                <h4 className={styles.pricingPlan}>Monthly</h4>
+                                <p className={styles.pricingDuration}>Billed monthly</p>
+                                <p className={styles.pricingPrice}>$19</p>
+                                <p className={styles.pricingDescription}>Full access to all features</p>
+                            </div>
+                            
+                            <div className={styles.pricingCard}>
+                                <h4 className={styles.pricingPlan}>Annual</h4>
+                                <p className={styles.pricingDuration}>Billed yearly</p>
+                                <p className={styles.pricingPrice}>$79</p>
+                                <p className={styles.pricingDescription}>Save $159 per year</p>
+                            </div>
+                            
+                            <div className={styles.pricingCard}>
+                                <h4 className={styles.pricingPlan}>Student Trial</h4>
+                                <p className={styles.pricingDuration}>3 months</p>
+                                <p className={styles.pricingPrice}>$29</p>
+                                <p className={styles.pricingDescription}>For students in training</p>
+                            </div>
+                        </div>
+                    </div>
+                    
                     <div className={styles.uploadButtons}>
                         <Link href="/register">
                             <button className={styles.outlineButton}>
                                 Start Free Trial
                             </button>
                         </Link>
-                        <Link href="/login">
-                            <button className={styles.primaryButton}>
-                                Login
-                            </button>
-                        </Link>
+                        <button 
+                            className={styles.primaryButton}
+                            onClick={() => {
+                                window.location.href = '/login';
+                            }}
+                        >
+                            Login
+                        </button>
                     </div>
                 </section>
             </div>

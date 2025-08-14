@@ -2,8 +2,8 @@
 
 .main {
   background-color: vars.$background-color;
-  color: vars.$text-color;
-  font-family: vars.$font-family;
+  color: vars.$text-color-2;
+  font-family: vars.$title-font;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -23,8 +23,6 @@
   position: relative;
 }
 
-
-
 .header {
   text-align: center;
   margin-bottom: 4rem;
@@ -32,13 +30,13 @@
   .title {
     font-size: 2.5rem;
     font-weight: 900;
-    color: vars.$primary-color;
+    color: vars.$accent-color;
     margin-bottom: 1rem;
   }
 
   .subtitle {
     font-size: 1.125rem;
-    color: #6b7280;
+    color: vars.$text-color-2;
     max-width: 600px;
     margin: 0 auto;
   }
@@ -50,7 +48,7 @@
   h2 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: vars.$primary-color;
+    color: vars.$subtitle-color;
     margin-bottom: 2rem;
     text-align: center;
   }
@@ -67,7 +65,7 @@
   border-radius: 1rem;
   padding: 2.5rem;
   text-decoration: none;
-  color: vars.$text-color;
+  color: vars.$text-color-2;
   transition: vars.$transition;
   border: 2px solid transparent;
   text-align: center;
@@ -90,12 +88,12 @@
 .actionCard h3 {
   font-size: 1.25rem;
   font-weight: 700;
-  color: vars.$primary-color;
+  color: vars.$subtitle-color;
   margin-bottom: 0.75rem;
 }
 
 .actionCard p {
-  color: #6b7280;
+  color: vars.$text-color-2;
   line-height: 1.5;
   margin: 0;
 }
@@ -104,7 +102,7 @@
   h2 {
     font-size: 1.5rem;
     font-weight: 700;
-    color: vars.$primary-color;
+    color: vars.$subtitle-color;
     margin-bottom: 2rem;
     text-align: center;
   }
@@ -148,7 +146,7 @@
 
 .statLabel {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: vars.$text-color-2;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;

@@ -40,14 +40,14 @@
   gap: 1.5rem;
   font-size: 1.5rem;
   font-weight: 600;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
 }
 
 .navLink {
-  color: vars.$primary-color;
+  color: vars.$accent-color;
   text-decoration: none;
   transition: vars.$transition;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
 
   &:hover {
     text-decoration: underline;

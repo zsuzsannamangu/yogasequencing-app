@@ -43,7 +43,7 @@
         z-index: 10;
         text-align: center;
         padding: 0 1.5rem;
-        max-width: 800px;
+        max-width: 1200px;
         margin: 0 auto;
 
         h1 {
@@ -59,7 +59,7 @@
         p {
             margin-top: 1rem;
             font-size: 1.5rem;
-            color: vars.$accent-color;
+            color: vars.$text-color;
             font-weight: 500;
             line-height: 1.4;
             margin-bottom: 2rem;
@@ -86,21 +86,70 @@
     }
 }
 
-.aboutSection {
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.section {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 5rem;
     padding: 8rem 0;
     align-items: center;
+
+    &.reverse {
+        direction: rtl;
+        
+        > * {
+            direction: ltr;
+        }
+    }
+
+    .content {
+        h2 {
+            font-family: vars.$title-font;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: vars.$accent-color;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        p {
+            font-family: vars.$body-font;
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+    }
+
+    .imageContainer {
+        img {
+            width: 100%;
+            height: 700px;
+            object-fit: cover;
+            border-radius: 0;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        }
+    }
+}
+
+.aboutSection {
     background-color: vars.$background-color;
     color: vars.$text-color;
-    margin-left: 2rem;
-    margin-right: 2rem;
 
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
         gap: 3rem;
         padding: 4rem 0;
+    }
+
+    img {
+        height: 500px !important;
     }
 
     h2 {
@@ -114,11 +163,14 @@
     }
 
     p {
+        font-family: vars.$body-font;
         font-size: 1.25rem;
         margin-bottom: 2rem;
         line-height: 1.6;
         font-weight: 400;
     }
+
+
 
     button {
         padding: 1rem 2.5rem;
@@ -128,6 +180,7 @@
         border-radius: 9999px;
         font-weight: 600;
         font-size: 1.125rem;
+        font-family: vars.$body-font;
         transition: all 0.3s ease;
 
         &:hover {
@@ -139,8 +192,8 @@
 }
 
 .whoIsThisForSection {
-    padding: 8rem 0;
-    background-color: white;
+    padding-top: 2rem;
+    padding-bottom: 8rem;
     text-align: center;
 
     h2 {
@@ -155,10 +208,10 @@
 
     h3 {
         font-family: vars.$title-font;
-        font-size: 2.25rem;
+        font-size: 3.25rem;
         font-weight: 700;
         margin: 4rem 0 3rem 0;
-        color: vars.$subtitle-color;
+        color: vars.$accent-color;
         line-height: 1.2;
     }
 
@@ -175,56 +228,22 @@
 
             h3 {
                 font-family: vars.$title-font;
-                font-size: 2.25rem;
+                font-size: 3.25rem;
                 font-weight: 700;
                 margin-bottom: 0.5rem;
-                color: vars.$subtitle-color;
+                color: vars.$accent-color;
                 line-height: 1.2;
             }
 
             p {
-                font-size: 1.125rem;
+                font-size: 2.125rem;
                 margin: 0;
                 color: vars.$text-color;
                 opacity: 0.8;
             }
         }
 
-        .navigationArrows {
-            display: flex;
-            gap: 1rem;
 
-            .navArrow {
-                width: 3rem;
-                height: 3rem;
-                border-radius: 50%;
-                border: none;
-                background-color: vars.$muted-bg-2;
-                color: vars.$text-color;
-                font-size: 1.25rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s ease;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-
-                &:hover {
-                    background-color: vars.$accent-color;
-                    color: white;
-                    transform: scale(1.1);
-                }
-
-                &:first-child {
-                    background-color: vars.$muted-bg-2;
-                }
-
-                &:last-child {
-                    background-color: vars.$accent-color;
-                    color: white;
-                }
-            }
-        }
     }
 
     p {
@@ -235,6 +254,47 @@
         margin-right: auto;
         line-height: 1.6;
         font-weight: 400;
+    }
+
+    .navigationArrows {
+        display: flex;
+        gap: 1rem;
+        justify-content: flex-end;
+        margin: 0 8rem 1rem auto;
+        max-width: 1200px;
+        padding: 0;
+
+        .navArrow {
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            border: none;
+            background-color: vars.$muted-bg-2;
+            color: vars.$text-color;
+            font-size: 1.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            &:hover {
+                background-color: vars.$accent-color;
+                color: white;
+                transform: scale(1.1);
+                color: vars.$text-color;
+            }
+
+            &:first-child {
+                background-color: vars.$muted-bg-2;
+            }
+
+            &:last-child {
+                background-color: vars.$accent-color;
+                color: white;
+            }
+        }
     }
 
             .professionalsGrid {
@@ -263,7 +323,7 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         min-width: 280px;
         max-width: 280px;
-        height: 200px;
+        height: 300px;
         flex-shrink: 0;
         display: flex;
         flex-direction: column;
@@ -276,17 +336,17 @@
 
         h4 {
             font-family: vars.$title-font;
-            font-size: 1.1rem;
+            font-size: 1.50rem;
             font-weight: 700;
             margin-bottom: 0.75rem;
-            color: vars.$primary-color;
+            color: vars.$subtitle-color;
             line-height: 1.2;
             overflow-wrap: break-word;
             word-wrap: break-word;
         }
 
         p {
-            font-size: 0.95rem;
+            font-size: 1.20rem;
             line-height: 1.4;
             margin: 0;
             max-width: none;
@@ -298,19 +358,28 @@
             word-wrap: break-word;
             hyphens: auto;
         }
+
+        .cardIcon {
+            text-align: center;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 4rem;
+            width: 100%;
+
+            img {
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+                border-radius: 0.5rem;
+            }
+        }
     }
 }
 
 .whySection {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 5rem;
-    padding: 8rem 0;
-    align-items: center;
-    background-color: vars.$muted-bg;
     color: vars.$text-color;
-    margin-left: 2rem;
-    margin-right: 2rem;
 
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
@@ -333,18 +402,12 @@
         }
 
         p {
+            font-family: vars.$body-font;
             font-size: 1.25rem;
             margin-bottom: 2rem;
             line-height: 1.6;
             font-weight: 400;
         }
-    }
-
-    .whyImage {
-        width: 100%;
-        height: 600px;
-        object-fit: cover;
-        padding-right: 8rem;
     }
 }
 
@@ -396,7 +459,8 @@
         }
 
         p {
-            font-size: 1.125rem;
+            font-family: vars.$body-font;
+            font-size: 1.50rem;
             line-height: 1.6;
             font-weight: 400;
         }
@@ -409,10 +473,7 @@
     gap: 5rem;
     padding: 8rem 0;
     align-items: center;
-    background-color: vars.$muted-bg;
     color: vars.$text-color;
-    margin-left: 2rem;
-    margin-right: 2rem;
 
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
@@ -422,9 +483,9 @@
 
     .featuresImage {
         width: 100%;
-        height: 500px;
+        height: 700px;
         object-fit: cover;
-        border-radius: 1.5rem;
+        border-radius: 0;
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
 
@@ -448,15 +509,16 @@
         .featureItem {
             h4 {
                 font-family: vars.$title-font;
-                font-size: 1.375rem;
+                font-size: 1.80rem;
                 font-weight: 700;
                 margin-bottom: 0.75rem;
-                color: vars.$primary-color;
+                color: vars.$subtitle-color;
                 line-height: 1.3;
             }
 
             p {
-                font-size: 1.125rem;
+                font-family: vars.$body-font;
+                font-size: 1.225rem;
                 line-height: 1.6;
                 color: vars.$text-color;
                 font-weight: 400;
@@ -491,6 +553,7 @@
         }
 
         p {
+            font-family: vars.$body-font;
             font-size: 1.25rem;
             margin-bottom: 3rem;
             line-height: 1.6;
@@ -524,7 +587,7 @@
 
             h4 {
                 font-family: vars.$title-font;
-                font-size: 1.25rem;
+                font-size: 1.75rem;
                 font-weight: 700;
                 margin-bottom: 1rem;
                 color: vars.$subtitle-color;
@@ -532,7 +595,8 @@
             }
 
             p {
-                font-size: 1rem;
+                font-family: vars.$body-font;
+                font-size: 1.25rem;
                 line-height: 1.6;
                 margin: 0;
                 font-weight: 400;
@@ -542,9 +606,9 @@
 
     .benefitsImage {
         width: 100%;
-        height: 500px;
+        height: 700px;
         object-fit: cover;
-        border-radius: 1.5rem;
+        border-radius: 0;
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
 }
@@ -552,7 +616,8 @@
 .uploadSection {
     background-color: white;
     padding: 8rem 0;
-    text-align: center;
+    margin-bottom: 10rem;
+    text-align: left;
 
     h2 {
         font-family: vars.$title-font;
@@ -565,13 +630,95 @@
     }
 
     p {
+        font-family: vars.$body-font;
         font-size: 1.25rem;
         margin-bottom: 3rem;
-        max-width: 50rem;
+        max-width: 200rem;
         margin-left: auto;
         margin-right: auto;
         line-height: 1.6;
         font-weight: 400;
+    }
+
+    .pricingSection {
+        margin: 3rem 0;
+        text-align: center;
+    }
+
+    .pricingTitle {
+        font-family: vars.$title-font;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        color: vars.$accent-color;
+    }
+
+    .pricingGrid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+        max-width: 1200px;
+        margin-left: auto;
+        margin-right: auto;
+
+        @media (max-width: 1200px) {
+            grid-template-columns: repeat(2, 1fr);
+            max-width: 800px;
+        }
+
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+            max-width: 400px;
+        }
+    }
+
+    .pricingCard {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        border: 2px solid vars.$border-color;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        &:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            border-color: vars.$accent-color;
+        }
+    }
+
+    .pricingPlan {
+        font-family: vars.$title-font;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: vars.$accent-color;
+    }
+
+    .pricingDuration {
+        font-family: vars.$body-font;
+        font-size: 0.875rem;
+        color: vars.$text-color;
+        opacity: 0.7;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .pricingPrice {
+        font-family: vars.$title-font;
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: vars.$primary-color;
+    }
+
+    .pricingDescription {
+        font-family: vars.$body-font;
+        font-size: 1.20rem;
+        color: vars.$text-color;
+        line-height: 1.5;
     }
 
     .uploadButtons {
@@ -587,6 +734,7 @@
         border: 2px solid vars.$accent-color;
         font-weight: 600;
         font-size: 1.125rem;
+        font-family: vars.$body-font;
         transition: all 0.3s ease;
         color: vars.$accent-color;
         background: transparent;
@@ -605,10 +753,15 @@
         border: 2px solid transparent;
         font-weight: 600;
         font-size: 1.125rem;
+        font-family: vars.$body-font;
         transition: all 0.3s ease;
         color: white;
         background-color: vars.$primary-color;
         min-width: 180px;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+        cursor: pointer;
 
         &:hover {
             background-color: vars.$button-hover-color;
@@ -621,7 +774,8 @@
 .contactSection {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    border-top: 4px solid vars.$dark-color;
+    border-top: 4px solid vars.$text-color-2;
+    border-bottom: 4px solid vars.$text-color-2;
     background: vars.$muted-bg;
 
     @media (max-width: 768px) {
@@ -630,7 +784,7 @@
 }
 
 .contactFormWrapper {
-    padding: 4rem 3rem;
+    padding: 6rem 3rem;
 }
 
 .contactTitle {
@@ -667,7 +821,7 @@
     outline: none;
     font-size: 1.125rem;
     width: 100%;
-    font-family: inherit;
+    font-family: vars.$body-font;
     transition: border-color 0.3s ease;
 
     &:focus {
@@ -683,6 +837,7 @@
     border-radius: 9999px;
     font-weight: 600;
     font-size: 1.125rem;
+    font-family: vars.$body-font;
     transition: all 0.3s ease;
     cursor: pointer;
 

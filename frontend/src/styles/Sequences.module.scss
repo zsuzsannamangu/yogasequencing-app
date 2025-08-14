@@ -3,7 +3,7 @@
 .main {
   background-color: vars.$background-color;
   color: vars.$text-color;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -29,13 +29,13 @@
   .title {
     font-size: 2.5rem;
     font-weight: 900;
-    color: vars.$primary-color;
+    color: vars.$accent-color;
     margin-bottom: 1rem;
   }
 
   .subtitle {
     font-size: 1.125rem;
-    color: #6b7280;
+    color: vars.$text-color-2;
     max-width: 600px;
     margin: 0 auto;
   }
@@ -61,7 +61,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   font-size: 1rem;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   transition: vars.$transition;
 
   &:focus {
@@ -85,7 +85,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   font-size: 1rem;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   background-color: white;
   cursor: pointer;
   transition: vars.$transition;
@@ -110,7 +110,7 @@
   border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   text-decoration: none;
   transition: vars.$transition;
   white-space: nowrap;
@@ -141,7 +141,7 @@
   }
 
   p {
-    color: #6b7280;
+    color: vars.$text-color-2;
     margin-bottom: 2rem;
   }
 }
@@ -154,7 +154,7 @@
   border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   text-decoration: none;
   transition: vars.$transition;
 
@@ -198,7 +198,7 @@
 }
 
 .sequenceDescription {
-  color: #6b7280;
+  color: vars.$text-color-2;
   margin-bottom: 0.75rem;
   line-height: 1.4;
   font-size: 0.875rem;
@@ -214,7 +214,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #6b7280;
+  color: vars.$text-color-2;
   font-size: 0.875rem;
 }
 
@@ -226,7 +226,7 @@
 .actionButton {
   padding: 0.375rem;
   background-color: #f3f4f6;
-  color: #6b7280;
+  color: vars.$text-color-2;
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;

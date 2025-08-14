@@ -3,7 +3,7 @@
 .main {
   background-color: vars.$background-color;
   color: vars.$text-color;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -95,7 +95,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   font-size: 1rem;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   transition: vars.$transition;
   background-color: white;
 
@@ -137,7 +137,7 @@
   border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 700;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   cursor: pointer;
   transition: vars.$transition;
   text-transform: uppercase;
@@ -203,7 +203,7 @@
   border-radius: 0.5rem;
   font-size: 0.875rem;
   font-weight: 600;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   cursor: pointer;
   transition: vars.$transition;
   display: flex;
@@ -259,7 +259,7 @@
   border-radius: 0.5rem;
   font-size: 0.75rem;
   font-weight: 600;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   cursor: pointer;
   transition: vars.$transition;
   display: flex;

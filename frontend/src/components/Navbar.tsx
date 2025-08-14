@@ -33,7 +33,7 @@ export default function Navbar({ showUserMenu = false, firstName = '', lastName 
     <header className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
       <Link href="/" className={styles.logo}>
         <Image 
-          src="/logo/movemosaiclogo.png" 
+          src="/logo/logonew.png" 
           alt="MoveMosaic Logo" 
           width={120} 
           height={40}

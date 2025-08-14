@@ -3,7 +3,7 @@
 .main {
   background-color: vars.$background-color;
   color: vars.$text-color;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -26,7 +26,7 @@
   text-align: center;
   padding: 4rem 2rem;
   font-size: 1.125rem;
-  color: #6b7280;
+  color: vars.$text-color-2;
 }
 
 .error {
@@ -68,13 +68,13 @@
 .title {
   font-size: 2.5rem;
   font-weight: 900;
-  color: vars.$primary-color;
+  color: vars.$accent-color;
   margin-bottom: 0.5rem;
 }
 
 .description {
   font-size: 1.125rem;
-  color: #6b7280;
+  color: vars.$text-color-2;
   margin-bottom: 1.5rem;
   line-height: 1.5;
 }
@@ -89,7 +89,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #6b7280;
+  color: vars.$text-color-2;
   font-size: 0.875rem;
 }
 
@@ -110,7 +110,7 @@
   border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   cursor: pointer;
   transition: vars.$transition;
 
@@ -192,7 +192,7 @@
 
 .poseDuration {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: vars.$text-color-2;
   margin: 0;
 }
 

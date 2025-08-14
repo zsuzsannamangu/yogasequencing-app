@@ -3,7 +3,7 @@
 .main {
   background-color: vars.$background-color;
   color: vars.$text-color;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -29,13 +29,13 @@
   .title {
     font-size: 2.5rem;
     font-weight: 900;
-    color: vars.$primary-color;
+    color: vars.$accent-color;
     margin-bottom: 1rem;
   }
 
   .subtitle {
     font-size: 1.125rem;
-    color: #6b7280;
+    color: vars.$text-color-2;
     max-width: 600px;
     margin: 0 auto;
   }
@@ -72,7 +72,7 @@
   text-align: left;
   cursor: pointer;
   transition: vars.$transition;
-  color: #6b7280;
+  color: vars.$text-color-2;
   font-size: 1rem;
   font-weight: 500;
   width: 100%;
@@ -196,7 +196,7 @@
 }
 
 .imageHelpText {
-  color: #6b7280;
+  color: vars.$text-color-2;
   font-size: 0.875rem;
   line-height: 1.4;
   max-width: 300px;
@@ -214,7 +214,7 @@
   }
 
   p {
-    color: #6b7280;
+    color: vars.$text-color-2;
     line-height: 1.5;
   }
 }
@@ -250,7 +250,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   font-size: 1rem;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   transition: vars.$transition;
   background-color: white;
 
@@ -262,7 +262,7 @@
 
   &:disabled {
     background-color: #f9fafb;
-    color: #6b7280;
+    color: vars.$text-color-2;
     cursor: not-allowed;
   }
 }
@@ -283,7 +283,7 @@
   border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   cursor: pointer;
   transition: vars.$transition;
   display: flex;
@@ -313,7 +313,7 @@
 
 .cancelButton {
   background-color: #f3f4f6;
-  color: #6b7280;
+  color: vars.$text-color-2;
 
   &:hover {
     background-color: #e5e7eb;
@@ -405,7 +405,7 @@
 
 .detailLabel {
   font-weight: 600;
-  color: #6b7280;
+  color: vars.$text-color-2;
 }
 
 .detailValue {
@@ -460,7 +460,7 @@
   }
 
   p {
-    color: #6b7280;
+    color: vars.$text-color-2;
     font-size: 0.875rem;
     line-height: 1.4;
   }
@@ -509,7 +509,7 @@
   }
 
   p {
-    color: #6b7280;
+    color: vars.$text-color-2;
     font-size: 0.875rem;
     line-height: 1.4;
   }
@@ -586,7 +586,7 @@
   }
 
   p {
-    color: #6b7280;
+    color: vars.$text-color-2;
     font-size: 0.875rem;
     line-height: 1.4;
   }

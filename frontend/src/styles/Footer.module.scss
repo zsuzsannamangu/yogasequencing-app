@@ -1,10 +1,11 @@
 @use './variables.scss' as vars;
 
 .footer {
+  margin-top: 10rem;
   text-align: center;
-  font-size: 0.875rem;
+  font-size: 1.275rem;
   color: white;
   padding: 2.5rem 0;
   background-color: vars.$primary-color;
-  border-top: 4px solid vars.$accent-color;
+  border-top: 4px solid vars.$text-color-2;
 }

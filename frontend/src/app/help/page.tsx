@@ -119,70 +119,11 @@ export default function HelpPage() {
             </div>
           </div>
 
-          <div className={styles.contactSection}>
+          <div className={styles.simpleContactSection}>
             <h2 className={styles.sectionTitle}>Still Need Help?</h2>
-            <p className={styles.contactSubtitle}>
-              Our support team is here to help you get the most out of MoveMosaic
+            <p className={styles.contactText}>
+             Visit our <a href="/#contact" className={styles.homepageLink}>contact section</a> on the homepage to get in touch.
             </p>
-            
-            <div className={styles.contactGrid}>
-              <div className={styles.contactCard}>
-                <div className={styles.contactIcon}>
-                  <Mail size={24} />
-                </div>
-                <h3>Email Support</h3>
-                <p>Get detailed help with any questions</p>
-                <a href="mailto:support@movemosaic.com" className={styles.contactLink}>
-                  support@movemosaic.com
-                </a>
-                <span className={styles.responseTime}>Response within 24 hours</span>
-              </div>
-
-              <div className={styles.contactCard}>
-                <div className={styles.contactIcon}>
-                  <MessageCircle size={24} />
-                </div>
-                <h3>Live Chat</h3>
-                <p>Chat with our support team in real-time</p>
-                <span className={styles.availability}>Available during business hours</span>
-                <span className={styles.responseTime}>Instant response</span>
-              </div>
-
-              <div className={styles.contactCard}>
-                <div className={styles.contactIcon}>
-                  <Phone size={24} />
-                </div>
-                <h3>Phone Support</h3>
-                <p>Speak directly with our experts</p>
-                <a href="tel:+1-555-0123" className={styles.contactLink}>
-                  +1 (555) 012-3456
-                </a>
-                <span className={styles.responseTime}>Available Mon-Fri, 9AM-6PM EST</span>
-              </div>
-            </div>
-          </div>
-
-          <div className={styles.resourcesSection}>
-            <h2 className={styles.sectionTitle}>Additional Resources</h2>
-            <div className={styles.resourcesGrid}>
-              <div className={styles.resourceCard}>
-                <h3>Video Tutorials</h3>
-                <p>Step-by-step guides to get you started</p>
-                <button className={styles.resourceButton}>Watch Tutorials</button>
-              </div>
-              
-              <div className={styles.resourceCard}>
-                <h3>User Guide</h3>
-                <p>Comprehensive documentation and tips</p>
-                <button className={styles.resourceButton}>Read Guide</button>
-              </div>
-              
-              <div className={styles.resourceCard}>
-                <h3>Community Forum</h3>
-                <p>Connect with other MoveMosaic users</p>
-                <button className={styles.resourceButton}>Join Community</button>
-              </div>
-            </div>
           </div>
         </div>
       </section>

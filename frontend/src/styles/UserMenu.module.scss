@@ -8,7 +8,7 @@
 .userInitials {
   width: 48px;
   height: 48px;
-  background: vars.$primary-color;
+  background: vars.$accent-color;
   color: white;
   border-radius: 50%;
   display: flex;
@@ -22,7 +22,7 @@
   overflow: hidden;
 
   &:hover {
-    background-color: vars.$accent-color;
+    background-color: vars.$primary-color;
   }
 
   .profileImage {
@@ -74,7 +74,7 @@
   background: none;
   width: 100%;
   text-align: left;
-  font-family: vars.$font-family;
+  font-family: vars.$title-font;
   font-size: 1rem;
   cursor: pointer;
   border-bottom: 1px solid #f3f4f6;
