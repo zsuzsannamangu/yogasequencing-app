@@ -1,15 +1,20 @@
 
 // Colors
-$primary-color: #003221; // Dark green from logo
-$accent-color: #f87171;  // Soft red
-$highlight-color: #facc15; // Yellow highlight
-$text-color: #111827; // Dark gray-blue
+$primary-color: #726da8;
+$button-hover-color: #8480b3;
+$subtitle-color: #592a65;
+$accent-color: #b8336a;  // Soft red
+$highlight-color: #a0d2db; // Yellow highlight
+$text-color: #222222; // Dark gray-blue
 $background-color: #ffffff; // White
-$muted-bg: #fafafa; // Light gray
-$dark-color: #111827;
+$muted-bg-2: #f0f8f9; // Light gray
+$muted-bg: #f5f5f5; // Light gray     
+$dark-color: #423e3b;
 
 // Fonts
 $font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$title-font: 'Avenir', 'Avenir Next', 'Helvetica Neue', sans-serif;
+$body-font: 'Versailles LT Com 55 Roman', 'Times New Roman', serif;
 
 // Borders & Shadows
 $border-color: $text-color;

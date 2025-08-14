@@ -3,14 +3,22 @@
 .main {
     background-color: vars.$background-color;
     color: vars.$text-color;
-    font-family: vars.$font-family;
+    font-family: vars.$body-font;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     padding-top: 60px;
-  }
-  
-  .heroSection {
+}
+
+// Container for all content to make it less wide like Lyft
+.contentContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 0 2rem;
+}
+
+.heroSection {
     position: relative;
     height: 100vh;
     margin-top: -60px;
@@ -35,26 +43,36 @@
         z-index: 10;
         text-align: center;
         padding: 0 1.5rem;
+        max-width: 800px;
+        margin: 0 auto;
 
         h1 {
-            font-size: 3.75rem;
+            font-family: vars.$title-font;
+            font-size: 4rem;
             font-weight: 800;
-            line-height: 1.2;
+            line-height: 1.1;
             color: vars.$accent-color;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
         }
 
         p {
             margin-top: 1rem;
-            font-size: 1.25rem;
-            color: vars.$primary-color;
+            font-size: 1.5rem;
+            color: vars.$accent-color;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 2rem;
+            font-family: vars.$title-font;
         }
 
         button {
             margin-top: 1.5rem;
-            padding: 0.75rem 2rem;
+            padding: 1rem 2.5rem;
             border: 2px solid vars.$accent-color;
             border-radius: 9999px;
-            font-weight: bold;
+            font-weight: 600;
+            font-size: 1.125rem;
             transition: all 0.3s ease;
             background: transparent;
             color: vars.$accent-color;
@@ -62,111 +80,223 @@
             &:hover {
                 background-color: vars.$accent-color;
                 color: white;
-                border: vars.$accent-color;
+                transform: translateY(-2px);
             }
         }
     }
-  }
-  
-  .aboutSection {
+}
+
+.aboutSection {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 3.5rem;
-    padding: 6rem 2rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    padding: 8rem 0;
     align-items: center;
     background-color: vars.$background-color;
     color: vars.$text-color;
+    margin-left: 2rem;
+    margin-right: 2rem;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        padding: 4rem 0;
+    }
 
     h2 {
-        font-size: 3rem;
-        font-weight: 900;
-        margin-bottom: 1.5rem;
+        font-family: vars.$title-font;
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 2rem;
         color: vars.$accent-color;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
     }
 
     p {
-        font-size: 1.125rem;
-        margin-bottom: 1.5rem;
+        font-size: 1.25rem;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+        font-weight: 400;
     }
 
     button {
-        padding: 0.5rem 2rem;
+        padding: 1rem 2.5rem;
         background-color: vars.$primary-color;
         color: white;
         border: 1px solid transparent;
         border-radius: 9999px;
-        font-weight: bold;
+        font-weight: 600;
+        font-size: 1.125rem;
         transition: all 0.3s ease;
 
         &:hover {
-            background-color: vars.$accent-color;
+            background-color: vars.$button-hover-color;
             color: white;
+            transform: translateY(-2px);
         }
     }
-  }
+}
 
 .whoIsThisForSection {
-    padding: 6rem 2rem;
+    padding: 8rem 0;
     background-color: white;
     text-align: center;
 
     h2 {
-        font-size: 3rem;
-        font-weight: 900;
-        margin-bottom: 1.5rem;
+        font-family: vars.$title-font;
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 2rem;
         color: vars.$accent-color;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
     }
 
     h3 {
-        font-size: 2rem;
+        font-family: vars.$title-font;
+        font-size: 2.25rem;
         font-weight: 700;
-        margin: 3rem 0 2rem 0;
-        color: vars.$primary-color;
+        margin: 4rem 0 3rem 0;
+        color: vars.$subtitle-color;
+        line-height: 1.2;
+    }
+
+            .professionalsHeader {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 4rem auto 3rem auto;
+            max-width: 1200px;
+            padding: 0 2rem;
+
+        .professionalsTitle {
+            text-align: left;
+
+            h3 {
+                font-family: vars.$title-font;
+                font-size: 2.25rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                color: vars.$subtitle-color;
+                line-height: 1.2;
+            }
+
+            p {
+                font-size: 1.125rem;
+                margin: 0;
+                color: vars.$text-color;
+                opacity: 0.8;
+            }
+        }
+
+        .navigationArrows {
+            display: flex;
+            gap: 1rem;
+
+            .navArrow {
+                width: 3rem;
+                height: 3rem;
+                border-radius: 50%;
+                border: none;
+                background-color: vars.$muted-bg-2;
+                color: vars.$text-color;
+                font-size: 1.25rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                &:hover {
+                    background-color: vars.$accent-color;
+                    color: white;
+                    transform: scale(1.1);
+                }
+
+                &:first-child {
+                    background-color: vars.$muted-bg-2;
+                }
+
+                &:last-child {
+                    background-color: vars.$accent-color;
+                    color: white;
+                }
+            }
+        }
     }
 
     p {
-        font-size: 1.125rem;
-        margin-bottom: 2rem;
+        font-size: 1.25rem;
+        margin-bottom: 2.5rem;
         max-width: 60rem;
         margin-left: auto;
         margin-right: auto;
         line-height: 1.6;
+        font-weight: 400;
     }
 
-    .professionalsGrid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        max-width: 1200px;
-        margin: 3rem auto;
+            .professionalsGrid {
+            display: flex;
+            gap: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 4rem;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
     }
 
     .professionalCard {
-        background-color: vars.$background-color;
-        padding: 2rem;
-        border-radius: 1rem;
+        background-color: white;
+        padding: 1.25rem;
+        border-radius: 0.5rem;
         border: 1px solid vars.$border-color;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         text-align: left;
         transition: transform 0.3s ease, box-shadow 0.3s ease;
+        min-width: 280px;
+        max-width: 280px;
+        height: 200px;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
 
         &:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
         }
 
         h4 {
-            font-size: 1.25rem;
+            font-family: vars.$title-font;
+            font-size: 1.1rem;
             font-weight: 700;
-            margin-bottom: 1rem;
+            margin-bottom: 0.75rem;
             color: vars.$primary-color;
+            line-height: 1.2;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
         }
 
         p {
-            font-size: 1rem;
-            line-height: 1.6;
+            font-size: 0.95rem;
+            line-height: 1.4;
             margin: 0;
             max-width: none;
+            font-weight: 400;
+            color: vars.$text-color;
+            opacity: 0.8;
+            flex-grow: 1;
+            overflow-wrap: break-word;
+            word-wrap: break-word;
+            hyphens: auto;
         }
     }
 }
@@ -174,89 +304,162 @@
 .whySection {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    padding: 6rem 2rem;
+    gap: 5rem;
+    padding: 8rem 0;
     align-items: center;
-    background-color: vars.$background-color;
+    background-color: vars.$muted-bg;
     color: vars.$text-color;
+    margin-left: 2rem;
+    margin-right: 2rem;
 
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 3rem;
+        padding: 4rem 0;
     }
 
     .whyContent {
+        max-width: 800px;
+        padding-left: 8rem;
+        
         h2 {
-            font-size: 3rem;
-            font-weight: 900;
-            margin-bottom: 1.5rem;
+            font-family: vars.$title-font;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
             color: vars.$accent-color;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
         }
 
         p {
-            font-size: 1.125rem;
-            margin-bottom: 1.5rem;
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
             line-height: 1.6;
+            font-weight: 400;
         }
     }
 
     .whyImage {
         width: 100%;
-        height: 400px;
+        height: 600px;
         object-fit: cover;
-        border-radius: 1rem;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        padding-right: 8rem;
+    }
+}
+
+.HowWorkssection {
+    padding: 8rem 0;
+    background-color: white;
+
+    .heading {
+        font-family: vars.$title-font;
+        font-size: 3.5rem;
+        font-weight: 800;
+        text-align: center;
+        margin-bottom: 5rem;
+        color: vars.$accent-color;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+    }
+
+    .stepsContainer {
+        max-width: 1000px;
+        margin: 0 auto;
+        display: grid;
+        gap: 3rem;
+        font-size: 1.125rem;
+        line-height: 1.6;
+    }
+
+    .step {
+        background-color: vars.$muted-bg;
+        padding: 3rem;
+        border: 1px solid vars.$border-color;
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+        &:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 16px 50px rgba(0, 0, 0, 0.12);
+            background-color: vars.$highlight-color;
+        }
+
+        h3 {
+            font-family: vars.$title-font;
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: vars.$accent-color;
+            line-height: 1.3;
+        }
+
+        p {
+            font-size: 1.125rem;
+            line-height: 1.6;
+            font-weight: 400;
+        }
     }
 }
 
 .featuresSection {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    padding: 6rem 2rem;
+    gap: 5rem;
+    padding: 8rem 0;
     align-items: center;
-    background-color: white;
+    background-color: vars.$muted-bg;
     color: vars.$text-color;
+    margin-left: 2rem;
+    margin-right: 2rem;
 
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 3rem;
+        padding: 4rem 0;
     }
 
     .featuresImage {
         width: 100%;
-        height: 400px;
+        height: 500px;
         object-fit: cover;
-        border-radius: 1rem;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        border-radius: 1.5rem;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
 
     .featuresContent {
         h2 {
-            font-size: 3rem;
-            font-weight: 900;
-            margin-bottom: 2rem;
+            font-family: vars.$title-font;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
             color: vars.$accent-color;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
         }
 
         .featureList {
             display: flex;
             flex-direction: column;
-            gap: 1.5rem;
+            gap: 2rem;
         }
 
         .featureItem {
             h4 {
-                font-size: 1.25rem;
+                font-family: vars.$title-font;
+                font-size: 1.375rem;
                 font-weight: 700;
-                margin-bottom: 0.5rem;
+                margin-bottom: 0.75rem;
                 color: vars.$primary-color;
+                line-height: 1.3;
             }
 
             p {
-                font-size: 1rem;
+                font-size: 1.125rem;
                 line-height: 1.6;
                 color: vars.$text-color;
+                font-weight: 400;
             }
         }
     }
@@ -265,161 +468,152 @@
 .benefitsSection {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    padding: 6rem 2rem;
+    gap: 5rem;
+    padding: 8rem 0;
     align-items: center;
-    background-color: vars.$background-color;
     color: vars.$text-color;
 
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
-        gap: 2rem;
+        gap: 3rem;
+        padding: 4rem 0;
     }
 
     .benefitsContent {
         h2 {
-            font-size: 3rem;
-            font-weight: 900;
-            margin-bottom: 1.5rem;
+            font-family: vars.$title-font;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
             color: vars.$accent-color;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
         }
 
         p {
-            font-size: 1.125rem;
-            margin-bottom: 2rem;
+            font-size: 1.25rem;
+            margin-bottom: 3rem;
             line-height: 1.6;
+            font-weight: 400;
         }
 
         .benefitsGrid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            font-family: vars.$title-font;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: vars.$subtitle-color;
         }
 
         .benefitCard {
             background-color: white;
-            padding: 1.5rem;
-            border-radius: 0.75rem;
+            padding: 2rem;
+            border-radius: 1rem;
             border: 1px solid vars.$border-color;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+            &:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 16px 50px rgba(0, 0, 0, 0.12);
+                background-color: vars.$highlight-color;
+            }
 
             h4 {
-                font-size: 1.125rem;
+                font-family: vars.$title-font;
+                font-size: 1.25rem;
                 font-weight: 700;
-                margin-bottom: 0.75rem;
-                color: vars.$primary-color;
+                margin-bottom: 1rem;
+                color: vars.$subtitle-color;
+                line-height: 1.3;
             }
 
             p {
-                font-size: 0.95rem;
-                line-height: 1.5;
+                font-size: 1rem;
+                line-height: 1.6;
                 margin: 0;
+                font-weight: 400;
             }
         }
     }
 
     .benefitsImage {
         width: 100%;
-        height: 400px;
+        height: 500px;
         object-fit: cover;
-        border-radius: 1rem;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        border-radius: 1.5rem;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
     }
 }
-
-.HowWorkssection {
-    padding: 6rem 2rem;
-}
-
-.heading {
-    font-size: 3rem;
-    font-weight: 800;
-    text-align: center;
-    margin-bottom: 4rem;
-    color: vars.$accent-color;
-}
-
-.stepsContainer {
-    max-width: 1000px;
-    margin: 0 auto;
-    display: grid;
-    gap: 3rem;
-    font-size: 1.125rem;
-    line-height: 1.6;
-}
-
-.step {
-    background-color: vars.$background-color;
-    padding: 2rem;
-    border: 1px solid vars.$text-color;
-    border-radius: 1rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.step h3 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: vars.$accent-color;
-}
-
 
 .uploadSection {
     background-color: white;
-    padding: 6rem 2rem;
+    padding: 8rem 0;
     text-align: center;
 
     h2 {
-        font-size: 3rem;
-        font-weight: 900;
-        margin-bottom: 1rem;
+        font-family: vars.$title-font;
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 2rem;
         color: vars.$accent-color;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
     }
 
     p {
-        font-size: 1.125rem;
-        margin-bottom: 2.5rem;
-        max-width: 42rem;
+        font-size: 1.25rem;
+        margin-bottom: 3rem;
+        max-width: 50rem;
         margin-left: auto;
         margin-right: auto;
+        line-height: 1.6;
+        font-weight: 400;
     }
 
     .uploadButtons {
         display: flex;
-        gap: 1rem;
+        gap: 1.5rem;
         justify-content: center;
         align-items: center;
     }
 
     .outlineButton {
-        padding: 0.75rem 2rem;
+        padding: 1rem 2.5rem;
         border-radius: 9999px;
         border: 2px solid vars.$accent-color;
-        font-weight: bold;
+        font-weight: 600;
+        font-size: 1.125rem;
         transition: all 0.3s ease;
         color: vars.$accent-color;
         background: transparent;
-        min-width: 160px;
+        min-width: 180px;
 
         &:hover {
             background-color: vars.$accent-color;
             color: white;
+            transform: translateY(-2px);
         }
     }
 
     .primaryButton {
-        padding: 0.75rem 2rem;
+        padding: 1rem 2.5rem;
         border-radius: 9999px;
         border: 2px solid transparent;
-        font-weight: bold;
+        font-weight: 600;
+        font-size: 1.125rem;
         transition: all 0.3s ease;
         color: white;
         background-color: vars.$primary-color;
-        min-width: 160px;
+        min-width: 180px;
 
         &:hover {
-            background-color: vars.$accent-color;
+            background-color: vars.$button-hover-color;
             color: white;
+            transform: translateY(-2px);
         }
     }
 }
@@ -428,7 +622,7 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     border-top: 4px solid vars.$dark-color;
-    background: vars.$background-color;
+    background: vars.$muted-bg;
 
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
@@ -436,25 +630,28 @@
 }
 
 .contactFormWrapper {
-    padding: 3rem;
+    padding: 4rem 3rem;
 }
 
 .contactTitle {
-    font-size: 3rem;
-    font-weight: 900;
-    margin-bottom: 1rem;
+    font-family: vars.$title-font;
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 2rem;
     color: vars.$accent-color;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
 }
 
 .contactForm {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2rem;
 }
 
 .inputRow {
     display: flex;
-    gap: 1rem;
+    gap: 1.5rem;
     flex-wrap: wrap;
 
     input {
@@ -464,26 +661,35 @@
 
 .input,
 .textarea {
-    border-bottom: 1px solid vars.$dark-color;
+    border-bottom: 2px solid vars.$dark-color;
     background: transparent;
-    padding: 0.5rem;
+    padding: 1rem 0.5rem;
     outline: none;
-    font-size: 1rem;
+    font-size: 1.125rem;
     width: 100%;
+    font-family: inherit;
+    transition: border-color 0.3s ease;
+
+    &:focus {
+        border-color: vars.$accent-color;
+    }
 }
 
 .primaryButton {
-    padding: 0.5rem 2rem;
+    padding: 1rem 2.5rem;
     background-color: vars.$primary-color;
     color: white;
     border: 1px solid transparent;
     border-radius: 9999px;
-    font-weight: bold;
+    font-weight: 600;
+    font-size: 1.125rem;
     transition: all 0.3s ease;
+    cursor: pointer;
 
     &:hover {
-        background-color: vars.$accent-color;
+        background-color: vars.$button-hover-color;
         color: white;
+        transform: translateY(-2px);
     }
 }
 
