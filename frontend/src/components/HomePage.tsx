@@ -57,9 +57,14 @@ export default function HomePage() {
                     >
                         Breathe. Move. Remember.
                     </motion.h1>
-                    <p className={styles.heroSubtitle}>
+                    <motion.p
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 1 }}
+                        className={styles.heroTitle}
+                    >
                         Visualize movement into a sequence.
-                    </p>
+                    </motion.p>
                     <button 
                         className={styles.heroButton}
                         onClick={() => {

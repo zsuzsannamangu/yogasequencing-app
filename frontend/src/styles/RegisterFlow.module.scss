@@ -189,7 +189,7 @@
 .primaryButton {
   width: 100%;
   padding: 1rem;
-  background-color: vars.$primary-color;
+  background-color: vars.$accent-color;
   color: white;
   border: none;
   border-radius: 0.5rem;
@@ -202,7 +202,7 @@
   letter-spacing: 0.05em;
 
   &:hover:not(.disabled) {
-    background-color: vars.$accent-color;
+    background-color: vars.$primary-color;
   }
 
   &:active:not(.disabled) {

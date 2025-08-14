@@ -44,20 +44,6 @@ export default function Navbar({ showUserMenu = false, firstName = '', lastName 
         <UserMenu firstName={firstName} lastName={lastName} profileImage={profileImage} />
       ) : (
         <nav className={styles.nav}>
-          {isHomepage ? (
-            <button 
-              className={styles.navLink}
-              onClick={() => {
-                document.getElementById('upload')?.scrollIntoView({ 
-                  behavior: 'smooth' 
-                });
-              }}
-            >
-              Upload
-            </button>
-          ) : (
-            <Link href="/upload" className={styles.navLink}>Upload</Link>
-          )}
           <Link href="/#contact" className={styles.navLink}>Contact</Link>
           <Link href="/register" className={styles.navLink}>Register</Link>
           <Link href="/login" className={styles.navLink}>Login</Link>

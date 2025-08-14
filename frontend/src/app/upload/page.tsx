@@ -271,7 +271,7 @@ const UploadPage = () => {
               sensors={sensors}
               collisionDetection={closestCenter}
               onDragEnd={({ active, over }) => {
-                if (active.id !== over.id) {
+                if (over && active.id !== over.id) {
                   const oldIndex = silhouettes.findIndex((id) => id === active.id);
                   const newIndex = silhouettes.findIndex((id) => id === over.id);
                   setSilhouettes(arrayMove(silhouettes, oldIndex, newIndex));
