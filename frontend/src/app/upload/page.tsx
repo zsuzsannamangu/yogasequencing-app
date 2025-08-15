@@ -94,6 +94,7 @@ const UploadPage = () => {
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryDescription, setNewCategoryDescription] = useState('');
+  const [sequencePrivacy, setSequencePrivacy] = useState<'private' | 'public'>('private');
   const labelHeight = 16;
   const [uploading, setUploading] = useState(false);
 
@@ -373,7 +374,8 @@ const UploadPage = () => {
           filePath: filePath,
           poseName: poseNames[index] || `Pose ${index + 1}`
         })),
-        category: selectedCategory || undefined
+        category: selectedCategory || undefined,
+        privacy: sequencePrivacy
       };
 
       // Save to backend API
@@ -516,7 +518,7 @@ const UploadPage = () => {
                 </div>
 
                 <div className={styles.inputGroup}>
-                  <label htmlFor="sequenceCategory" className={styles.label}>Category (Optional)</label>
+                  <label htmlFor="sequenceCategory" className={styles.label}>Category</label>
                   <div className={styles.categoryContainer}>
                     <select
                       id="sequenceCategory"
@@ -539,6 +541,40 @@ const UploadPage = () => {
                     >
                       <Plus size={16} />
                     </button>
+                  </div>
+                </div>
+
+                <div className={styles.inputGroup}>
+                  <label htmlFor="sequencePrivacy" className={styles.label}>Privacy Setting</label>
+                  <div className={styles.privacyContainer}>
+                    <label className={styles.privacyOption} data-tooltip="Only visible to you">
+                      <input
+                        type="radio"
+                        name="privacy"
+                        value="private"
+                        checked={sequencePrivacy === 'private'}
+                        onChange={(e) => setSequencePrivacy(e.target.value as 'private' | 'public')}
+                        className={styles.privacyRadio}
+                      />
+                      <span className={styles.privacyLabel}>
+                        <span className={styles.privacyIcon}>🔒</span>
+                        Private
+                      </span>
+                    </label>
+                    <label className={styles.privacyOption} data-tooltip="Visible to the community">
+                      <input
+                        type="radio"
+                        name="privacy"
+                        value="public"
+                        checked={sequencePrivacy === 'public'}
+                        onChange={(e) => setSequencePrivacy(e.target.value as 'private' | 'public')}
+                        className={styles.privacyRadio}
+                      />
+                      <span className={styles.privacyLabel}>
+                        <span className={styles.privacyIcon}>🌍</span>
+                        Public
+                      </span>
+                    </label>
                   </div>
                 </div>
               </div>
@@ -636,6 +672,7 @@ const UploadPage = () => {
                     setSequenceDuration('');
                     setSequencePoseCount(0);
                     setSelectedCategory('');
+                    setSequencePrivacy('private');
                     setFilename('');
                     setSelectedFile(null);
                   }}

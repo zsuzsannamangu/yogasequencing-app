@@ -39,7 +39,7 @@ async def setup_database():
         await database.execute(create_categories_table_query)
         print("✅ Categories table created successfully")
         
-        # Create sequences table with category column
+        # Create sequences table with category and privacy columns
         create_sequences_table_query = """
         CREATE TABLE IF NOT EXISTS sequences (
             id VARCHAR PRIMARY KEY,
@@ -49,7 +49,8 @@ async def setup_database():
             pose_count INTEGER,
             poses JSONB,
             created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-            category VARCHAR(100)
+            category VARCHAR(100),
+            privacy VARCHAR(20) DEFAULT 'private'
         );
         """
         
@@ -66,9 +67,20 @@ async def setup_database():
         except Exception as e:
             print(f"ℹ️ Category column already exists or couldn't be added: {e}")
         
+        # Add privacy column to existing sequences table if it doesn't exist
+        try:
+            add_privacy_column_query = """
+            ALTER TABLE sequences ADD COLUMN IF NOT EXISTS privacy VARCHAR(20) DEFAULT 'private';
+            """
+            await database.execute(add_privacy_column_query)
+            print("✅ Privacy column added to sequences table")
+        except Exception as e:
+            print(f"ℹ️ Privacy column already exists or couldn't be added: {e}")
+        
         # Create indexes
         index_queries = [
             "CREATE INDEX IF NOT EXISTS idx_sequences_category ON sequences(category);",
+            "CREATE INDEX IF NOT EXISTS idx_sequences_privacy ON sequences(privacy);",
             "CREATE INDEX IF NOT EXISTS idx_sequences_created_at ON sequences(created_at);",
             "CREATE INDEX IF NOT EXISTS idx_categories_name ON categories(name);"
         ]

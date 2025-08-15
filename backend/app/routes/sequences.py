@@ -19,6 +19,7 @@ class SequenceCreate(BaseModel):
     poseCount: int
     poses: List[PoseData]
     category: Optional[str] = None
+    privacy: Optional[str] = 'private'
 
 class SequenceResponse(BaseModel):
     id: str
@@ -29,6 +30,7 @@ class SequenceResponse(BaseModel):
     poses: List[PoseData]
     createdAt: str
     category: Optional[str] = None
+    privacy: Optional[str] = 'private'
 
 class CategoryCreate(BaseModel):
     name: str
@@ -118,25 +120,48 @@ async def create_sequence(sequence: SequenceCreate):
         # Generate unique ID
         sequence_id = f"seq_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{hash(sequence.name)}"
         
-        # Save to database
-        query = """
-        INSERT INTO sequences (id, name, description, duration, pose_count, poses, created_at, category)
-        VALUES (:id, :name, :description, :duration, :pose_count, :poses, :created_at, :category)
-        """
-        
-        await database.execute(
-            query,
-            {
-                "id": sequence_id,
-                "name": sequence.name,
-                "description": sequence.description,
-                "duration": sequence.duration,
-                "pose_count": sequence.poseCount,
-                "poses": json.dumps([pose.dict() for pose in sequence.poses]),
-                "created_at": datetime.now(),
-                "category": sequence.category
-            }
-        )
+        # Save to database - handle privacy column gracefully
+        try:
+            # Try with privacy column first
+            query = """
+            INSERT INTO sequences (id, name, description, duration, pose_count, poses, created_at, category, privacy)
+            VALUES (:id, :name, :description, :duration, :pose_count, :poses, :created_at, :category, :privacy)
+            """
+            
+            await database.execute(
+                query,
+                {
+                    "id": sequence_id,
+                    "name": sequence.name,
+                    "description": sequence.description,
+                    "duration": sequence.duration,
+                    "pose_count": sequence.poseCount,
+                    "poses": json.dumps([pose.dict() for pose in sequence.poses]),
+                    "created_at": datetime.now(),
+                    "category": sequence.category,
+                    "privacy": sequence.privacy
+                }
+            )
+        except Exception as e:
+            # Fallback to insert without privacy column
+            query = """
+            INSERT INTO sequences (id, name, description, duration, pose_count, poses, created_at, category)
+            VALUES (:id, :name, :description, :duration, :pose_count, :poses, :created_at, :category)
+            """
+            
+            await database.execute(
+                query,
+                {
+                    "id": sequence_id,
+                    "name": sequence.name,
+                    "description": sequence.description,
+                    "duration": sequence.duration,
+                    "pose_count": sequence.poseCount,
+                    "poses": json.dumps([pose.dict() for pose in sequence.poses]),
+                    "created_at": datetime.now(),
+                    "category": sequence.category
+                }
+            )
         
         return SequenceResponse(
             id=sequence_id,
@@ -146,7 +171,8 @@ async def create_sequence(sequence: SequenceCreate):
             poseCount=sequence.poseCount,
             poses=sequence.poses,
             createdAt=datetime.now().isoformat(),
-            category=sequence.category
+            category=sequence.category,
+            privacy=sequence.privacy if hasattr(sequence, 'privacy') else "private"
         )
         
     except Exception as e:
@@ -173,7 +199,8 @@ async def get_sequences():
                 poseCount=row["pose_count"],
                 poses=poses,
                 createdAt=row["created_at"].isoformat() if row["created_at"] else None,
-                category=row["category"]
+                category=row["category"],
+                privacy=row["privacy"] if "privacy" in row else "private"
             ))
         
         return sequences
@@ -203,7 +230,8 @@ async def get_sequence(sequence_id: str):
             poseCount=result["pose_count"],
             poses=poses,
             createdAt=result["created_at"].isoformat() if result["created_at"] else None,
-            category=result["category"]
+            category=result["category"],
+            privacy=result["privacy"] if "privacy" in result else "private"
         )
         
     except Exception as e:

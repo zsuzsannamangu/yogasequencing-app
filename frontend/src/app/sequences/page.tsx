@@ -8,6 +8,7 @@ import { Download, Edit, Trash2, Calendar, Clock, Share2, Tag } from 'lucide-rea
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import styles from '@/styles/Sequences.module.scss';
+import { svg2pdf } from 'svg2pdf.js';
 
 interface Sequence {
   id: string;
@@ -18,6 +19,7 @@ interface Sequence {
   poseCount: number;
   thumbnail?: string;
   category?: string;
+  privacy?: 'private' | 'public';
 }
 
 interface Category {
@@ -27,11 +29,15 @@ interface Category {
 }
 
 export default function SequencesPage() {
+  // Add DOMParser for PDF generation
+  const DOMParser = typeof window !== 'undefined' ? window.DOMParser : null;
+  
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedPrivacy, setSelectedPrivacy] = useState('all');
   const [sortBy, setSortBy] = useState('dateCreated');
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -47,16 +53,17 @@ export default function SequencesPage() {
         const sequencesResponse = await axios.get('http://localhost:8000/sequences/');
         console.log('Sequences API response:', sequencesResponse.data);
         
-        const transformedSequences = sequencesResponse.data.map((seq: any) => ({
-          id: seq.id,
-          name: seq.name,
-          description: seq.description,
-          createdAt: seq.createdAt,
-          duration: seq.duration,
-          poseCount: seq.poseCount,
-          thumbnail: seq.poses?.[0]?.filePath || '/images/yoga2.jpg',
-          category: seq.category
-        }));
+                        const transformedSequences = sequencesResponse.data.map((seq: any) => ({
+                  id: seq.id,
+                  name: seq.name,
+                  description: seq.description,
+                  createdAt: seq.createdAt,
+                  duration: seq.duration,
+                  poseCount: seq.poseCount,
+                  thumbnail: seq.poses?.[0]?.filePath || '/images/yoga2.jpg',
+                  category: seq.category,
+                  privacy: seq.privacy || 'private'
+                }));
         
         console.log('Transformed sequences:', transformedSequences);
         setSequences(transformedSequences);
@@ -121,71 +128,105 @@ export default function SequencesPage() {
       const pdf = new (await import('jspdf')).default('p', 'pt', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
-      let y = 50;
+      const maxWidth = 100;
+      const spacingX = 5;
+      const spacingY = 10;
+      let x = spacingX;
+      let y = spacingY;
 
       // Add sequence title and subtitle
       if (sequenceData.name || sequenceData.description) {
-        pdf.setFontSize(24);
+        pdf.setFontSize(20);
         pdf.setFont('helvetica', 'bold');
         pdf.setTextColor(176, 51, 106);
         
         if (sequenceData.name) {
           const titleWidth = pdf.getTextWidth(sequenceData.name);
           const titleX = (pageWidth - titleWidth) / 2;
-          pdf.text(sequenceData.name, titleX, y + 30);
-          y += 50;
+          pdf.text(sequenceData.name, titleX, y + 20);
+          y += 35;
         }
         
         if (sequenceData.description) {
-          pdf.setFontSize(14);
+          pdf.setFontSize(12);
           pdf.setFont('helvetica', 'normal');
           pdf.setTextColor(100, 100, 100);
           const subtitleWidth = pdf.getTextWidth(sequenceData.description);
           const subtitleX = (pageWidth - subtitleWidth) / 2;
-          pdf.text(sequenceData.description, subtitleX, y + 20);
-          y += 40;
+          pdf.text(sequenceData.description, subtitleX, y + 15);
+          y += 25;
         }
         
-        // Add metadata
-        pdf.setFontSize(12);
+        // Add metadata and date on same line
+        pdf.setFontSize(10);
         pdf.setTextColor(80, 80, 80);
-        const metadataText = `${sequenceData.duration} • ${sequenceData.poseCount} poses`;
-        const metadataWidth = pdf.getTextWidth(metadataText);
-        const metadataX = (pageWidth - metadataWidth) / 2;
-        pdf.text(metadataText, metadataX, y + 20);
-        y += 30;
-        
-        // Add creation date
         const creationDate = new Date(sequenceData.createdAt).toLocaleDateString('en-US', { 
           year: 'numeric', 
           month: 'long', 
           day: 'numeric' 
         });
-        const dateText = `Created on ${creationDate}`;
-        const dateWidth = pdf.getTextWidth(dateText);
-        const dateX = (pageWidth - dateWidth) / 2;
-        pdf.setTextColor(120, 120, 120);
-        pdf.text(dateText, dateX, y + 20);
-        y += 40;
+        const metadataText = `${sequenceData.duration} • ${sequenceData.poseCount} poses • ${creationDate}`;
+        const metadataWidth = pdf.getTextWidth(metadataText);
+        const metadataX = (pageWidth - metadataWidth) / 2;
+        pdf.text(metadataText, metadataX, y + 15);
+        y += 20;
         
-        y = 140;
+        // Reset y position for poses with more space
+        y = 120;
       }
 
-      // Add poses
-      pdf.setFontSize(12);
-      pdf.setTextColor(80, 80, 80);
-      let poseY = y;
-      
-      sequenceData.poses.forEach((pose: any, index: number) => {
-        const poseText = `${index + 1}. ${pose.poseName}`;
-        pdf.text(poseText, 50, poseY);
-        poseY += 20;
+      // Add poses with silhouettes
+      for (let i = 0; i < sequenceData.poses.length; i++) {
+        const pose = sequenceData.poses[i];
+        const filePath = pose.filePath;
         
-        if (poseY > pageHeight - 50) {
-          pdf.addPage();
-          poseY = 50;
+        try {
+          if (!DOMParser) {
+            throw new Error('DOMParser not available');
+          }
+          const res = await fetch(`http://localhost:8000/${filePath}`);
+          const svgText = await res.text();
+          const parser = new DOMParser();
+          const svgDoc = parser.parseFromString(svgText, 'image/svg+xml').documentElement;
+          svgDoc.setAttribute('width', `${maxWidth}px`);
+          svgDoc.setAttribute('height', `${maxWidth}px`);
+          await svg2pdf(svgDoc, pdf, { x, y });
+
+          if (pose.poseName) {
+            pdf.setFontSize(10);
+            const textWidth = pdf.getTextWidth(pose.poseName);
+            const centerX = x + maxWidth / 2 - textWidth / 2;
+            pdf.setFontSize(9);
+            pdf.setTextColor(100);
+            pdf.text(pose.poseName, centerX, y + maxWidth - 4);
+          }
+
+          x += maxWidth + spacingX;
+          if (x + maxWidth > pageWidth) {
+            x = spacingX;
+            y += maxWidth + spacingY;
+            if (y + maxWidth > pageHeight) {
+              pdf.addPage();
+              y = spacingY;
+            }
+          }
+        } catch (error) {
+          console.error(`Failed to load silhouette for pose ${i + 1}:`, error);
+          // Fallback to text if silhouette fails to load
+          pdf.setFontSize(10);
+          pdf.setTextColor(100);
+          pdf.text(`${i + 1}. ${pose.poseName || `Pose ${i + 1}`}`, x, y + maxWidth/2);
+          x += maxWidth + spacingX;
+          if (x + maxWidth > pageWidth) {
+            x = spacingX;
+            y += maxWidth + spacingY;
+            if (y + maxWidth > pageHeight) {
+              pdf.addPage();
+              y = spacingY;
+            }
+          }
         }
-      });
+      }
 
       // Generate filename
       const filename = sequenceData.name 
@@ -241,7 +282,8 @@ export default function SequencesPage() {
       const matchesSearch = sequence.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                            sequence.description.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || sequence.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+      const matchesPrivacy = selectedPrivacy === 'all' || sequence.privacy === selectedPrivacy;
+      return matchesSearch && matchesCategory && matchesPrivacy;
     })
   );
 
@@ -312,6 +354,18 @@ export default function SequencesPage() {
               </select>
             </div>
 
+            <div className={styles.filterContainer}>
+              <select
+                value={selectedPrivacy}
+                onChange={(e) => setSelectedPrivacy(e.target.value)}
+                className={styles.filterSelect}
+              >
+                <option value="all">All Privacy</option>
+                <option value="public">Public</option>
+                <option value="private">Private</option>
+              </select>
+            </div>
+
             <div className={styles.sortContainer}>
               <select
                 value={sortBy}
@@ -347,7 +401,12 @@ export default function SequencesPage() {
                   className={styles.sequenceCard}
                 >
                   <div className={styles.sequenceInfo}>
-                    <h3 className={styles.sequenceName}>{sequence.name}</h3>
+                    <h3 className={styles.sequenceName}>
+                      {sequence.name}
+                      <span className={styles.privacyIndicator}>
+                        {sequence.privacy === 'public' ? '🌍' : '🔒'}
+                      </span>
+                    </h3>
                     <p className={styles.sequenceDescription}>{sequence.description}</p>
                     
                     <div className={styles.sequenceCategory}>
@@ -376,31 +435,159 @@ export default function SequencesPage() {
                     </div>
                     
                     <div className={styles.sequenceActions}>
-                      <button 
-                        className={styles.actionButton} 
-                        data-tooltip="Share Sequence"
-                        onClick={() => {
-                          if (navigator.share) {
-                            navigator.share({
-                              title: sequence.name,
-                              text: sequence.description,
-                              url: `${window.location.origin}/sequences`
-                            });
-                          } else {
-                            // Fallback for browsers that don't support Web Share API
-                            navigator.clipboard.writeText(`${window.location.origin}/sequences`);
-                            Swal.fire({
-                              title: 'Link Copied!',
-                              text: 'Sequence link has been copied to clipboard',
-                              icon: 'success',
-                              confirmButtonColor: '#b8336a',
-                              confirmButtonText: 'OK',
-                            });
-                          }
-                        }}
-                      >
-                        <Share2 size={18} />
-                      </button>
+                                                    <button 
+                                className={styles.actionButton} 
+                                data-tooltip="Share Sequence PDF"
+                                onClick={async () => {
+                                  try {
+                                    // Generate PDF first
+                                    const response = await axios.get(`http://localhost:8000/sequences/${sequence.id}`);
+                                    const sequenceData = response.data;
+                                    
+                                    // Generate PDF using jsPDF
+                                    const pdf = new (await import('jspdf')).default('p', 'pt', 'a4');
+                                    const pageWidth = pdf.internal.pageSize.getWidth();
+                                    const pageHeight = pdf.internal.pageSize.getHeight();
+                                    const maxWidth = 100;
+                                    const spacingX = 5;
+                                    const spacingY = 10;
+                                    let x = spacingX;
+                                    let y = spacingY;
+
+                                    // Add sequence title and subtitle
+                                    if (sequenceData.name || sequenceData.description) {
+                                      pdf.setFontSize(20);
+                                      pdf.setFont('helvetica', 'bold');
+                                      pdf.setTextColor(176, 51, 106);
+                                      
+                                      if (sequenceData.name) {
+                                        const titleWidth = pdf.getTextWidth(sequenceData.name);
+                                        const titleX = (pageWidth - titleWidth) / 2;
+                                        pdf.text(sequenceData.name, titleX, y + 20);
+                                        y += 35;
+                                      }
+                                      
+                                      if (sequenceData.description) {
+                                        pdf.setFontSize(12);
+                                        pdf.setFont('helvetica', 'normal');
+                                        pdf.setTextColor(100, 100, 100);
+                                        const subtitleWidth = pdf.getTextWidth(sequenceData.description);
+                                        const subtitleX = (pageWidth - subtitleWidth) / 2;
+                                        pdf.text(sequenceData.description, subtitleX, y + 15);
+                                        y += 25;
+                                      }
+                                      
+                                      // Add metadata and date on same line
+                                      pdf.setFontSize(10);
+                                      pdf.setTextColor(80, 80, 80);
+                                      const creationDate = new Date(sequenceData.createdAt).toLocaleDateString('en-US', { 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                      });
+                                      const metadataText = `${sequenceData.duration} • ${sequenceData.poseCount} poses • ${creationDate}`;
+                                      const metadataWidth = pdf.getTextWidth(metadataText);
+                                      const metadataX = (pageWidth - metadataWidth) / 2;
+                                      pdf.text(metadataText, metadataX, y + 15);
+                                      y += 20;
+                                      
+                                      // Reset y position for poses with more space
+                                      y = 120;
+                                    }
+
+                                    // Add poses with silhouettes
+                                    for (let i = 0; i < sequenceData.poses.length; i++) {
+                                      const pose = sequenceData.poses[i];
+                                      const filePath = pose.filePath;
+                                      
+                                      try {
+                                        if (!DOMParser) {
+                                          throw new Error('DOMParser not available');
+                                        }
+                                        const res = await fetch(`http://localhost:8000/${filePath}`);
+                                        const svgText = await res.text();
+                                        const parser = new DOMParser();
+                                        const svgDoc = parser.parseFromString(svgText, 'image/svg+xml').documentElement;
+                                        svgDoc.setAttribute('width', `${maxWidth}px`);
+                                        svgDoc.setAttribute('height', `${maxWidth}px`);
+                                        await svg2pdf(svgDoc, pdf, { x, y });
+
+                                        if (pose.poseName) {
+                                          pdf.setFontSize(10);
+                                          const textWidth = pdf.getTextWidth(pose.poseName);
+                                          const centerX = x + maxWidth / 2 - textWidth / 2;
+                                          pdf.setFontSize(9);
+                                          pdf.setTextColor(100);
+                                          pdf.text(pose.poseName, centerX, y + maxWidth - 4);
+                                        }
+
+                                        x += maxWidth + spacingX;
+                                        if (x + maxWidth > pageWidth) {
+                                          x = spacingX;
+                                          y += maxWidth + spacingY;
+                                          if (y + maxWidth > pageHeight) {
+                                            pdf.addPage();
+                                            y = spacingY;
+                                          }
+                                        }
+                                      } catch (error) {
+                                        console.error(`Failed to load silhouette for pose ${i + 1}:`, error);
+                                        // Fallback to text if silhouette fails to load
+                                        pdf.setFontSize(10);
+                                        pdf.setTextColor(100);
+                                        pdf.text(`${i + 1}. ${pose.poseName || `Pose ${i + 1}`}`, x, y + maxWidth/2);
+                                        x += maxWidth + spacingX;
+                                        if (x + maxWidth > pageWidth) {
+                                          x = spacingX;
+                                          y += maxWidth + spacingY;
+                                          if (y + maxWidth > pageHeight) {
+                                            pdf.addPage();
+                                            y = spacingY;
+                                          }
+                                        }
+                                      }
+                                    }
+
+                                    // Convert PDF to blob for sharing
+                                    const pdfBlob = pdf.output('blob');
+                                    const pdfFile = new File([pdfBlob], `${sequenceData.name || 'sequence'}.pdf`, { type: 'application/pdf' });
+
+                                    // Try to share the PDF file
+                                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
+                                      await navigator.share({
+                                        title: sequenceData.name || 'Yoga Sequence',
+                                        text: `Hey, User wants to share a sequence with you! Check out this ${sequenceData.name || 'yoga sequence'}: ${sequenceData.description || 'A beautiful movement flow'}`,
+                                        files: [pdfFile]
+                                      });
+                                    } else {
+                                      // Fallback: download the PDF and show success message
+                                      const filename = sequenceData.name 
+                                        ? `${sequenceData.name.replace(/[^a-zA-Z0-9]/g, '_')}_sequence.pdf`
+                                        : 'sequence.pdf';
+                                      pdf.save(filename);
+                                      
+                                      Swal.fire({
+                                        title: 'PDF Downloaded!',
+                                        text: 'Hey, User wants to share a sequence with you! The PDF has been downloaded so you can share it manually.',
+                                        icon: 'success',
+                                        confirmButtonColor: '#b8336a',
+                                        confirmButtonText: 'OK',
+                                      });
+                                    }
+                                  } catch (error) {
+                                    console.error('Failed to share sequence:', error);
+                                    Swal.fire({
+                                      title: 'Error!',
+                                      text: 'Failed to generate PDF for sharing. Please try again.',
+                                      icon: 'error',
+                                      confirmButtonColor: '#b8336a',
+                                      confirmButtonText: 'OK',
+                                    });
+                                  }
+                                }}
+                              >
+                                <Share2 size={18} />
+                              </button>
                       <button 
                         className={styles.actionButton} 
                         data-tooltip="Download PDF"

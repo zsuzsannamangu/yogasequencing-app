@@ -67,8 +67,8 @@ async def upload_file(file: UploadFile = File(...)):
     )
     video_id = await database.execute(query)
 
-    # Schedule deletion of the final file after 5 minutes
-    asyncio.create_task(delete_file_later(final_path))
+    # Schedule deletion of the final file after 3 minutes
+    asyncio.create_task(delete_file_later(final_path, 180))
 
     return {
         "message": f"File '{filename}' uploaded successfully.",

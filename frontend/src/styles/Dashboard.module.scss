@@ -152,6 +152,67 @@
   letter-spacing: 0.05em;
 }
 
+.loadingState {
+  text-align: center;
+  padding: 3rem 2rem;
+  background-color: white;
+  border-radius: 1rem;
+  border: 2px solid #e5e7eb;
+  
+  .loadingSpinner {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    animation: spin 1s linear infinite;
+  }
+  
+  p {
+    color: vars.$text-color-2;
+    font-size: 1.125rem;
+    margin: 0;
+  }
+}
+
+.errorState {
+  text-align: center;
+  padding: 3rem 2rem;
+  background-color: white;
+  border-radius: 1rem;
+  border: 2px solid #ef4444;
+  
+  p {
+    color: #ef4444;
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .retryButton {
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    background-color: vars.$accent-color;
+    color: white;
+    border: none;
+    font-family: vars.$title-font;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: vars.$transition;
+
+    &:hover {
+      background-color: vars.$accent-hover-color;
+      transform: translateY(-2px);
+    }
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 768px) {
   .dashboardContainer {
     padding: 0 1rem;
