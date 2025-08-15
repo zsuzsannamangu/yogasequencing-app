@@ -50,7 +50,7 @@
   margin-bottom: 4rem;
   padding: 2.5rem;
   border-radius: 1rem;
-  max-width: 600px;
+  max-width: 800px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -66,7 +66,7 @@
   font-weight: 600;
 
   &:hover {
-    background-color: vars.$accent-color;
+    background-color: vars.$button-hover-color;
   }
 }
 
@@ -90,7 +90,7 @@
   font-family: vars.$title-font;
 
   &:hover {
-    background-color: #ef4444;
+    background-color: vars.$accent-hover-color;
   }
 }
 
@@ -103,7 +103,7 @@
   font-family: vars.$title-font;
 
   &:hover {
-    background-color: vars.$accent-color;
+    background-color: vars.$button-hover-color;
   }
 
   &:disabled {
@@ -120,13 +120,13 @@
   font-family: vars.$title-font;
 
   &:hover {
-    background-color: vars.$accent-color;
+    background-color: vars.$button-hover-color;
   }
 }
 
 .uploadingText {
   text-align: center;
-  color: #d97706;
+  color: vars.$text-color-2;
   font-weight: 600;
   margin-top: 1rem;
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -169,6 +169,271 @@
     color: vars.$text-color;
     font-size: 1rem;
     line-height: 1.5;
+  }
+}
+
+.sequenceInfoSection {
+  padding: 2rem;
+  margin: 6rem auto;
+  max-width: 800px;
+}
+
+.sequenceInfoTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: vars.$accent-color;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.sequenceInfoGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: vars.$text-color;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.textInput {
+  padding: 0.75rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: vars.$title-font;
+  transition: vars.$transition;
+  background-color: white;
+  color: vars.$text-color;
+
+  &:focus {
+    outline: none;
+    border-color: vars.$accent-color;
+    box-shadow: 0 0 0 3px rgba(176, 51, 106, 0.1);
+  }
+
+  &:read-only {
+    background-color: #f9fafb;
+    color: #6b7280;
+    cursor: not-allowed;
+  }
+}
+
+.helpText {
+  font-size: 0.75rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+.categoryContainer {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.categorySelect {
+  flex: 1;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: vars.$title-font;
+  background-color: white;
+  cursor: pointer;
+  transition: vars.$transition;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  appearance: none;
+
+  &:focus {
+    outline: none;
+    border-color: vars.$primary-color;
+    box-shadow: 0 0 0 3px rgba(0, 50, 33, 0.1);
+  }
+}
+
+.addCategoryButton {
+  padding: 0.75rem;
+  background-color: vars.$accent-color;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: vars.$transition;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: vars.$accent-hover-color;
+    transform: translateY(-1px);
+  }
+}
+
+.newCategoryForm {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.newCategoryTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: vars.$text-color;
+  margin-bottom: 1rem;
+  font-family: vars.$title-font;
+}
+
+.newCategoryInputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.newCategoryInput {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: vars.$body-font;
+  background-color: white;
+  transition: vars.$transition;
+
+  &:focus {
+    outline: none;
+    border-color: vars.$primary-color;
+    box-shadow: 0 0 0 3px rgba(0, 50, 33, 0.1);
+  }
+
+  &::placeholder {
+    color: vars.$text-color-2;
+    font-family: vars.$body-font;
+  }
+}
+
+.newCategoryActions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.saveCategoryButton {
+  padding: 0.75rem 1.5rem;
+  background-color: vars.$primary-color;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: vars.$title-font;
+  cursor: pointer;
+  transition: vars.$transition;
+
+  &:hover {
+    background-color: vars.$button-hover-color;
+    transform: translateY(-1px);
+  }
+}
+
+.cancelCategoryButton {
+  padding: 0.75rem;
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: vars.$transition;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    background-color: #4b5563;
+    transform: translateY(-1px);
+  }
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  margin: 3rem auto;
+  max-width: 600px;
+}
+
+.saveButton {
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  background-color: vars.$primary-color;
+  color: white;
+  border: none;
+  font-family: vars.$title-font;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: vars.$transition;
+  min-width: 160px;
+
+  &:hover {
+    background-color: vars.$button-hover-color;
+    transform: translateY(-2px);
+  }
+}
+
+.downloadButton {
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  background-color: vars.$accent-color;
+  color: white;
+  border: none;
+  font-family: vars.$title-font;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: vars.$transition;
+  min-width: 160px;
+
+  &:hover {
+    background-color: vars.$accent-hover-color;
+    transform: translateY(-2px);
+  }
+}
+
+.clearButton {
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  background-color: #6b7280;
+  color: white;
+  border: none;
+  font-family: vars.$title-font;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: vars.$transition;
+  min-width: 160px;
+
+  &:hover {
+    background-color: #4b5563;
+    transform: translateY(-2px);
   }
 }
 
@@ -246,7 +511,7 @@
   background-color: white;
   border-radius: 1rem;
   padding: 2.5rem;
-  margin-top: 4rem;
+  margin-top: 10rem;
   border: 1px solid #e5e7eb;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   max-width: 800px;

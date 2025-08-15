@@ -741,7 +741,7 @@
         min-width: 180px;
 
         &:hover {
-            background-color: vars.$accent-color;
+            background-color: vars.$accent-hover-color;
             color: white;
             transform: translateY(-2px);
         }

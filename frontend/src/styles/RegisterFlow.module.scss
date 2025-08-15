@@ -202,7 +202,7 @@
   letter-spacing: 0.05em;
 
   &:hover:not(.disabled) {
-    background-color: vars.$primary-color;
+    background-color: vars.$accent-hover-color;
   }
 
   &:active:not(.disabled) {

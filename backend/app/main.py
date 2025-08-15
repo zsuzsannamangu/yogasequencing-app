@@ -16,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.database import database
-from app.routes import upload, detect, silhouettes
+from app.routes import upload, detect, silhouettes, sequences
 
 # ──────────────────────────────────────────────────────────────
 # Global Constants & Directory Setup
@@ -38,10 +38,17 @@ os.makedirs(POSES_DIR, exist_ok=True)
 
 app = FastAPI()
 
+# 1) Register API router FIRST (order won’t matter now that prefixes differ)
+app.include_router(sequences.router)
+
+# 2) Mount static files under a distinct prefix
+app.mount("/sequence-assets", StaticFiles(directory="sequences"), name="sequence-assets")
+
 # Register routers from modular route files
 app.include_router(upload.router)
 app.include_router(detect.router)
 app.include_router(silhouettes.router)
+app.include_router(sequences.router)
 
 # Enable CORS for local frontend access
 app.add_middleware(

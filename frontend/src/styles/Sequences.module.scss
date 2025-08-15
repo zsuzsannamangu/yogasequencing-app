@@ -102,6 +102,34 @@
   }
 }
 
+.sortContainer {
+  display: flex;
+  align-items: center;
+}
+
+.sortSelect {
+  width: 100%;
+  padding: 0.75rem 2.5rem 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: vars.$title-font;
+  background-color: white;
+  cursor: pointer;
+  transition: vars.$transition;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+  background-position: right 0.75rem center;
+  background-repeat: no-repeat;
+  background-size: 1.5em 1.5em;
+  appearance: none;
+
+  &:focus {
+    outline: none;
+    border-color: vars.$primary-color;
+    box-shadow: 0 0 0 3px rgba(0, 50, 33, 0.1);
+  }
+}
+
 .createButton {
   padding: 0.75rem 1.5rem;
   background-color: vars.$accent-color;
@@ -116,7 +144,7 @@
   white-space: nowrap;
 
   &:hover {
-    background-color: vars.$primary-color;
+    background-color: vars.$accent-hover-color;
     transform: translateY(-1px);
   }
 }
@@ -159,8 +187,84 @@
   transition: vars.$transition;
 
   &:hover {
-    background-color: vars.$accent-color;
+    background-color: vars.$accent-hover-color;
     transform: translateY(-1px);
+  }
+}
+
+.loadingState {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: white;
+  border-radius: 1rem;
+  border: 2px dashed #e5e7eb;
+
+  .loadingSpinner {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: spin 2s linear infinite;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: vars.$text-color;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: vars.$text-color-2;
+    margin-bottom: 2rem;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorState {
+  text-align: center;
+  padding: 4rem 2rem;
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  margin: 2rem auto;
+  max-width: 600px;
+  border: 2px solid #ef4444;
+
+  h3 {
+    font-size: 1.5rem;
+    color: #ef4444;
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: vars.$text-color-2;
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
+  }
+
+  button {
+    padding: 0.75rem 2rem;
+    border-radius: 9999px;
+    background-color: vars.$accent-color;
+    color: white;
+    border: none;
+    font-family: vars.$title-font;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: vars.$transition;
+
+    &:hover {
+      background-color: vars.$accent-hover-color;
+      transform: translateY(-2px);
+    }
   }
 }
 
@@ -173,7 +277,7 @@
 .sequenceCard {
   background-color: white;
   border-radius: 0.75rem;
-  padding: 2rem;
+  padding: 1rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   transition: vars.$transition;
   cursor: pointer;
@@ -188,7 +292,11 @@
   border-left: 3px solid vars.$accent-color; // Pink left border for all sequence cards
 }
 
-
+.sequenceInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
 
 .sequenceName {
   font-size: 1.125rem;
@@ -199,15 +307,36 @@
 
 .sequenceDescription {
   color: vars.$text-color-2;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.25rem;
   line-height: 1.4;
   font-size: 0.875rem;
+}
+
+.sequenceCategory {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: vars.$accent-color;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  background-color: rgba(176, 51, 106, 0.1);
+  border-radius: 0.375rem;
+  width: fit-content;
+  min-height: 1.5rem;
+}
+
+.noCategory {
+  color: vars.$text-color-2;
+  font-style: italic;
+  opacity: 0.7;
 }
 
 .sequenceMeta {
   display: flex;
   gap: 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
 }
 
 .metaItem {
@@ -241,9 +370,14 @@
     color: white;
   }
 
-  &:nth-child(4):hover {
-    background-color: #ef4444;
-    color: white;
+  &:nth-child(4) {
+    background-color: #f3f4f6;
+    color: vars.$text-color-2;
+    
+    &:hover {
+      background-color: vars.$primary-color;
+      color: white;
+    }
   }
 
   // Tooltip styles

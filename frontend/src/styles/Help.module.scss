@@ -272,7 +272,7 @@
   transition: vars.$transition;
 
   &:hover {
-    background-color: vars.$accent-color;
+    background-color: vars.$accent-hover-color;
     transform: translateY(-1px);
   }
 }

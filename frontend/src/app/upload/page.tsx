@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import { svg2pdf } from 'svg2pdf.js';
@@ -22,8 +22,14 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical } from 'lucide-react';
+import { GripVertical, Plus, X } from 'lucide-react';
 import styles from '@/styles/Upload.module.scss';
+
+interface Category {
+  id: string;
+  name: string;
+  description?: string;
+}
 
 const DraggablePose = ({ id, poseName, image, index, onDelete, onNameChange }) => {
   const {
@@ -79,10 +85,76 @@ const UploadPage = () => {
   const [silhouettes, setSilhouettes] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [poseNames, setPoseNames] = useState<string[]>([]);
+  const [sequenceTitle, setSequenceTitle] = useState<string>('');
+  const [sequenceSubtitle, setSequenceSubtitle] = useState<string>('');
+  const [sequenceDuration, setSequenceDuration] = useState<string>('');
+  const [sequencePoseCount, setSequencePoseCount] = useState<number>(0);
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+  const [newCategoryDescription, setNewCategoryDescription] = useState('');
   const labelHeight = 16;
   const [uploading, setUploading] = useState(false);
 
   const sensors = useSensors(useSensor(PointerSensor));
+
+  // Fetch categories on component mount
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('http://localhost:8000/sequences/categories/');
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+    }
+  };
+
+  const handleCreateCategory = async () => {
+    if (!newCategoryName.trim()) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Category name is required',
+        icon: 'error',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.post('http://localhost:8000/sequences/categories/', {
+        name: newCategoryName.trim(),
+        description: newCategoryDescription.trim() || undefined
+      });
+
+      setCategories([...categories, response.data]);
+      setSelectedCategory(response.data.name);
+      setShowNewCategoryForm(false);
+      setNewCategoryName('');
+      setNewCategoryDescription('');
+
+      Swal.fire({
+        title: 'Success!',
+        text: 'Category created successfully',
+        icon: 'success',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+    } catch (error: any) {
+      console.error('Failed to create category:', error);
+      Swal.fire({
+        title: 'Error',
+        text: error.response?.data?.detail || 'Failed to create category',
+        icon: 'error',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+    }
+  };
 
   const handleUpload = async () => {
     if (!selectedFile) return;
@@ -96,7 +168,7 @@ const UploadPage = () => {
         title: 'Success!',
         text: 'Upload successful!',
         icon: 'success',
-        confirmButtonColor: '#f87171',
+        confirmButtonColor: '#b8336a',
         confirmButtonText: 'OK',
       });
     } catch (err) {
@@ -152,6 +224,47 @@ const UploadPage = () => {
     let x = spacingX;
     let y = spacingY;
 
+    // Add sequence title and subtitle at the top
+    if (sequenceTitle || sequenceSubtitle) {
+      pdf.setFontSize(20);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setTextColor(176, 51, 106); // accent-color
+      
+      if (sequenceTitle) {
+        const titleWidth = pdf.getTextWidth(sequenceTitle);
+        const titleX = (pageWidth - titleWidth) / 2;
+        pdf.text(sequenceTitle, titleX, y + 20);
+        y += 35;
+      }
+      
+      if (sequenceSubtitle) {
+        pdf.setFontSize(12);
+        pdf.setFont('helvetica', 'normal');
+        pdf.setTextColor(100, 100, 100); // muted color
+        const subtitleWidth = pdf.getTextWidth(sequenceSubtitle);
+        const subtitleX = (pageWidth - subtitleWidth) / 2;
+        pdf.text(sequenceSubtitle, subtitleX, y + 15);
+        y += 25;
+      }
+      
+      // Add sequence metadata and date on same line
+      pdf.setFontSize(10);
+      pdf.setTextColor(80, 80, 80);
+      const creationDate = new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      });
+      const metadataText = `${sequenceDuration} • ${sequencePoseCount} poses • ${creationDate}`;
+      const metadataWidth = pdf.getTextWidth(metadataText);
+      const metadataX = (pageWidth - metadataWidth) / 2;
+      pdf.text(metadataText, metadataX, y + 15);
+      y += 20;
+      
+      // Reset y position for poses with more space
+      y = 120;
+    }
+
     for (let i = 0; i < silhouettes.length; i++) {
       const filePath = silhouettes[i];
       const res = await fetch(`http://localhost:8000/${filePath}`);
@@ -182,7 +295,21 @@ const UploadPage = () => {
       }
     }
 
-    pdf.save('yoga_sequence_vector.pdf');
+    // Generate filename based on sequence title or use default
+    const filename = sequenceTitle 
+      ? `${sequenceTitle.replace(/[^a-zA-Z0-9]/g, '_')}_sequence.pdf`
+      : 'yoga_sequence_vector.pdf';
+    
+    pdf.save(filename);
+
+    // Show success message for download
+    Swal.fire({
+      title: 'Download Started!',
+      text: 'PDF download has started successfully',
+      icon: 'success',
+      confirmButtonColor: '#b8336a',
+      confirmButtonText: 'OK',
+    });
   };
 
   const handlePoseNameChange = (index: number, value: string) => {
@@ -198,6 +325,82 @@ const UploadPage = () => {
     updatedPoseNames.splice(index, 1);
     setSilhouettes(updatedSilhouettes);
     setPoseNames(updatedPoseNames);
+    // Update pose count when poses are deleted
+    setSequencePoseCount(updatedSilhouettes.length);
+  };
+
+  // Calculate pose count whenever silhouettes change
+  React.useEffect(() => {
+    setSequencePoseCount(silhouettes.length);
+  }, [silhouettes]);
+
+  // Estimate duration based on pose count (assuming ~3-5 seconds per pose)
+  React.useEffect(() => {
+    if (sequencePoseCount > 0) {
+      const estimatedMinutes = Math.ceil(sequencePoseCount * 4 / 60); // 4 seconds per pose
+      setSequenceDuration(`${estimatedMinutes} min`);
+    }
+  }, [sequencePoseCount]);
+
+  const handleSaveToLibrary = async () => {
+    try {
+      // Check if sequence with same title already exists
+      const existingSequences = await axios.get('http://localhost:8000/sequences/');
+      const titleToCheck = sequenceTitle || 'Untitled Sequence';
+      
+      const isDuplicate = existingSequences.data.some((seq: any) => 
+        seq.name.toLowerCase() === titleToCheck.toLowerCase()
+      );
+      
+      if (isDuplicate) {
+        Swal.fire({
+          title: 'Sequence Already Exists',
+          text: `A sequence with the title "${sequenceTitle}" already exists in your library.`,
+          icon: 'warning',
+          confirmButtonColor: '#b8336a',
+          confirmButtonText: 'OK',
+        });
+        return;
+      }
+
+      // Create sequence object for API
+      const sequenceData = {
+        name: titleToCheck,
+        description: sequenceSubtitle || 'No description provided',
+        duration: sequenceDuration,
+        poseCount: sequencePoseCount,
+        poses: silhouettes.map((filePath, index) => ({
+          filePath: filePath,
+          poseName: poseNames[index] || `Pose ${index + 1}`
+        })),
+        category: selectedCategory || undefined
+      };
+
+      // Save to backend API
+      const response = await axios.post('http://localhost:8000/sequences/', sequenceData);
+      
+      if (response.status === 200) {
+        // Show success message
+        Swal.fire({
+          title: 'Saved!',
+          text: 'Sequence has been saved to your library',
+          icon: 'success',
+          confirmButtonColor: '#b8336a',
+          confirmButtonText: 'OK',
+        });
+      }
+    } catch (error) {
+      console.error('Failed to save sequence:', error);
+      
+      // Show error message
+      Swal.fire({
+        title: 'Error',
+        text: 'Failed to save sequence to library. Please try again.',
+        icon: 'error',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+    }
   };
 
   return (
@@ -208,7 +411,7 @@ const UploadPage = () => {
         <div className={styles.header}>
           <h1 className={styles.title}>Upload and Visualize Your Practice</h1>
           <p className={styles.subtitle}>
-            Upload your recorded flow to generate a printable visual sequence. As a guest, you can create and download your sequences. If you want to save your flows and return to them later, register for an account and build your own library.
+            Upload your recorded flow to generate a printable visual sequence.
           </p>
         </div>
 
@@ -248,14 +451,6 @@ const UploadPage = () => {
           >
             Create Sequence
           </button>
-          {silhouettes.length > 0 && (
-            <button
-              onClick={handleDownloadPDF}
-              className={styles.downloadButton}
-            >
-              Download as PDF
-            </button>
-          )}
         </div>
 
         {loading ? (
@@ -267,6 +462,128 @@ const UploadPage = () => {
             <div className={styles.helpMessage}>
               <p>💡 <strong>Tip:</strong> You can drag poses to reorder them, click the red ✕ to delete poses, and edit pose names by typing in the input fields.</p>
             </div>
+
+            <div className={styles.sequenceInfoSection}>
+              <h3 className={styles.sequenceInfoTitle}>Sequence Information</h3>
+              <div className={styles.sequenceInfoGrid}>
+                <div className={styles.inputGroup}>
+                  <label htmlFor="sequenceTitle" className={styles.label}>Sequence Title</label>
+                  <input
+                    type="text"
+                    id="sequenceTitle"
+                    value={sequenceTitle}
+                    onChange={(e) => setSequenceTitle(e.target.value)}
+                    placeholder="Enter sequence title..."
+                    className={styles.textInput}
+                  />
+                </div>
+                
+                <div className={styles.inputGroup}>
+                  <label htmlFor="sequenceSubtitle" className={styles.label}>Subtitle/Description</label>
+                  <input
+                    type="text"
+                    id="sequenceSubtitle"
+                    value={sequenceSubtitle}
+                    onChange={(e) => setSequenceSubtitle(e.target.value)}
+                    placeholder="Enter sequence description..."
+                    className={styles.textInput}
+                  />
+                </div>
+                
+                <div className={styles.inputGroup}>
+                  <label htmlFor="sequenceDuration" className={styles.label}>Duration</label>
+                  <input
+                    type="text"
+                    id="sequenceDuration"
+                    value={sequenceDuration}
+                    onChange={(e) => setSequenceDuration(e.target.value)}
+                    placeholder="e.g., 15 min"
+                    className={styles.textInput}
+                  />
+                </div>
+                
+                <div className={styles.inputGroup}>
+                  <label htmlFor="sequencePoseCount" className={styles.label}>Pose Count</label>
+                  <input
+                    type="number"
+                    id="sequencePoseCount"
+                    value={sequencePoseCount}
+                    onChange={(e) => setSequencePoseCount(parseInt(e.target.value) || 0)}
+                    className={styles.textInput}
+                    readOnly
+                  />
+                  <small className={styles.helpText}>Automatically calculated from your sequence</small>
+                </div>
+
+                <div className={styles.inputGroup}>
+                  <label htmlFor="sequenceCategory" className={styles.label}>Category (Optional)</label>
+                  <div className={styles.categoryContainer}>
+                    <select
+                      id="sequenceCategory"
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      className={styles.categorySelect}
+                    >
+                      <option value="">No Category</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.name}>
+                          {category.name}
+                        </option>
+                      ))}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => setShowNewCategoryForm(true)}
+                      className={styles.addCategoryButton}
+                      title="Create New Category"
+                    >
+                      <Plus size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {showNewCategoryForm && (
+              <div className={styles.newCategoryForm}>
+                <h4 className={styles.newCategoryTitle}>Create New Category</h4>
+                <div className={styles.newCategoryInputs}>
+                  <input
+                    type="text"
+                    placeholder="Category name..."
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    className={styles.newCategoryInput}
+                  />
+                  <input
+                    type="text"
+                    placeholder="Description (optional)..."
+                    value={newCategoryDescription}
+                    onChange={(e) => setNewCategoryDescription(e.target.value)}
+                    className={styles.newCategoryInput}
+                  />
+                  <div className={styles.newCategoryActions}>
+                    <button
+                      onClick={handleCreateCategory}
+                      className={styles.saveCategoryButton}
+                    >
+                      Create Category
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowNewCategoryForm(false);
+                        setNewCategoryName('');
+                        setNewCategoryDescription('');
+                      }}
+                      className={styles.cancelCategoryButton}
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -295,6 +612,39 @@ const UploadPage = () => {
                 </div>
               </SortableContext>
             </DndContext>
+
+            {silhouettes.length > 0 && (
+              <div className={styles.actionButtons}>
+                <button
+                  onClick={handleSaveToLibrary}
+                  className={styles.saveButton}
+                >
+                  Save to Library
+                </button>
+                <button
+                  onClick={handleDownloadPDF}
+                  className={styles.downloadButton}
+                >
+                  Download PDF
+                </button>
+                <button
+                  onClick={() => {
+                    setSilhouettes([]);
+                    setPoseNames([]);
+                    setSequenceTitle('');
+                    setSequenceSubtitle('');
+                    setSequenceDuration('');
+                    setSequencePoseCount(0);
+                    setSelectedCategory('');
+                    setFilename('');
+                    setSelectedFile(null);
+                  }}
+                  className={styles.clearButton}
+                >
+                  Clear Sequence
+                </button>
+              </div>
+            )}
           </>
         )}
 
