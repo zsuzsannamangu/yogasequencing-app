@@ -38,19 +38,7 @@ os.makedirs(POSES_DIR, exist_ok=True)
 
 app = FastAPI()
 
-# 1) Register API router FIRST (order won’t matter now that prefixes differ)
-app.include_router(sequences.router)
-
-# 2) Mount static files under a distinct prefix
-app.mount("/sequence-assets", StaticFiles(directory="sequences"), name="sequence-assets")
-
-# Register routers from modular route files
-app.include_router(upload.router)
-app.include_router(detect.router)
-app.include_router(silhouettes.router)
-app.include_router(sequences.router)
-
-# Enable CORS for local frontend access
+# Enable CORS FIRST (before mounting static files)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:3000"],
@@ -59,7 +47,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static SVG files (silhouette results)
+# Register API routers
+app.include_router(sequences.router)
+app.include_router(upload.router)
+app.include_router(detect.router)
+app.include_router(silhouettes.router)
+
+# Mount static files AFTER CORS is configured
+app.mount("/sequence-assets", StaticFiles(directory="sequences"), name="sequence-assets")
 app.mount("/silhouettes", StaticFiles(directory=SILHOUETTES_DIR), name="silhouettes")
 
 # ──────────────────────────────────────────────────────────────

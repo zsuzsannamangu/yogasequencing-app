@@ -40,16 +40,18 @@ export default function Navbar({ showUserMenu = false, firstName = '', lastName 
           priority
         />
       </Link>
-      {showUserMenu ? (
-        <UserMenu firstName={firstName} lastName={lastName} profileImage={profileImage} />
-      ) : (
-        <nav className={styles.nav}>
-          <Link href="/search" className={styles.navLink}>Browse</Link>
-          <Link href="/#contact" className={styles.navLink}>Contact</Link>
-          <Link href="/register" className={styles.navLink}>Register</Link>
-          <Link href="/login" className={styles.navLink}>Login</Link>
-        </nav>
-      )}
+      <nav className={styles.nav}>
+        <Link href="/browse" className={styles.navLink}>Browse</Link>
+        <Link href="/#contact" className={styles.navLink}>Contact</Link>
+        {showUserMenu ? (
+          <UserMenu firstName={firstName} lastName={lastName} profileImage={profileImage} />
+        ) : (
+          <>
+            <Link href="/register" className={styles.navLink}>Register</Link>
+            <Link href="/login" className={styles.navLink}>Login</Link>
+          </>
+        )}
+      </nav>
     </header>
   );
 }

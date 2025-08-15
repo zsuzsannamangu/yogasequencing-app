@@ -4,7 +4,7 @@
   background-color: vars.$background-color;
   color: vars.$text-color;
   font-family: vars.$title-font;
-  min-height: 100vh;
+  min-height: 150vh;
   display: flex;
   flex-direction: column;
 }
@@ -13,7 +13,7 @@
   flex: 1;
   padding: 2rem 1rem 8rem 1rem; // Added bottom padding
   background-color: #f5f5f5;
-  padding-top: 8rem;
+  padding-top: 10rem;
   min-height: 100vh;
 }
 
@@ -280,7 +280,6 @@
   padding: 1rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
   transition: vars.$transition;
-  cursor: pointer;
   border: 2px solid transparent;
 
   &:hover {
@@ -306,6 +305,16 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.sequenceLink {
+  color: vars.$text-color;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: vars.$accent-color;
+  }
 }
 
 .privacyIndicator {
@@ -360,6 +369,12 @@
   gap: 0.375rem;
 }
 
+.deleteButton {
+  &:hover {
+    background-color: #de4576 !important;
+  }
+}
+
 .actionButton {
   padding: 0.375rem;
   background-color: #f3f4f6;
@@ -387,7 +402,6 @@
       color: white;
     }
   }
-
   // Tooltip styles
   &::before {
     content: attr(data-tooltip);

@@ -1,20 +1,20 @@
 @use './variables.scss' as vars;
 
 .main {
-  background-color: #f5f5f5; // Grey background for entire page
+  background-color: vars.$muted-bg; // Grey background for entire page
   color: vars.$text-color;
   font-family: vars.$title-font;
-  min-height: 100vh;
+  min-height: 150vh;
   display: flex;
   flex-direction: column;
 }
 
 .section {
   flex-grow: 1;
-  padding: 0 1rem 8rem; // Increased bottom padding
-  max-width: 1200px;
+  padding: 0 1rem 8rem;
+  max-width: 1400px;
   margin: 0 auto;
-  margin-top: 8rem;
+  margin-top: 10rem;
   text-align: center;
 }
 
@@ -50,7 +50,7 @@
   margin-bottom: 4rem;
   padding: 2.5rem;
   border-radius: 1rem;
-  max-width: 800px;
+  max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -155,14 +155,10 @@
 }
 
 .helpMessage {
-  background-color: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.75rem;
   padding: 2rem;
   margin: 3rem auto;
   text-align: center;
-  max-width: 600px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  max-width: 1200px;
 
   p {
     margin: 0;
@@ -174,8 +170,7 @@
 
 .sequenceInfoSection {
   padding: 2rem;
-  margin: 6rem auto;
-  max-width: 800px;
+  max-width: 1200px;
 }
 
 .sequenceInfoTitle {
@@ -188,11 +183,31 @@
 
 .sequenceInfoGrid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 
   @media (max-width: 768px) {
     grid-template-columns: 1fr;
+  }
+}
+
+.inputRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-bottom: 2rem;
+  
+  @media (max-width: 1200px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 }
 
@@ -230,6 +245,40 @@
     background-color: #f9fafb;
     color: #6b7280;
     cursor: not-allowed;
+  }
+}
+
+.textarea {
+  padding: 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: vars.$title-font;
+  transition: vars.$transition;
+  background-color: white;
+  color: vars.$text-color;
+  resize: vertical;
+  min-height: 120px;
+  line-height: 1.5;
+
+  &:focus {
+    outline: none;
+    border-color: vars.$accent-color;
+    box-shadow: 0 0 0 3px rgba(176, 51, 106, 0.1);
+  }
+}
+
+.descriptionSection {
+  margin-bottom: 3rem;
+  
+  .label {
+    text-align: left;
+    margin-left: 5px;
+  }
+  
+  .helpText {
+    text-align: left;
+    margin-left: 5px;
   }
 }
 
@@ -288,9 +337,6 @@
 }
 
 .newCategoryForm {
-  background-color: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.75rem;
   padding: 1.5rem;
   margin: 1.5rem 0;
 }
@@ -301,12 +347,15 @@
   color: vars.$text-color;
   margin-bottom: 1rem;
   font-family: vars.$title-font;
+  text-align: left;
 }
 
 .newCategoryInputs {
   display: flex;
   flex-direction: column;
+  font-family: vars.$title-font;
   gap: 1rem;
+  width: 30%;
 }
 
 .newCategoryInput {
@@ -314,7 +363,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 0.5rem;
   font-size: 1rem;
-  font-family: vars.$body-font;
+  font-family: vars.$title-font;
   background-color: white;
   transition: vars.$transition;
 
@@ -355,19 +404,19 @@
 }
 
 .cancelCategoryButton {
-  padding: 0.75rem;
-  background-color: #6b7280;
+  padding: 0.75rem 1.5rem;
+  background-color: vars.$text-color-2;
   color: white;
   border: none;
   border-radius: 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: vars.$title-font;
   cursor: pointer;
   transition: vars.$transition;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   &:hover {
-    background-color: #4b5563;
+    background-color: vars.$text-color;
     transform: translateY(-1px);
   }
 }
@@ -586,7 +635,7 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
   margin: 3rem auto;
   max-width: 1000px;

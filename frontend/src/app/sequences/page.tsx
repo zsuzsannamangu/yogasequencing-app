@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Download, Edit, Trash2, Calendar, Clock, Share2, Tag } from 'lucide-react';
+import { Download, Edit, Trash2, Calendar, Clock, Share2, Tag, Layers } from 'lucide-react';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import styles from '@/styles/Sequences.module.scss';
@@ -402,7 +402,9 @@ export default function SequencesPage() {
                 >
                   <div className={styles.sequenceInfo}>
                     <h3 className={styles.sequenceName}>
-                      {sequence.name}
+                      <Link href={`/sequences/${sequence.id}`} className={styles.sequenceLink}>
+                        {sequence.name}
+                      </Link>
                       <span className={styles.privacyIndicator}>
                         {sequence.privacy === 'public' ? '🌍' : '🔒'}
                       </span>
@@ -426,7 +428,7 @@ export default function SequencesPage() {
                         <span>{sequence.duration}</span>
                       </div>
                       <div className={styles.metaItem}>
-                        <Calendar size={16} />
+                        <Layers size={16} />
                         <span>{sequence.poseCount} poses</span>
                       </div>
                       <div className={styles.metaItem}>
@@ -556,7 +558,7 @@ export default function SequencesPage() {
                                     if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
                                       await navigator.share({
                                         title: sequenceData.name || 'Yoga Sequence',
-                                        text: `Hey, User wants to share a sequence with you! Check out this ${sequenceData.name || 'yoga sequence'}: ${sequenceData.description || 'A beautiful movement flow'}`,
+                                        text: `Hey, someone wants to share a sequence with you! Check out this ${sequenceData.name || 'yoga sequence'}: ${sequenceData.description || 'A beautiful movement flow'}`,
                                         files: [pdfFile]
                                       });
                                     } else {
@@ -568,7 +570,7 @@ export default function SequencesPage() {
                                       
                                       Swal.fire({
                                         title: 'PDF Downloaded!',
-                                        text: 'Hey, User wants to share a sequence with you! The PDF has been downloaded so you can share it manually.',
+                                        text: 'Hey, someone wants to share a sequence with you! The PDF has been downloaded so you can share it manually.',
                                         icon: 'success',
                                         confirmButtonColor: '#b8336a',
                                         confirmButtonText: 'OK',
@@ -595,23 +597,16 @@ export default function SequencesPage() {
                       >
                         <Download size={18} />
                       </button>
-                      <button 
+                      <Link 
+                        href={`/sequences/${sequence.id}`}
                         className={styles.actionButton} 
                         data-tooltip="Edit Sequence"
-                        onClick={() => {
-                          Swal.fire({
-                            title: 'Edit Feature',
-                            text: 'Edit functionality will be implemented soon. For now, you can recreate the sequence from the upload page.',
-                            icon: 'info',
-                            confirmButtonColor: '#b8336a',
-                            confirmButtonText: 'OK',
-                          });
-                        }}
                       >
                         <Edit size={18} />
-                      </button>
-                      <button 
-                        className={styles.actionButton} 
+                      </Link>
+                      <button
+                        id="deleteSeq"
+                        className={`${styles.actionButton} ${styles.deleteButton}`} 
                         data-tooltip="Delete Sequence"
                         onClick={() => handleDelete(sequence.id)}
                       >

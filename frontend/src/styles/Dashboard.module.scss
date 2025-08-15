@@ -4,7 +4,7 @@
   background-color: vars.$background-color;
   color: vars.$text-color-2;
   font-family: vars.$title-font;
-  min-height: 100vh;
+  min-height: 150vh;
   display: flex;
   flex-direction: column;
 }
@@ -13,7 +13,7 @@
   flex: 1;
   padding: 2rem 1rem 8rem 1rem; // Added bottom padding
   background-color: #f5f5f5;
-  padding-top: 8rem;
+  padding-top: 10rem;
   min-height: 100vh;
 }
 

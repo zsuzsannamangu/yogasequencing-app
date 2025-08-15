@@ -31,6 +31,19 @@ interface Category {
   description?: string;
 }
 
+// Define the available industry labels based on the homepage professional categories
+const AVAILABLE_INDUSTRY_LABELS = [
+  'Yoga',
+  'Yoga Therapy',
+  'Pilates',
+  'Physical Therapy',
+  'Occupational Therapy',
+  'Dance',
+  'Fitness Training',
+  'Martial Arts',
+  'Sports Training'
+];
+
 const DraggablePose = ({ id, poseName, image, index, onDelete, onNameChange }) => {
   const {
     attributes,
@@ -95,6 +108,7 @@ const UploadPage = () => {
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryDescription, setNewCategoryDescription] = useState('');
   const [sequencePrivacy, setSequencePrivacy] = useState<'private' | 'public'>('private');
+  const [selectedLabel, setSelectedLabel] = useState<string>('Yoga'); // Default to Yoga
   const labelHeight = 16;
   const [uploading, setUploading] = useState(false);
 
@@ -230,14 +244,14 @@ const UploadPage = () => {
       pdf.setFontSize(20);
       pdf.setFont('helvetica', 'bold');
       pdf.setTextColor(176, 51, 106); // accent-color
-      
+
       if (sequenceTitle) {
         const titleWidth = pdf.getTextWidth(sequenceTitle);
         const titleX = (pageWidth - titleWidth) / 2;
         pdf.text(sequenceTitle, titleX, y + 20);
         y += 35;
       }
-      
+
       if (sequenceSubtitle) {
         pdf.setFontSize(12);
         pdf.setFont('helvetica', 'normal');
@@ -247,21 +261,21 @@ const UploadPage = () => {
         pdf.text(sequenceSubtitle, subtitleX, y + 15);
         y += 25;
       }
-      
+
       // Add sequence metadata and date on same line
       pdf.setFontSize(10);
       pdf.setTextColor(80, 80, 80);
-      const creationDate = new Date().toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+      const creationDate = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
       });
       const metadataText = `${sequenceDuration} • ${sequencePoseCount} poses • ${creationDate}`;
       const metadataWidth = pdf.getTextWidth(metadataText);
       const metadataX = (pageWidth - metadataWidth) / 2;
       pdf.text(metadataText, metadataX, y + 15);
       y += 20;
-      
+
       // Reset y position for poses with more space
       y = 120;
     }
@@ -297,10 +311,10 @@ const UploadPage = () => {
     }
 
     // Generate filename based on sequence title or use default
-    const filename = sequenceTitle 
+    const filename = sequenceTitle
       ? `${sequenceTitle.replace(/[^a-zA-Z0-9]/g, '_')}_sequence.pdf`
       : 'yoga_sequence_vector.pdf';
-    
+
     pdf.save(filename);
 
     // Show success message for download
@@ -335,24 +349,72 @@ const UploadPage = () => {
     setSequencePoseCount(silhouettes.length);
   }, [silhouettes]);
 
-  // Estimate duration based on pose count (assuming ~3-5 seconds per pose)
-  React.useEffect(() => {
-    if (sequencePoseCount > 0) {
-      const estimatedMinutes = Math.ceil(sequencePoseCount * 4 / 60); // 4 seconds per pose
-      setSequenceDuration(`${estimatedMinutes} min`);
-    }
-  }, [sequencePoseCount]);
+  // Get actual video duration when file is selected
+  const getVideoDuration = (file: File): Promise<string> => {
+    return new Promise((resolve) => {
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+
+      video.onloadedmetadata = () => {
+        const duration = video.duration;
+        const minutes = Math.floor(duration / 60);
+        const seconds = Math.floor(duration % 60);
+
+        if (minutes > 0) {
+          resolve(`${minutes}m ${seconds}s`);
+        } else {
+          resolve(`${seconds}s`);
+        }
+      };
+
+      video.src = URL.createObjectURL(file);
+    });
+  };
 
   const handleSaveToLibrary = async () => {
     try {
+      // Validate required fields
+      if (!sequenceTitle.trim()) {
+        Swal.fire({
+          title: 'Required Field Missing',
+          text: 'Please enter a sequence title.',
+          icon: 'warning',
+          confirmButtonColor: '#b8336a',
+          confirmButtonText: 'OK',
+        });
+        return;
+      }
+
+      if (!sequenceSubtitle.trim()) {
+        Swal.fire({
+          title: 'Required Field Missing',
+          text: 'Please enter a sequence description.',
+          icon: 'warning',
+          confirmButtonColor: '#b8336a',
+          confirmButtonText: 'OK',
+        });
+        return;
+      }
+
+      if (!sequencePrivacy) {
+        Swal.fire({
+          title: 'Required Field Missing',
+          text: 'Please select a privacy setting.',
+          icon: 'warning',
+          confirmButtonColor: '#b8336a',
+          confirmButtonText: 'OK',
+        });
+        return;
+      }
+
       // Check if sequence with same title already exists
       const existingSequences = await axios.get('http://localhost:8000/sequences/');
-      const titleToCheck = sequenceTitle || 'Untitled Sequence';
-      
-      const isDuplicate = existingSequences.data.some((seq: any) => 
+      const titleToCheck = sequenceTitle.trim();
+
+      const isDuplicate = existingSequences.data.some((seq: any) =>
         seq.name.toLowerCase() === titleToCheck.toLowerCase()
       );
-      
+
       if (isDuplicate) {
         Swal.fire({
           title: 'Sequence Already Exists',
@@ -375,12 +437,13 @@ const UploadPage = () => {
           poseName: poseNames[index] || `Pose ${index + 1}`
         })),
         category: selectedCategory || undefined,
+        industryLabel: selectedLabel,
         privacy: sequencePrivacy
       };
 
       // Save to backend API
       const response = await axios.post('http://localhost:8000/sequences/', sequenceData);
-      
+
       if (response.status === 200) {
         // Show success message
         Swal.fire({
@@ -393,7 +456,7 @@ const UploadPage = () => {
       }
     } catch (error) {
       console.error('Failed to save sequence:', error);
-      
+
       // Show error message
       Swal.fire({
         title: 'Error',
@@ -423,9 +486,22 @@ const UploadPage = () => {
             <input
               type="file"
               accept="video/mp4,video/quicktime,video/x-m4v,video/webm,video/ogg"
-              onChange={(e) => {
+              onChange={async (e) => {
                 const file = e.target.files?.[0] || null;
-                setSelectedFile(file);
+                if (file) {
+                  setSelectedFile(file);
+                  setFilename(file.name);
+
+                  // Get actual video duration
+                  try {
+                    const duration = await getVideoDuration(file);
+                    setSequenceDuration(duration);
+                  } catch (error) {
+                    console.error('Failed to get video duration:', error);
+                    setSequenceDuration('Unknown');
+                  }
+                }
+
                 setSilhouettes([]);
                 setPoseNames([]);
               }}
@@ -461,15 +537,12 @@ const UploadPage = () => {
           <p className={styles.emptyText}>Create your sequence!</p>
         ) : (
           <>
-            <div className={styles.helpMessage}>
-              <p>💡 <strong>Tip:</strong> You can drag poses to reorder them, click the red ✕ to delete poses, and edit pose names by typing in the input fields.</p>
-            </div>
-
             <div className={styles.sequenceInfoSection}>
               <h3 className={styles.sequenceInfoTitle}>Sequence Information</h3>
-              <div className={styles.sequenceInfoGrid}>
+              {/* First row: Title, Industry Label, Privacy */}
+              <div className={styles.inputRow}>
                 <div className={styles.inputGroup}>
-                  <label htmlFor="sequenceTitle" className={styles.label}>Sequence Title</label>
+                  <label htmlFor="sequenceTitle" className={styles.label}>Sequence Title *</label>
                   <input
                     type="text"
                     id="sequenceTitle"
@@ -477,33 +550,95 @@ const UploadPage = () => {
                     onChange={(e) => setSequenceTitle(e.target.value)}
                     placeholder="Enter sequence title..."
                     className={styles.textInput}
+                    required
                   />
+                  <small className={styles.helpText}>Required: Give your sequence a descriptive title</small>
                 </div>
-                
+
                 <div className={styles.inputGroup}>
-                  <label htmlFor="sequenceSubtitle" className={styles.label}>Subtitle/Description</label>
-                  <input
-                    type="text"
-                    id="sequenceSubtitle"
-                    value={sequenceSubtitle}
-                    onChange={(e) => setSequenceSubtitle(e.target.value)}
-                    placeholder="Enter sequence description..."
-                    className={styles.textInput}
-                  />
+                  <label htmlFor="sequenceLabel" className={styles.label}>Industry Label *</label>
+                  <select
+                    id="sequenceLabel"
+                    value={selectedLabel}
+                    onChange={(e) => setSelectedLabel(e.target.value)}
+                    className={styles.categorySelect}
+                    required
+                  >
+                    {AVAILABLE_INDUSTRY_LABELS.map((label) => (
+                      <option key={label} value={label}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
+                  <small className={styles.helpText}>Required: Choose the industry this sequence belongs to.</small>
                 </div>
-                
+
+                <div className={styles.inputGroup}>
+                  <label htmlFor="sequencePrivacy" className={styles.label}>Privacy Setting *</label>
+                  <div className={styles.privacyContainer}>
+                    <label className={styles.privacyOption} data-tooltip="Only visible to you">
+                      <input
+                        type="radio"
+                        name="privacy"
+                        value="private"
+                        checked={sequencePrivacy === 'private'}
+                        onChange={(e) => setSequencePrivacy(e.target.value as 'private' | 'public')}
+                        className={styles.privacyRadio}
+                      />
+                      <span className={styles.privacyLabel}>
+                        <span className={styles.privacyIcon}>🔒</span>
+                        Private
+                      </span>
+                    </label>
+                    <label className={styles.privacyOption} data-tooltip="Visible to the community">
+                      <input
+                        type="radio"
+                        name="privacy"
+                        value="public"
+                        checked={sequencePrivacy === 'public'}
+                        onChange={(e) => setSequencePrivacy(e.target.value as 'private' | 'public')}
+                        className={styles.privacyRadio}
+                      />
+                      <span className={styles.privacyLabel}>
+                        <span className={styles.privacyIcon}>🌍</span>
+                        Public
+                      </span>
+                    </label>
+                  </div>
+                  <small className={styles.helpText}>Required: Choose who can see this sequence</small>
+                </div>
+              </div>
+
+              {/* Second row: Description only */}
+              <div className={`${styles.inputGroup} ${styles.descriptionSection}`}>
+                <label htmlFor="sequenceSubtitle" className={styles.label}>Description *</label>
+                <textarea
+                  id="sequenceSubtitle"
+                  value={sequenceSubtitle}
+                  onChange={(e) => setSequenceSubtitle(e.target.value)}
+                  placeholder="Describe your sequence such as difficulty level, age group, type of movement, etc."
+                  className={styles.textarea}
+                  rows={4}
+                  required
+                />
+                <small className={styles.helpText}>Required: Describe your sequence in detail</small>
+              </div>
+
+              {/* Third row: Duration, Pose Count, Category */}
+              <div className={styles.inputRow}>
                 <div className={styles.inputGroup}>
                   <label htmlFor="sequenceDuration" className={styles.label}>Duration</label>
                   <input
                     type="text"
                     id="sequenceDuration"
                     value={sequenceDuration}
-                    onChange={(e) => setSequenceDuration(e.target.value)}
-                    placeholder="e.g., 15 min"
+                    placeholder="Automatically calculated"
                     className={styles.textInput}
+                    readOnly
                   />
+                  <small className={styles.helpText}>Automatically extracted from your video file</small>
                 </div>
-                
+
                 <div className={styles.inputGroup}>
                   <label htmlFor="sequencePoseCount" className={styles.label}>Pose Count</label>
                   <input
@@ -543,40 +678,6 @@ const UploadPage = () => {
                     </button>
                   </div>
                 </div>
-
-                <div className={styles.inputGroup}>
-                  <label htmlFor="sequencePrivacy" className={styles.label}>Privacy Setting</label>
-                  <div className={styles.privacyContainer}>
-                    <label className={styles.privacyOption} data-tooltip="Only visible to you">
-                      <input
-                        type="radio"
-                        name="privacy"
-                        value="private"
-                        checked={sequencePrivacy === 'private'}
-                        onChange={(e) => setSequencePrivacy(e.target.value as 'private' | 'public')}
-                        className={styles.privacyRadio}
-                      />
-                      <span className={styles.privacyLabel}>
-                        <span className={styles.privacyIcon}>🔒</span>
-                        Private
-                      </span>
-                    </label>
-                    <label className={styles.privacyOption} data-tooltip="Visible to the community">
-                      <input
-                        type="radio"
-                        name="privacy"
-                        value="public"
-                        checked={sequencePrivacy === 'public'}
-                        onChange={(e) => setSequencePrivacy(e.target.value as 'private' | 'public')}
-                        className={styles.privacyRadio}
-                      />
-                      <span className={styles.privacyLabel}>
-                        <span className={styles.privacyIcon}>🌍</span>
-                        Public
-                      </span>
-                    </label>
-                  </div>
-                </div>
               </div>
             </div>
 
@@ -591,19 +692,12 @@ const UploadPage = () => {
                     onChange={(e) => setNewCategoryName(e.target.value)}
                     className={styles.newCategoryInput}
                   />
-                  <input
-                    type="text"
-                    placeholder="Description (optional)..."
-                    value={newCategoryDescription}
-                    onChange={(e) => setNewCategoryDescription(e.target.value)}
-                    className={styles.newCategoryInput}
-                  />
                   <div className={styles.newCategoryActions}>
                     <button
                       onClick={handleCreateCategory}
                       className={styles.saveCategoryButton}
                     >
-                      Create Category
+                      Create
                     </button>
                     <button
                       onClick={() => {
@@ -613,12 +707,16 @@ const UploadPage = () => {
                       }}
                       className={styles.cancelCategoryButton}
                     >
-                      <X size={16} />
+                      Cancel
                     </button>
                   </div>
                 </div>
               </div>
             )}
+
+            <div className={styles.helpMessage}>
+              <p>💡 <strong>Tip:</strong> You can drag poses to reorder them, click the red ✕ to delete poses, and edit pose names by typing in the input fields.</p>
+            </div>
 
             <DndContext
               sensors={sensors}
@@ -672,6 +770,7 @@ const UploadPage = () => {
                     setSequenceDuration('');
                     setSequencePoseCount(0);
                     setSelectedCategory('');
+                    setSelectedLabel('Yoga');
                     setSequencePrivacy('private');
                     setFilename('');
                     setSelectedFile(null);
@@ -688,7 +787,7 @@ const UploadPage = () => {
         <div className={styles.guidelines}>
           <h2 className={styles.guidelinesTitle}>🎥 Video Guidelines</h2>
           <ul className={styles.guidelinesList}>
-            <li>Record in front of a <strong>neutral, uncluttered background</strong> — plain walls work best.</li>
+            <li>Record in front of a <strong>neutral, uncluttered background</strong>, plain walls work best.</li>
             <li>Avoid <strong>direct sunlight</strong> or strong shadow contrast. Consistent lighting helps generate clean silhouettes.</li>
             <li>Ensure your <strong>full body remains in the frame</strong> throughout the sequence.</li>
             <li>Wear clothes that contrast well with the background.</li>

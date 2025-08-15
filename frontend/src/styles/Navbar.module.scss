@@ -2,7 +2,7 @@
 
 .header {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: 0.10rem 3rem;
   background-color: transparent;
@@ -27,6 +27,7 @@
 .logo {
   display: flex;
   align-items: center;
+  margin-right: auto;
   
   img {
     width: auto;
@@ -41,6 +42,7 @@
   font-size: 1.5rem;
   font-weight: 600;
   font-family: vars.$title-font;
+  align-items: center;
 }
 
 .navLink {

@@ -1,0 +1,261 @@
+@use './variables.scss' as vars;
+
+.main {
+  margin-top: 200px;
+  min-height: calc(100vh - 200px);
+  background-color: vars.$background-color;
+}
+
+.sequenceSection {
+  padding: 2rem 0;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+// Header
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: vars.$accent-color;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: vars.$accent-hover-color;
+  }
+}
+
+.titleSection {
+  text-align: center;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: vars.$text-color;
+  margin-bottom: 1rem;
+  font-family: vars.$title-font;
+}
+
+.description {
+  font-size: 1.125rem;
+  color: vars.$text-color-2;
+  line-height: 1.6;
+  max-width: 1200px;
+  margin: 0;
+  text-align: left;
+  white-space: pre-wrap;
+  margin-bottom: 5rem;
+}
+
+// Metadata
+.metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+  margin-bottom: 3rem;
+  padding: 1.5rem;
+  background-color: white;
+  border-radius: 1rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: vars.$text-color-2;
+  font-size: 0.875rem;
+  
+  svg {
+    color: vars.$accent-color;
+  }
+}
+
+// Actions
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 6rem;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: vars.$accent-color;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 3rem;
+  
+  &:hover {
+    background-color: vars.$accent-hover-color;
+  }
+  
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+// Poses Section
+.posesSection {
+  margin-top: 2rem;
+  margin-bottom: 3rem;
+}
+
+.posesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.poseCard {
+  background-color: white;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 0.75rem;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.poseSilhouette {
+  width: 100%;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+  
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+}
+
+.poseFallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: vars.$text-color-2;
+  font-size: 0.875rem;
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+}
+
+.poseName {
+  font-size: 1rem;
+  font-weight: 600;
+  color: vars.$text-color;
+  text-align: center;
+  font-family: vars.$title-font;
+}
+
+// Loading and Error States
+.loadingSection,
+.errorSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  text-align: center;
+}
+
+.loadingSpinner {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.errorSection {
+  h1 {
+    font-size: 2rem;
+    color: vars.$text-color;
+    margin-bottom: 1rem;
+    font-family: vars.$title-font;
+  }
+  
+  p {
+    color: vars.$text-color-2;
+    margin-bottom: 2rem;
+  }
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background-color: vars.$accent-color;
+  color: white;
+  text-decoration: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: vars.$accent-hover-color;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+  
+  .metadata {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .posesGrid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+  
+  .poseCard {
+    padding: 1rem;
+  }
+}
