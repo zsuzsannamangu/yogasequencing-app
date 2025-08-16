@@ -16,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.database import database
-from app.routes import upload, detect, silhouettes, sequences
+from app.routes import upload, detect, silhouettes, sequences, auth
 
 # ──────────────────────────────────────────────────────────────
 # Global Constants & Directory Setup
@@ -48,6 +48,7 @@ app.add_middleware(
 )
 
 # Register API routers
+app.include_router(auth.router)
 app.include_router(sequences.router)
 app.include_router(upload.router)
 app.include_router(detect.router)
