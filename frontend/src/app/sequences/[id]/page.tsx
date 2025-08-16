@@ -492,6 +492,7 @@ export default function SequenceDetailPage() {
         category: editCategory || undefined,
         industryLabel: editIndustryLabel,
         privacy: editPrivacy,
+        poseCount: editPoses.length, // Update pose count
         poses: editPoses.map((pose: any, index: number) => ({
           ...pose,
           poseName: editPoseNames[index] || pose.poseName
@@ -558,6 +559,14 @@ export default function SequenceDetailPage() {
     const newPoseNames = editPoseNames.filter((_, i) => i !== index);
     setEditPoses(newPoses);
     setEditPoseNames(newPoseNames);
+    
+    // Update the sequence's pose count
+    if (sequence) {
+      setSequence({
+        ...sequence,
+        poseCount: newPoses.length
+      });
+    }
   };
 
   const handlePoseNameChange = (index: number, newName: string) => {
@@ -718,7 +727,12 @@ export default function SequenceDetailPage() {
           {/* Description */}
           {sequence.description && (
             <div className={styles.descriptionSection}>
-              <p className={styles.description}>{sequence.description}</p>
+              <p className={styles.description}>
+                {sequence.description.length > 100 
+                  ? `${sequence.description.substring(0, 100)}...` 
+                  : sequence.description
+                }
+              </p>
             </div>
           )}
 

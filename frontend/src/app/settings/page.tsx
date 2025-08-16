@@ -16,6 +16,8 @@ export default function SettingsPage() {
     lastName: 'Doe',
     email: 'john.doe@example.com',
     phone: '+1 (555) 123-4567',
+    location: 'San Francisco, CA',
+    bio: 'Certified yoga instructor with 8+ years of experience specializing in vinyasa flow and restorative yoga. I help students find balance and strength through mindful movement.',
     businessName: 'Yoga Flow Studio',
     businessCategory: 'Yoga Teachers & Therapists'
   });
@@ -46,6 +48,8 @@ export default function SettingsPage() {
       lastName: 'Doe',
       email: 'john.doe@example.com',
       phone: '+1 (555) 123-4567',
+      location: 'San Francisco, CA',
+      bio: 'Certified yoga instructor with 8+ years of experience specializing in vinyasa flow and restorative yoga. I help students find balance and strength through mindful movement.',
       businessName: 'Yoga Flow Studio',
       businessCategory: 'Yoga Teachers & Therapists'
     });
@@ -198,6 +202,32 @@ export default function SettingsPage() {
             onChange={(e) => handleInputChange('phone', e.target.value)}
             disabled={!isEditing}
             className={styles.input}
+          />
+        </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="location">Location</label>
+          <input
+            type="text"
+            id="location"
+            value={userData.location}
+            onChange={(e) => handleInputChange('location', e.target.value)}
+            disabled={!isEditing}
+            className={styles.input}
+            placeholder="City, State or Country"
+          />
+        </div>
+
+        <div className={styles.formGroup}>
+          <label htmlFor="bio">Bio</label>
+          <textarea
+            id="bio"
+            value={userData.bio}
+            onChange={(e) => handleInputChange('bio', e.target.value)}
+            disabled={!isEditing}
+            className={styles.textarea}
+            rows={4}
+            placeholder="Tell us about yourself, your experience, and what you do..."
           />
         </div>
 

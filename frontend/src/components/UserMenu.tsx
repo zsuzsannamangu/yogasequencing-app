@@ -9,10 +9,11 @@ interface UserMenuProps {
   firstName: string;
   lastName: string;
   profileImage?: string | null;
+  location?: string;
   onLogout?: () => void;
 }
 
-export default function UserMenu({ firstName, lastName, profileImage, onLogout }: UserMenuProps) {
+export default function UserMenu({ firstName, lastName, profileImage, location, onLogout }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const userInitials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 
@@ -66,6 +67,12 @@ export default function UserMenu({ firstName, lastName, profileImage, onLogout }
       </div>
       
       <div className={`${styles.menuDropdown} ${isOpen ? styles.open : ''}`}>
+        {location && (
+          <div className={styles.userInfo}>
+            <span className={styles.userName}>{firstName} {lastName}</span>
+            <span className={styles.userLocation}>{location}</span>
+          </div>
+        )}
         <Link href="/dashboard" className={styles.menuItem} onClick={closeMenu}>
           <BookOpen size={20} />
           <span>Dashboard</span>

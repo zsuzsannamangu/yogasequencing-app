@@ -38,7 +38,7 @@ const AVAILABLE_INDUSTRY_LABELS = [
 export default function BrowsePage() {
   // Add DOMParser for PDF generation
   const DOMParser = typeof window !== 'undefined' ? window.DOMParser : null;
-  
+
   // Early return if DOMParser is not available
   if (typeof window !== 'undefined' && !DOMParser) {
     return (
@@ -51,7 +51,7 @@ export default function BrowsePage() {
       </main>
     );
   }
-  
+
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -66,11 +66,11 @@ export default function BrowsePage() {
         console.log('Fetching public sequences...');
         setLoading(true);
         setError(null);
-        
+
         // Fetch only public sequences
         const sequencesResponse = await axios.get('http://localhost:8000/sequences/public/');
         console.log('Public sequences API response:', sequencesResponse.data);
-        
+
         const transformedSequences = sequencesResponse.data.map((seq: any) => ({
           id: seq.id,
           name: seq.name,
@@ -80,12 +80,13 @@ export default function BrowsePage() {
           poseCount: seq.poseCount,
           thumbnail: seq.poses?.[0]?.filePath || '/images/yoga2.jpg',
           industryLabel: seq.industryLabel || 'Yoga', // Default to Yoga if no industry label
+          category: seq.category, // Include the category field
           privacy: seq.privacy || 'public'
         }));
-        
+
         console.log('Transformed public sequences:', transformedSequences);
         setSequences(transformedSequences);
-        
+
       } catch (error: any) {
         console.error('Failed to fetch data:', error);
         setError(error.message || 'Failed to fetch data');
@@ -103,7 +104,7 @@ export default function BrowsePage() {
       // Get sequence data for PDF generation
       const response = await axios.get(`http://localhost:8000/sequences/${sequence.id}`);
       const sequenceData = response.data;
-      
+
       // Generate PDF using jsPDF
       const pdf = new (await import('jspdf')).default('p', 'pt', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
@@ -119,14 +120,14 @@ export default function BrowsePage() {
         pdf.setFontSize(20);
         pdf.setFont('helvetica', 'bold');
         pdf.setTextColor(176, 51, 106);
-        
+
         if (sequenceData.name) {
           const titleWidth = pdf.getTextWidth(sequenceData.name);
           const titleX = (pageWidth - titleWidth) / 2;
           pdf.text(sequenceData.name, titleX, y + 20);
           y += 35;
         }
-        
+
         if (sequenceData.description) {
           pdf.setFontSize(14);
           pdf.setFont('helvetica', 'normal');
@@ -152,10 +153,10 @@ export default function BrowsePage() {
       // Add poses
       if (sequenceData.poses && sequenceData.poses.length > 0) {
         y += 20;
-        
+
         for (let i = 0; i < sequenceData.poses.length; i++) {
           const pose = sequenceData.poses[i];
-          
+
           try {
             if (pose.filePath) {
               const filePath = pose.filePath;
@@ -179,9 +180,9 @@ export default function BrowsePage() {
               // Fallback to text if silhouette fails to load
               pdf.setFontSize(10);
               pdf.setTextColor(100);
-              pdf.text(`${i + 1}. ${pose.poseName || `Pose ${i + 1}`}`, x, y + maxWidth/2);
+              pdf.text(`${i + 1}. ${pose.poseName || `Pose ${i + 1}`}`, x, y + maxWidth / 2);
             }
-            
+
             x += maxWidth + spacingX;
             if (x + maxWidth > pageWidth) {
               x = spacingX;
@@ -196,7 +197,7 @@ export default function BrowsePage() {
             // Fallback to text if silhouette fails to load
             pdf.setFontSize(10);
             pdf.setTextColor(100);
-            pdf.text(`${i + 1}. ${pose.poseName || `Pose ${i + 1}`}`, x, y + maxWidth/2);
+            pdf.text(`${i + 1}. ${pose.poseName || `Pose ${i + 1}`}`, x, y + maxWidth / 2);
             x += maxWidth + spacingX;
             if (x + maxWidth > pageWidth) {
               x = spacingX;
@@ -211,11 +212,11 @@ export default function BrowsePage() {
       }
 
       // Save the PDF
-      const filename = sequenceData.name 
+      const filename = sequenceData.name
         ? `${sequenceData.name.replace(/[^a-zA-Z0-9]/g, '_')}_sequence.pdf`
         : 'sequence.pdf';
       pdf.save(filename);
-      
+
     } catch (error: any) {
       console.error('Failed to generate PDF:', error);
       alert('Failed to generate PDF. Please try again.');
@@ -227,7 +228,7 @@ export default function BrowsePage() {
       // Get sequence data for sharing
       const response = await axios.get(`http://localhost:8000/sequences/${sequence.id}`);
       const sequenceData = response.data;
-      
+
       // Generate PDF for sharing
       const pdf = new (await import('jspdf')).default('p', 'pt', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
@@ -243,14 +244,14 @@ export default function BrowsePage() {
         pdf.setFontSize(20);
         pdf.setFont('helvetica', 'bold');
         pdf.setTextColor(176, 51, 106);
-        
+
         if (sequenceData.name) {
           const titleWidth = pdf.getTextWidth(sequenceData.name);
           const titleX = (pageWidth - titleWidth) / 2;
           pdf.text(sequenceData.name, titleX, y + 20);
           y += 35;
         }
-        
+
         if (sequenceData.description) {
           pdf.setFontSize(14);
           pdf.setFont('helvetica', 'normal');
@@ -276,10 +277,10 @@ export default function BrowsePage() {
       // Add poses
       if (sequenceData.poses && sequenceData.poses.length > 0) {
         y += 20;
-        
+
         for (let i = 0; i < sequenceData.poses.length; i++) {
           const pose = sequenceData.poses[i];
-          
+
           try {
             if (pose.filePath) {
               const filePath = pose.filePath;
@@ -303,9 +304,9 @@ export default function BrowsePage() {
               // Fallback to text if silhouette fails to load
               pdf.setFontSize(10);
               pdf.setTextColor(100);
-              pdf.text(`${i + 1}. ${pose.poseName || `Pose ${i + 1}`}`, x, y + maxWidth/2);
+              pdf.text(`${i + 1}. ${pose.poseName || `Pose ${i + 1}`}`, x, y + maxWidth / 2);
             }
-            
+
             x += maxWidth + spacingX;
             if (x + maxWidth > pageWidth) {
               x = spacingX;
@@ -320,7 +321,7 @@ export default function BrowsePage() {
             // Fallback to text if silhouette fails to load
             pdf.setFontSize(10);
             pdf.setTextColor(100);
-            pdf.text(`${i + 1}. ${pose.poseName || `Pose ${i + 1}`}`, x, y + maxWidth/2);
+            pdf.text(`${i + 1}. ${pose.poseName || `Pose ${i + 1}`}`, x, y + maxWidth / 2);
             x += maxWidth + spacingX;
             if (x + maxWidth > pageWidth) {
               x = spacingX;
@@ -347,11 +348,11 @@ export default function BrowsePage() {
         });
       } else {
         // Fallback: download the PDF and show success message
-        const filename = sequenceData.name 
+        const filename = sequenceData.name
           ? `${sequenceData.name.replace(/[^a-zA-Z0-9]/g, '_')}_sequence.pdf`
           : 'sequence.pdf';
         pdf.save(filename);
-        
+
         alert('PDF downloaded! You can now share it manually.');
       }
     } catch (error: any) {
@@ -363,7 +364,7 @@ export default function BrowsePage() {
   // Filter sequences based on search term and industry label
   const filteredSequences = sequences.filter(sequence => {
     const matchesSearch = sequence.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         sequence.description.toLowerCase().includes(searchTerm.toLowerCase());
+      sequence.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesIndustryLabel = selectedIndustryLabel === 'all' || sequence.industryLabel === selectedIndustryLabel;
     return matchesSearch && matchesIndustryLabel;
   });
@@ -411,7 +412,7 @@ export default function BrowsePage() {
   return (
     <main className={styles.main}>
       <Navbar />
-      
+
       <section className={styles.browseSection}>
         <div className={styles.container}>
           {/* Header */}
@@ -487,7 +488,7 @@ export default function BrowsePage() {
           {sortedSequences.length === 0 ? (
             <div className={styles.emptyState}>
               <div className={styles.emptyText}>
-                {searchTerm || selectedIndustryLabel !== 'all' 
+                {searchTerm || selectedIndustryLabel !== 'all'
                   ? 'No sequences match your search criteria. Try adjusting your filters.'
                   : 'No public sequences available yet. Check back soon!'}
               </div>
@@ -505,7 +506,7 @@ export default function BrowsePage() {
                       </Link>
                     </h3>
                     <p className={styles.sequenceDescription}>{sequence.description}</p>
-                    
+
                     {/* Metadata */}
                     <div className={styles.metadata}>
                       <div className={styles.metaItem}>
@@ -530,26 +531,27 @@ export default function BrowsePage() {
 
                     {/* Actions */}
                     <div className={styles.actions}>
-                      <Link 
-                        href={`/browse/${sequence.id}`}
-                        className={styles.viewDetailsButton}
-                      >
-                        View Details
-                      </Link>
-                      <button 
-                        className={styles.actionButton} 
+                      {sequence.category && (
+                        <div className={styles.categoryBadge}>
+                          <Tag size={14} />
+                          <span>{sequence.category}</span>
+                        </div>
+                      )}
+                      <button
+                        className={styles.actionButton}
                         data-tooltip="Download PDF"
                         onClick={() => handleDownloadPDF(sequence)}
                       >
                         <Download size={18} />
                       </button>
-                      <button 
-                        className={styles.actionButton} 
+                      <button
+                        className={styles.actionButton}
                         data-tooltip="Share Sequence"
                         onClick={() => handleShare(sequence)}
                       >
                         <Share2 size={18} />
                       </button>
+
                     </div>
                   </div>
                 </div>

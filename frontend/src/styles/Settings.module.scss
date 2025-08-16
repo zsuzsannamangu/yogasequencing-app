@@ -271,6 +271,30 @@
   cursor: pointer;
 }
 
+.textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: vars.$title-font;
+  transition: vars.$transition;
+  background-color: white;
+  resize: vertical;
+  min-height: 120px;
+
+  &:focus {
+    outline: none;
+    border-color: vars.$primary-color;
+    box-shadow: 0 0 0 3px rgba(0, 50, 33, 0.1);
+  }
+
+  &:disabled {
+    background-color: #f9fafb;
+    color: vars.$text-color-2;
+    cursor: not-allowed;
+  }
+}
+
 .formActions {
   display: flex;
   gap: 1rem;

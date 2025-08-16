@@ -409,7 +409,12 @@ export default function SequencesPage() {
                         {sequence.privacy === 'public' ? '🌍' : '🔒'}
                       </span>
                     </h3>
-                    <p className={styles.sequenceDescription}>{sequence.description}</p>
+                    <p className={styles.sequenceDescription}>
+                      {sequence.description.length > 100 
+                        ? `${sequence.description.substring(0, 100)}...` 
+                        : sequence.description
+                      }
+                    </p>
                     
                     <div className={styles.sequenceCategory}>
                       {sequence.category ? (
