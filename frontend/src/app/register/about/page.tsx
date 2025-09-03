@@ -1,10 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useAuth } from '@/contexts/AuthContext';
+import Swal from 'sweetalert2';
 import styles from '@/styles/RegisterFlow.module.scss';
 
 export default function AboutYouPage() {
@@ -13,14 +15,79 @@ export default function AboutYouPage() {
   const [lastName, setLastName] = useState('');
   const [phonePrefix, setPhonePrefix] = useState('+1');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const { register, isLoading } = useAuth();
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    // Check if we have the required data from previous steps
+    const email = sessionStorage.getItem('registration_email');
+    const password = sessionStorage.getItem('registration_password');
+    const businessCategory = sessionStorage.getItem('registration_business_category');
+    
+    if (!email || !password || !businessCategory) {
+      // Redirect back to register if missing data
+      router.push('/register');
+    }
+  }, [router]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle final registration logic here
-    console.log('Registration complete:', { businessName, firstName, lastName, phonePrefix, phoneNumber });
-    // Navigate to payment page
-    router.push('/register/payment');
+    
+    if (isSubmitting || isLoading) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      // Get data from sessionStorage
+      const email = sessionStorage.getItem('registration_email') || '';
+      const password = sessionStorage.getItem('registration_password') || '';
+      const businessCategory = sessionStorage.getItem('registration_business_category') || '';
+      
+      // Prepare registration data
+      const registrationData = {
+        email,
+        password,
+        first_name: firstName,
+        last_name: lastName,
+        business_name: businessName,
+        business_category: businessCategory,
+        location: '', // Optional field
+        bio: '', // Optional field
+      };
+      
+      // Register the user
+      await register(registrationData);
+      
+      // Clear session storage
+      sessionStorage.removeItem('registration_email');
+      sessionStorage.removeItem('registration_password');
+      sessionStorage.removeItem('registration_business_category');
+      
+      // Show success message
+      Swal.fire({
+        title: 'Welcome to MoveMosaic!',
+        text: 'Your account has been created successfully.',
+        icon: 'success',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'Get Started',
+      });
+      
+      // Navigate to home page
+      router.push('/');
+      
+    } catch (error: any) {
+      Swal.fire({
+        title: 'Registration Failed',
+        text: error.message || 'Failed to create account. Please try again.',
+        icon: 'error',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isFormValid = businessName.trim() && firstName.trim() && lastName.trim() && phoneNumber.trim();
@@ -122,10 +189,10 @@ export default function AboutYouPage() {
 
             <button 
               type="submit" 
-              className={`${styles.primaryButton} ${!isFormValid ? styles.disabled : ''}`}
-              disabled={!isFormValid}
+              className={`${styles.primaryButton} ${!isFormValid || isSubmitting || isLoading ? styles.disabled : ''}`}
+              disabled={!isFormValid || isSubmitting || isLoading}
             >
-              CONTINUE
+              {isSubmitting || isLoading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}
             </button>
           </form>
         </div>

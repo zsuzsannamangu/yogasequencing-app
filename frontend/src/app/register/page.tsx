@@ -2,19 +2,29 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useAuth } from '@/contexts/AuthContext';
+import Swal from 'sweetalert2';
 import styles from '@/styles/Auth.module.scss';
 
 export default function RegisterPage() {
   const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle registration logic here
-    console.log('Registration attempt:', { email });
+    
+    if (isSubmitting) return;
+    
+    // Store email in sessionStorage for the registration flow
+    sessionStorage.setItem('registration_email', email);
+    
     // Navigate to password setup
-    window.location.href = '/register/password';
+    router.push('/register/password');
   };
 
   return (

@@ -36,8 +36,8 @@ export default function BusinessCategoryPage() {
 
   const handleContinue = () => {
     if (selectedCategory) {
-      // Handle category selection logic here
-      console.log('Selected category:', selectedCategory);
+      // Store business category in sessionStorage
+      sessionStorage.setItem('registration_business_category', selectedCategory);
       // Navigate to next step
       router.push('/register/about');
     }

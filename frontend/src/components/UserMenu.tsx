@@ -3,6 +3,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Upload, BookOpen, HelpCircle, Settings, LogOut, List } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
+import Swal from 'sweetalert2';
 import styles from '@/styles/UserMenu.module.scss';
 
 interface UserMenuProps {
@@ -16,12 +19,42 @@ interface UserMenuProps {
 export default function UserMenu({ firstName, lastName, profileImage, location, onLogout }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const userInitials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+  const { logout } = useAuth();
+  const router = useRouter();
 
-  const handleLogout = () => {
-    if (onLogout) {
-      onLogout();
+  const handleLogout = async () => {
+    try {
+      // Show confirmation dialog
+      const result = await Swal.fire({
+        title: 'Logout',
+        text: 'Are you sure you want to logout?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#b8336a',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Yes, logout',
+        cancelButtonText: 'Cancel'
+      });
+
+      if (result.isConfirmed) {
+        logout();
+        setIsOpen(false);
+        
+        // Show success message
+        Swal.fire({
+          title: 'Logged out',
+          text: 'You have been successfully logged out.',
+          icon: 'success',
+          confirmButtonColor: '#b8336a',
+          confirmButtonText: 'OK',
+        });
+        
+        // Redirect to home page
+        router.push('/');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
     }
-    setIsOpen(false);
   };
 
   const toggleMenu = () => {

@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import UserMenu from './UserMenu';
+import { useAuth } from '@/contexts/AuthContext';
 import styles from '../styles/Navbar.module.scss';
 
 interface NavbarProps {
@@ -18,6 +19,7 @@ export default function Navbar({ showUserMenu = false, firstName = '', lastName 
   const [isScrolled, setIsScrolled] = useState(false);
   const pathname = usePathname();
   const isHomepage = pathname === '/';
+  const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,8 +45,12 @@ export default function Navbar({ showUserMenu = false, firstName = '', lastName 
       <nav className={styles.nav}>
         <Link href="/browse" className={styles.navLink}>Browse</Link>
         <Link href="/#contact" className={styles.navLink}>Contact</Link>
-        {showUserMenu ? (
-          <UserMenu firstName={firstName} lastName={lastName} profileImage={profileImage} />
+        {isAuthenticated && user ? (
+          <UserMenu 
+            firstName={user.first_name} 
+            lastName={user.last_name} 
+            profileImage={null} 
+          />
         ) : (
           <>
             <Link href="/register" className={styles.navLink}>Register</Link>

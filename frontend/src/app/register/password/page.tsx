@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
@@ -12,10 +12,21 @@ export default function PasswordSetupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    // Check if email exists in sessionStorage
+    const email = sessionStorage.getItem('registration_email');
+    if (!email) {
+      // Redirect back to register if no email
+      router.push('/register');
+    }
+  }, [router]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle password setup logic here
-    console.log('Password setup:', { password });
+    
+    // Store password in sessionStorage for the registration flow
+    sessionStorage.setItem('registration_password', password);
+    
     // Navigate to next step
     router.push('/register/business');
   };

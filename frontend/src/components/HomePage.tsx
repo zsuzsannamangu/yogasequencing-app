@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useAuth } from '@/contexts/AuthContext';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import styles from '@/styles/HomePage.module.scss';
@@ -24,8 +25,8 @@ const FadeInSection = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default function HomePage() {
-    // Mock authentication state - in real app this would come from auth context
-    const isAuthenticated = true; // Set to true to show user menu when signed in
+    // Get authentication state from context
+    const { isAuthenticated } = useAuth(); // Set to true to show user menu when signed in
     const userData = {
         firstName: 'John',
         lastName: 'Doe',
@@ -225,6 +226,11 @@ export default function HomePage() {
                                 </p>
                                 <p className={styles.sectionText}>
                                     What sets us apart is our commitment to personalization. Every sequence you create becomes part of your unique library, reflecting your teaching philosophy, your students' needs, and your evolving practice.
+                                </p>
+                                <p className={styles.sectionText}>
+                                    <strong>What makes MoveMosaic truly special?</strong> Unlike other apps that use generic, pre-drawn figures, 
+                                    our silhouettes are extracted directly from <em>your own body</em> in the videos you upload. Every silhouette reflects your actual body proportions, 
+                                    posture, and movement patterns, not a generic template. Students see the real you, your actual form, your real movements, your authentic teaching style.
                                 </p>
                             </div>
                             <div className={styles.imageContainer}>

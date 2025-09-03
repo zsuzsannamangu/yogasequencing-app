@@ -2,19 +2,55 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import { useAuth } from '@/contexts/AuthContext';
+import Swal from 'sweetalert2';
 import styles from '@/styles/Auth.module.scss';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
+  const { login, isLoading } = useAuth();
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Login attempt:', { email, password });
+    
+    if (isSubmitting || isLoading) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      await login(email, password);
+      
+      // Show success message
+      Swal.fire({
+        title: 'Welcome back!',
+        text: 'You have successfully logged in.',
+        icon: 'success',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+      
+      // Redirect to home page
+      router.push('/');
+      
+    } catch (error: any) {
+      Swal.fire({
+        title: 'Login Failed',
+        text: error.message || 'Invalid email or password',
+        icon: 'error',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -69,8 +105,12 @@ export default function LoginPage() {
               </button>
             </div>
 
-            <button type="submit" className={styles.primaryButton}>
-              LOG IN WITH EMAIL
+            <button 
+              type="submit" 
+              className={styles.primaryButton}
+              disabled={isSubmitting || isLoading}
+            >
+              {isSubmitting || isLoading ? 'LOGGING IN...' : 'LOG IN WITH EMAIL'}
             </button>
 
             <Link href="/forgot-password" className={styles.forgotPassword}>
