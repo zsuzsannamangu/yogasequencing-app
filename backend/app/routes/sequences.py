@@ -1,11 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
 from typing import List, Optional
 import json
 from datetime import datetime
 from app.database import database
+from app.auth import get_current_user_id
 
 router = APIRouter(prefix="/sequences", tags=["sequences"])
+security = HTTPBearer()
 
 # Pydantic models
 class PoseData(BaseModel):
@@ -116,10 +119,19 @@ async def delete_category(category_id: str):
 
 # Sequence endpoints
 @router.post("/", response_model=SequenceResponse)
-async def create_sequence(sequence: SequenceCreate):
+async def create_sequence(
+    sequence: SequenceCreate,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     """Create a new sequence"""
     try:
+        # Get current user ID from JWT token
+        user_id = get_current_user_id(credentials.credentials)
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid or missing authentication token")
+        
         # Debug logging
+        print(f"Creating sequence for user: {user_id}")
         print(f"Received sequence data: {sequence.dict()}")
         print(f"Industry Label: {sequence.industryLabel}")
         
@@ -128,10 +140,10 @@ async def create_sequence(sequence: SequenceCreate):
         
         # Save to database - handle missing columns gracefully
         try:
-            # Try with all columns first
+            # Try with all columns first (including user_id)
             query = """
-            INSERT INTO sequences (id, name, description, duration, pose_count, poses, created_at, category, privacy, industry_label)
-            VALUES (:id, :name, :description, :duration, :pose_count, :poses, :created_at, :category, :privacy, :industry_label)
+            INSERT INTO sequences (id, name, description, duration, pose_count, poses, created_at, user_id, category, privacy, industry_label)
+            VALUES (:id, :name, :description, :duration, :pose_count, :poses, :created_at, :user_id, :category, :privacy, :industry_label)
             """
             
             await database.execute(
@@ -144,6 +156,7 @@ async def create_sequence(sequence: SequenceCreate):
                     "pose_count": sequence.poseCount,
                     "poses": json.dumps([pose.dict() for pose in sequence.poses]),
                     "created_at": datetime.now(),
+                    "user_id": user_id,
                     "category": sequence.category,
                     "privacy": sequence.privacy,
                     "industry_label": sequence.industryLabel
@@ -151,10 +164,10 @@ async def create_sequence(sequence: SequenceCreate):
             )
         except Exception as e:
             try:
-                # Fallback to insert without industry_label column
+                # Fallback to insert without industry_label column (but with user_id)
                 query = """
-                INSERT INTO sequences (id, name, description, duration, pose_count, poses, created_at, category, privacy)
-                VALUES (:id, :name, :description, :duration, :pose_count, :poses, :created_at, :category, :privacy)
+                INSERT INTO sequences (id, name, description, duration, pose_count, poses, created_at, user_id, category, privacy)
+                VALUES (:id, :name, :description, :duration, :pose_count, :poses, :created_at, :user_id, :category, :privacy)
                 """
                 
                 await database.execute(
@@ -167,15 +180,16 @@ async def create_sequence(sequence: SequenceCreate):
                         "pose_count": sequence.poseCount,
                         "poses": json.dumps([pose.dict() for pose in sequence.poses]),
                         "created_at": datetime.now(),
+                        "user_id": user_id,
                         "category": sequence.category,
                         "privacy": sequence.privacy
                     }
                 )
             except Exception as e2:
-                # Final fallback to insert without privacy and industry_label columns
+                # Final fallback to insert without privacy and industry_label columns (but with user_id)
                 query = """
-                INSERT INTO sequences (id, name, description, duration, pose_count, poses, created_at, category)
-                VALUES (:id, :name, :description, :duration, :pose_count, :poses, :created_at, :category)
+                INSERT INTO sequences (id, name, description, duration, pose_count, poses, created_at, user_id, category)
+                VALUES (:id, :name, :description, :duration, :pose_count, :poses, :created_at, :user_id, :category)
                 """
                 
                 await database.execute(
@@ -188,6 +202,7 @@ async def create_sequence(sequence: SequenceCreate):
                         "pose_count": sequence.poseCount,
                         "poses": json.dumps([pose.dict() for pose in sequence.poses]),
                         "created_at": datetime.now(),
+                        "user_id": user_id,
                         "category": sequence.category
                     }
                 )
@@ -209,11 +224,21 @@ async def create_sequence(sequence: SequenceCreate):
         raise HTTPException(status_code=500, detail=f"Failed to create sequence: {str(e)}")
 
 @router.get("/", response_model=List[SequenceResponse])
-async def get_sequences():
-    """Get all sequences"""
+async def get_sequences(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Get user's own sequences (both public and private)"""
     try:
-        query = "SELECT * FROM sequences ORDER BY created_at DESC"
-        result = await database.fetch_all(query)
+        # Get current user ID from JWT token
+        user_id = get_current_user_id(credentials.credentials)
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid or missing authentication token")
+        
+        # Get ONLY the user's own sequences (both public and private)
+        query = """
+        SELECT * FROM sequences 
+        WHERE user_id = :user_id
+        ORDER BY created_at DESC
+        """
+        result = await database.fetch_all(query, {"user_id": user_id})
         
         sequences = []
         for row in result:
