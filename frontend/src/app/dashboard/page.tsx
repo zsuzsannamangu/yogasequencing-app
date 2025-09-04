@@ -7,12 +7,19 @@ import { Upload, List, HelpCircle } from 'lucide-react';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import UserMenu from '@/components/UserMenu';
+import { useAuth } from '@/contexts/AuthContext';
 import styles from '@/styles/Dashboard.module.scss';
 
 export default function DashboardPage() {
-  // Mock user data - in real app this would come from authentication context
-  const firstName = "John"; // This would be dynamic
-  const userInitials = "JD"; // This would be dynamic
+  const { user, isAuthenticated } = useAuth();
+  
+  // Get user data from authentication context
+  const firstName = user?.first_name || "User";
+  const lastName = user?.last_name || "";
+  const userInitials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
+
+  // Check if profile is complete
+  const isProfileComplete = user?.location && user?.bio && user?.profile_image;
 
   // State for dashboard statistics
   const [stats, setStats] = useState({
@@ -31,17 +38,32 @@ export default function DashboardPage() {
         setError(null);
 
         // Fetch all sequences to count public vs private
-        const sequencesResponse = await axios.get('http://localhost:8000/sequences/');
+        const sequencesResponse = await axios.get('http://localhost:8000/sequences/', {
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
         const sequences = sequencesResponse.data;
 
         // Count public and private sequences
         const publicCount = sequences.filter((seq: any) => seq.privacy === 'public').length;
         const privateCount = sequences.filter((seq: any) => seq.privacy === 'private').length;
 
-        // TODO: This will need backend implementation to track actual downloads by other users
-        // For now, we'll show a placeholder count that only includes downloads from browse page
-        // (excludes user's own downloads from sequences page)
-        const totalDownloads = publicCount * 3; // Placeholder: assume 3 downloads per public sequence by other users
+        // Get actual download count for user's public sequences from browse page
+        let totalDownloads = 0;
+        try {
+          const downloadStatsResponse = await axios.get('http://localhost:8000/sequences/my-download-stats', {
+            headers: {
+              'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+            }
+          });
+          totalDownloads = downloadStatsResponse.data.total_downloads;
+          console.log('Download stats response:', downloadStatsResponse.data);
+        } catch (downloadError) {
+          console.error('Failed to fetch download stats:', downloadError);
+          // Fallback to 0 if download stats fail
+          totalDownloads = 0;
+        }
 
         setStats({
           publicSequences: publicCount,
@@ -62,7 +84,7 @@ export default function DashboardPage() {
 
   return (
     <main className={styles.main}>
-      <Navbar showUserMenu={true} firstName={firstName} lastName="Doe" profileImage={null} />
+      <Navbar showUserMenu={true} firstName={firstName} lastName={lastName} profileImage={null} />
       <section className={styles.dashboardSection}>
         <div className={styles.dashboardContainer}>
 
@@ -70,6 +92,19 @@ export default function DashboardPage() {
             <h1 className={styles.title}>Hello, {firstName}</h1>
             <p className={styles.subtitle}>Create, manage, and share your movement sequences</p>
           </div>
+
+          {/* Profile Setup Notice - Only show if profile is incomplete */}
+          {!isProfileComplete && (
+            <div className={styles.profileSetupNotice}>
+              <div className={styles.noticeContent}>
+                <h3>Complete Your Profile</h3>
+                <p>Add your location, bio, and profile image to build credibility and attract more students to your sequences.</p>
+                <Link href="/settings" className={styles.setupButton}>
+                  Set Up Profile
+                </Link>
+              </div>
+            </div>
+          )}
 
           <div className={styles.quickActions}>
             <h2>Quick Actions</h2>

@@ -49,7 +49,12 @@ export default function Navbar({ showUserMenu = false, firstName = '', lastName 
           <UserMenu 
             firstName={user.first_name} 
             lastName={user.last_name} 
-            profileImage={null} 
+            profileImage={user.profile_image ? 
+              (user.profile_image.startsWith('http') ? 
+                user.profile_image : 
+                `http://localhost:8000/${user.profile_image}`) : 
+              null
+            } 
           />
         ) : (
           <>

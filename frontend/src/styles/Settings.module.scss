@@ -713,3 +713,23 @@
     height: 28px;
   }
 }
+
+// Public Information Notice Styles
+.publicInfoNotice {
+  background: rgba(184, 51, 106, 0.08);
+  border-left: 3px solid vars.$accent-color;
+  border-radius: 6px;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  
+  p {
+    margin: 0;
+    color: vars.$text-color;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    
+    strong {
+      color: vars.$accent-color;
+    }
+  }
+}

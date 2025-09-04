@@ -1,30 +1,62 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { User, Mail, Phone, Building, CreditCard, Shield, Bell, Palette, Download, Trash2, Save, Edit2, Camera, X } from 'lucide-react';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
+import { useAuth } from '@/contexts/AuthContext';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 import styles from '@/styles/Settings.module.scss';
 
 export default function SettingsPage() {
+  const { user, isAuthenticated, token } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [activeTab, setActiveTab] = useState('profile');
+  const [isLoading, setIsLoading] = useState(false);
   
-  // Mock user data - in real app this would come from authentication context
+  // Real user data from authentication context
   const [userData, setUserData] = useState({
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john.doe@example.com',
-    phone: '+1 (555) 123-4567',
-    location: 'San Francisco, CA',
-    bio: 'Certified yoga instructor with 8+ years of experience specializing in vinyasa flow and restorative yoga. I help students find balance and strength through mindful movement.',
-    businessName: 'Yoga Flow Studio',
-    businessCategory: 'Yoga Teachers & Therapists'
+    firstName: user?.first_name || '',
+    lastName: user?.last_name || '',
+    email: user?.email || '',
+    phone: user?.phone || '',
+    location: user?.location || '',
+    bio: user?.bio || '',
+    businessName: user?.business_name || '',
+    businessCategory: user?.business_category || ''
   });
 
-  const [profileImage, setProfileImage] = useState<string | null>('/images/default-avatar.png');
+  const [profileImage, setProfileImage] = useState<string | null>(user?.profile_image || '/images/default-avatar.png');
   const [isImageUploading, setIsImageUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Update user data when user context changes
+  useEffect(() => {
+    if (user) {
+      setUserData({
+        firstName: user.first_name || '',
+        lastName: user.last_name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        location: user.location || '',
+        bio: user.bio || '',
+        businessName: user.business_name || '',
+        businessCategory: user.business_category || ''
+      });
+      
+      // Set profile image - use full URL if it's a relative path
+      if (user.profile_image) {
+        if (user.profile_image.startsWith('http')) {
+          setProfileImage(user.profile_image);
+        } else {
+          setProfileImage(`http://localhost:8000/${user.profile_image}`);
+        }
+      } else {
+        setProfileImage('/images/default-avatar.png');
+      }
+    }
+  }, [user]);
 
   const [subscriptionData] = useState({
     plan: 'Pro Plan',
@@ -34,25 +66,102 @@ export default function SettingsPage() {
     trialEnds: null
   });
 
-  const handleSave = () => {
-    setIsEditing(false);
-    // Here you would save to backend
-    console.log('Saving user data:', userData);
+  const handleSave = async () => {
+    if (!user) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Please log in to save your profile',
+        icon: 'error',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+    
+    setIsLoading(true);
+    try {
+      if (!token) {
+        Swal.fire({
+          title: 'Authentication Error',
+          text: 'Your session has expired. Please log in again.',
+          icon: 'error',
+          confirmButtonColor: '#b8336a',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          // Redirect to login page
+          window.location.href = '/login';
+        });
+        return;
+      }
+
+      // Update user profile
+      const response = await axios.put(`http://localhost:8000/auth/users/${user.id}`, {
+        first_name: userData.firstName,
+        last_name: userData.lastName,
+        phone: userData.phone,
+        location: userData.location,
+        bio: userData.bio,
+        business_name: userData.businessName,
+        business_category: userData.businessCategory
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      setIsEditing(false);
+      
+      Swal.fire({
+        title: 'Success!',
+        text: 'Your profile has been updated successfully',
+        icon: 'success',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      }).then(() => {
+        // Refresh user data in context after user closes the success message
+        window.location.reload();
+      });
+      
+    } catch (error: any) {
+      console.error('Failed to save user data:', error);
+      
+      let errorMessage = 'Failed to save profile. Please try again.';
+      
+      if (error.response?.status === 401) {
+        errorMessage = 'Your session has expired. Please log in again.';
+      } else if (error.response?.status === 403) {
+        errorMessage = 'You do not have permission to update this profile.';
+      } else if (error.response?.data?.detail) {
+        errorMessage = error.response.data.detail;
+      }
+      
+      Swal.fire({
+        title: 'Error',
+        text: errorMessage,
+        icon: 'error',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    // Reset to original data
-    setUserData({
-      firstName: 'John',
-      lastName: 'Doe',
-      email: 'john.doe@example.com',
-      phone: '+1 (555) 123-4567',
-      location: 'San Francisco, CA',
-      bio: 'Certified yoga instructor with 8+ years of experience specializing in vinyasa flow and restorative yoga. I help students find balance and strength through mindful movement.',
-      businessName: 'Yoga Flow Studio',
-      businessCategory: 'Yoga Teachers & Therapists'
-    });
+    // Reset to original user data
+    if (user) {
+      setUserData({
+        firstName: user.first_name || '',
+        lastName: user.last_name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        location: user.location || '',
+        bio: user.bio || '',
+        businessName: user.business_name || '',
+        businessCategory: user.business_category || ''
+      });
+    }
   };
 
   const handleInputChange = (field: string, value: string) => {
@@ -62,30 +171,129 @@ export default function SettingsPage() {
     }));
   };
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-    if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
-        alert('Image size must be less than 5MB');
-        return;
-      }
+    if (!file) return;
 
-      setIsImageUploading(true);
-      
-      // Simulate upload delay
-      setTimeout(() => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          setProfileImage(e.target?.result as string);
-          setIsImageUploading(false);
-        };
-        reader.readAsDataURL(file);
-      }, 1000);
+    if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      Swal.fire({
+        title: 'File Too Large',
+        text: 'Image size must be less than 5MB',
+        icon: 'error',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      Swal.fire({
+        title: 'Invalid File Type',
+        text: 'Please upload a JPG, PNG, GIF, or WebP image',
+        icon: 'error',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+
+    setIsImageUploading(true);
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await axios.post('http://localhost:8000/profile-image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.data.image_path) {
+        setProfileImage(`http://localhost:8000/${response.data.image_path}`);
+        
+        // Refresh user data from backend to update the auth context
+        try {
+          const userResponse = await axios.get('http://localhost:8000/auth/me', {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          
+          // Update the user data in the auth context
+          // This will trigger a re-render of all components using the user data
+          window.location.reload();
+        } catch (error) {
+          console.error('Failed to refresh user data:', error);
+        }
+        
+        Swal.fire({
+          title: 'Success!',
+          text: 'Profile image uploaded successfully',
+          icon: 'success',
+          confirmButtonColor: '#b8336a',
+          confirmButtonText: 'OK',
+        });
+      }
+    } catch (error: any) {
+      console.error('Upload failed:', error);
+      Swal.fire({
+        title: 'Upload Failed',
+        text: error.response?.data?.detail || 'Failed to upload image. Please try again.',
+        icon: 'error',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+    } finally {
+      setIsImageUploading(false);
     }
   };
 
-  const handleRemoveImage = () => {
-    setProfileImage('/images/default-avatar.png');
+  const handleRemoveImage = async () => {
+    try {
+      await axios.delete('http://localhost:8000/profile-image', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      setProfileImage('/images/default-avatar.png');
+      
+      // Refresh user data from backend to update the auth context
+      try {
+        const userResponse = await axios.get('http://localhost:8000/auth/me', {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        
+        // Update the user data in the auth context
+        // This will trigger a re-render of all components using the user data
+        window.location.reload();
+      } catch (error) {
+        console.error('Failed to refresh user data:', error);
+      }
+      
+      Swal.fire({
+        title: 'Success!',
+        text: 'Profile image removed successfully',
+        icon: 'success',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+    } catch (error: any) {
+      console.error('Remove failed:', error);
+      Swal.fire({
+        title: 'Remove Failed',
+        text: error.response?.data?.detail || 'Failed to remove image. Please try again.',
+        icon: 'error',
+        confirmButtonColor: '#b8336a',
+        confirmButtonText: 'OK',
+      });
+    }
   };
 
   const triggerImageUpload = () => {
@@ -155,6 +363,11 @@ export default function SettingsPage() {
         </div>
       </div>
 
+      {/* Public Information Notice */}
+      <div className={styles.publicInfoNotice}>
+        <p><strong>Public Info:</strong> Your first name, last name initial, location, bio, business details, and profile image will be visible to others. Write something good to build credibility!</p>
+      </div>
+
       <div className={styles.formSection}>
         <div className={styles.formRow}>
           <div className={styles.formGroup}>
@@ -210,7 +423,7 @@ export default function SettingsPage() {
           <input
             type="text"
             id="location"
-            value={userData.location}
+            value={userData.location || ''}
             onChange={(e) => handleInputChange('location', e.target.value)}
             disabled={!isEditing}
             className={styles.input}
@@ -222,7 +435,7 @@ export default function SettingsPage() {
           <label htmlFor="bio">Bio</label>
           <textarea
             id="bio"
-            value={userData.bio}
+            value={userData.bio || ''}
             onChange={(e) => handleInputChange('bio', e.target.value)}
             disabled={!isEditing}
             className={styles.textarea}
@@ -236,10 +449,11 @@ export default function SettingsPage() {
           <input
             type="text"
             id="businessName"
-            value={userData.businessName}
+            value={userData.businessName || ''}
             onChange={(e) => handleInputChange('businessName', e.target.value)}
             disabled={!isEditing}
             className={styles.input}
+            placeholder="Your business name (optional)"
           />
         </div>
 
@@ -467,9 +681,22 @@ export default function SettingsPage() {
     }
   };
 
+  // Redirect if not authenticated
+  if (!isAuthenticated) {
+    return (
+      <main className={styles.main}>
+        <Navbar showUserMenu={false} firstName="" lastName="" profileImage={null} />
+        <div style={{ textAlign: 'center', padding: '2rem' }}>
+          <h1>Please log in to access settings</h1>
+        </div>
+        <Footer />
+      </main>
+    );
+  }
+
   return (
     <main className={styles.main}>
-                <Navbar showUserMenu={true} firstName="User" lastName="Name" profileImage={profileImage} />
+      <Navbar showUserMenu={true} firstName={user?.first_name || ''} lastName={user?.last_name || ''} profileImage={profileImage} />
 
       <section className={styles.settingsSection}>
         <div className={styles.settingsContainer}>

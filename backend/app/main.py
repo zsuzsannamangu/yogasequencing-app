@@ -38,6 +38,11 @@ os.makedirs(POSES_DIR, exist_ok=True)
 
 app = FastAPI()
 
+@app.get("/health")
+async def health_check():
+    """Simple health check endpoint"""
+    return {"status": "ok", "message": "Backend is running"}
+
 # Enable CORS FIRST (before mounting static files)
 app.add_middleware(
     CORSMiddleware,
@@ -57,6 +62,7 @@ app.include_router(silhouettes.router)
 # Mount static files AFTER CORS is configured
 app.mount("/sequence-assets", StaticFiles(directory="sequences"), name="sequence-assets")
 app.mount("/silhouettes", StaticFiles(directory=SILHOUETTES_DIR), name="silhouettes")
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 # ──────────────────────────────────────────────────────────────
 # Database Lifecycle Events

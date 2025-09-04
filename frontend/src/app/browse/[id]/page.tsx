@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
-import { ArrowLeft, Download, Share2, Calendar, Clock, Tag, Layers } from 'lucide-react';
+import { ArrowLeft, Download, Share2, Calendar, Clock, Tag, Layers, User } from 'lucide-react';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import styles from '@/styles/BrowseDetail.module.scss';
@@ -15,6 +15,14 @@ import Swal from 'sweetalert2';
 interface PoseData {
     filePath: string;
     poseName: string;
+}
+
+interface UserInfo {
+    id: string;
+    first_name: string;
+    last_name: string;
+    profile_image?: string;
+    business_name?: string;
 }
 
 interface Sequence {
@@ -28,6 +36,7 @@ interface Sequence {
     category?: string;
     privacy?: 'private' | 'public';
     industryLabel?: string;
+    user?: UserInfo;
 }
 
 export default function BrowseSequenceDetailPage() {
@@ -387,6 +396,14 @@ export default function BrowseSequenceDetailPage() {
                             <div className={styles.metaItem}>
                                 <Tag size={20} />
                                 <span>{sequence.category}</span>
+                            </div>
+                        )}
+                        {sequence.user && (
+                            <div className={styles.metaItem}>
+                                <User size={20} />
+                                <Link href={`/profile/${sequence.user.id}`} className={styles.userLink}>
+                                    <span>Uploaded by {sequence.user.first_name} {sequence.user.last_name.charAt(0)}.</span>
+                                </Link>
                             </div>
                         )}
                     </div>

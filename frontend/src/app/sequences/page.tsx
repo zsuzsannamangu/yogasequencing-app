@@ -235,6 +235,22 @@ export default function SequencesPage() {
       
       pdf.save(filename);
       
+      // Track the download
+      try {
+        await axios.post('http://localhost:8000/sequences/track-download', null, {
+          params: {
+            sequence_id: sequence.id,
+            download_source: 'sequences'
+          },
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+      } catch (trackingError) {
+        console.warn('Failed to track download:', trackingError);
+        // Don't show error to user, download still succeeded
+      }
+      
       Swal.fire({
         title: 'Download Started!',
         text: 'PDF download has started successfully',

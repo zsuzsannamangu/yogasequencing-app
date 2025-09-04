@@ -51,5 +51,5 @@ def get_current_user_id(token: str) -> Optional[str]:
     """Extract user ID from JWT token"""
     payload = verify_token(token)
     if payload:
-        return payload.get("user_id")
+        return payload.get("user_id")  # Our tokens use 'user_id' field
     return None

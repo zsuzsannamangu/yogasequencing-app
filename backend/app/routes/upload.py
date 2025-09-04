@@ -1,13 +1,26 @@
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, HTTPException, Depends, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import os, shutil, subprocess
 from app.database import database
 from app.models import videos
+from app.auth import get_current_user_id
 import asyncio
+import uuid
+import aiofiles
+from PIL import Image
+import io
 
 router = APIRouter()
+security = HTTPBearer()
 
 UPLOAD_DIR = "uploads"
+PROFILE_IMAGES_DIR = "uploads/profile_images"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
+os.makedirs(PROFILE_IMAGES_DIR, exist_ok=True)
+
+# Profile image upload constants
+ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
+MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
 
 def convert_to_mp4(input_path):
     base, _ = os.path.splitext(input_path)
@@ -80,3 +93,156 @@ async def delete_file_later(path, delay=300):
     await asyncio.sleep(delay)
     if os.path.exists(path):
         os.remove(path)
+
+# Profile Image Upload Functions
+
+def validate_image_file(file: UploadFile) -> bool:
+    """Validate uploaded image file"""
+    if not file.filename:
+        return False
+    
+    # Check file extension
+    file_ext = os.path.splitext(file.filename.lower())[1]
+    if file_ext not in ALLOWED_IMAGE_EXTENSIONS:
+        return False
+    
+    return True
+
+async def process_image(file_content: bytes) -> bytes:
+    """Process and optimize the uploaded image"""
+    try:
+        # Open image with PIL
+        image = Image.open(io.BytesIO(file_content))
+        
+        # Convert to RGB if necessary (for JPEG compatibility)
+        if image.mode in ("RGBA", "P"):
+            image = image.convert("RGB")
+        
+        # Resize image if it's too large (max 800x800)
+        max_size = (800, 800)
+        if image.size[0] > max_size[0] or image.size[1] > max_size[1]:
+            image.thumbnail(max_size, Image.Resampling.LANCZOS)
+        
+        # Save as JPEG with quality optimization
+        output = io.BytesIO()
+        image.save(output, format="JPEG", quality=85, optimize=True)
+        return output.getvalue()
+    
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Invalid image file: {str(e)}"
+        )
+
+@router.post("/profile-image")
+async def upload_profile_image(
+    file: UploadFile = File(...),
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Upload a profile image for the authenticated user"""
+    try:
+        # Get current user ID
+        user_id = get_current_user_id(credentials.credentials)
+        if not user_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid authentication credentials"
+            )
+        
+        # Validate file
+        if not validate_image_file(file):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Invalid file type. Only JPG, PNG, GIF, and WebP files are allowed."
+            )
+        
+        # Read file content
+        file_content = await file.read()
+        
+        # Check file size
+        if len(file_content) > MAX_IMAGE_SIZE:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="File size too large. Maximum size is 5MB."
+            )
+        
+        # Process and optimize image
+        processed_content = await process_image(file_content)
+        
+        # Generate unique filename
+        file_ext = ".jpg"  # Always save as JPEG after processing
+        unique_filename = f"{user_id}_{uuid.uuid4().hex}{file_ext}"
+        file_path = os.path.join(PROFILE_IMAGES_DIR, unique_filename)
+        
+        # Save file
+        async with aiofiles.open(file_path, "wb") as f:
+            await f.write(processed_content)
+        
+        # Update user's profile_image in database
+        relative_path = f"uploads/profile_images/{unique_filename}"
+        await database.execute(
+            "UPDATE users SET profile_image = :profile_image WHERE id = :user_id",
+            {"profile_image": relative_path, "user_id": user_id}
+        )
+        
+        return {
+            "message": "Profile image uploaded successfully",
+            "image_path": relative_path,
+            "filename": unique_filename
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Upload failed: {str(e)}"
+        )
+
+@router.delete("/profile-image")
+async def delete_profile_image(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Delete the current user's profile image"""
+    try:
+        # Get current user ID
+        user_id = get_current_user_id(credentials.credentials)
+        if not user_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid authentication credentials"
+            )
+        
+        # Get current profile image path
+        user = await database.fetch_one(
+            "SELECT profile_image FROM users WHERE id = :user_id",
+            {"user_id": user_id}
+        )
+        
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="User not found"
+            )
+        
+        # Delete file if it exists
+        if user["profile_image"]:
+            file_path = user["profile_image"]
+            if os.path.exists(file_path):
+                os.remove(file_path)
+        
+        # Update database to remove profile image
+        await database.execute(
+            "UPDATE users SET profile_image = NULL WHERE id = :user_id",
+            {"user_id": user_id}
+        )
+        
+        return {"message": "Profile image deleted successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Delete failed: {str(e)}"
+        )

@@ -239,13 +239,21 @@
   padding: 1rem;
 }
 
+.sequenceHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.5rem;
+}
+
 .sequenceName {
   font-size: 1.125rem;
   font-weight: 700;
   color: vars.$text-color;
-  margin-bottom: 0.5rem;
+  margin: 0;
   font-family: vars.$title-font;
   line-height: 1.3;
+  flex: 1;
 }
 
 .sequenceLink {
@@ -265,6 +273,7 @@
   margin-bottom: 1rem;
   display: -webkit-box;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   min-height: 2.625rem; /* 2 lines * 1.5 line-height * 0.875rem font-size */
@@ -439,5 +448,90 @@
   .metadata {
     flex-direction: column;
     gap: 0.75rem;
+  }
+}
+
+// User Information Styles
+.userInfo {
+  margin: 1rem 0;
+  padding: 0.75rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 3px solid #b8336a;
+}
+
+.userInfoCompact {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  margin-left: 1rem;
+}
+
+.userLink {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateX(2px);
+  }
+}
+
+.userAvatar {
+  flex-shrink: 0;
+}
+
+.avatarImage {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.avatarPlaceholder {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #b8336a, #e91e63);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border: 2px solid #b8336a;
+}
+
+.userDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.uploadedBy {
+  font-size: 0.75rem;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.uploadedByCompact {
+  font-size: 0.75rem;
+  color: #718096;
+  font-weight: 400;
+}
+
+.userName {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #4a5568;
+  transition: color 0.2s ease;
+
+  .userLink:hover & {
+    color: #b8336a;
   }
 }

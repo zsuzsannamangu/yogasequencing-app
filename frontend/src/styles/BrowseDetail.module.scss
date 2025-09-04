@@ -120,6 +120,18 @@
   }
 }
 
+// User Link
+.userLink {
+  color: vars.$accent-color;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  
+  &:hover {
+    color: vars.$accent-hover-color;
+    text-decoration: underline;
+  }
+}
+
 // Poses Section
 .posesSection {
   margin-top: 2rem;

@@ -8,10 +8,12 @@ interface User {
   email: string;
   first_name: string;
   last_name: string;
+  phone?: string;
   location?: string;
   bio?: string;
   business_name?: string;
   business_category?: string;
+  profile_image?: string;
   is_active: boolean;
   created_at: string;
 }
@@ -30,6 +32,7 @@ interface RegisterData {
   email: string;
   first_name: string;
   last_name: string;
+  phone?: string;
   password: string;
   location?: string;
   bio?: string;
@@ -72,8 +75,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             setUser(response.data);
           } catch (error) {
             // Token is invalid, clear it
+            console.log('Token verification failed, clearing auth state');
             localStorage.removeItem('auth_token');
             setToken(null);
+            setUser(null);
             delete axios.defaults.headers.common['Authorization'];
           }
         }
@@ -108,7 +113,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       const userResponse = await axios.get('http://localhost:8000/auth/me');
       setUser(userResponse.data);
       
+      console.log('Login successful, user set:', userResponse.data);
+      
     } catch (error: any) {
+      console.error('Login error:', error);
       const errorMessage = error.response?.data?.detail || 'Login failed';
       throw new Error(errorMessage);
     } finally {

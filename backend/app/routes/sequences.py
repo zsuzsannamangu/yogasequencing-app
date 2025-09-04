@@ -25,6 +25,13 @@ class SequenceCreate(BaseModel):
     privacy: Optional[str] = 'private'
     industryLabel: Optional[str] = 'Yoga'
 
+class UserInfo(BaseModel):
+    id: str
+    first_name: str
+    last_name: str
+    profile_image: Optional[str] = None
+    business_name: Optional[str] = None
+
 class SequenceResponse(BaseModel):
     id: str
     name: str
@@ -36,6 +43,7 @@ class SequenceResponse(BaseModel):
     category: Optional[str] = None
     privacy: Optional[str] = 'private'
     industryLabel: Optional[str] = 'Yoga'
+    user: Optional[UserInfo] = None
 
 class CategoryCreate(BaseModel):
     name: str
@@ -266,9 +274,15 @@ async def get_sequences(credentials: HTTPAuthorizationCredentials = Depends(secu
 
 @router.get("/public/", response_model=List[SequenceResponse])
 async def get_public_sequences():
-    """Get only public sequences"""
+    """Get only public sequences with user information"""
     try:
-        query = "SELECT * FROM sequences WHERE privacy = 'public' ORDER BY created_at DESC"
+        query = """
+        SELECT s.*, u.id as user_id, u.first_name, u.last_name, u.profile_image, u.business_name
+        FROM sequences s
+        JOIN users u ON s.user_id = u.id
+        WHERE s.privacy = 'public' 
+        ORDER BY s.created_at DESC
+        """
         result = await database.fetch_all(query)
         
         sequences = []
@@ -276,6 +290,15 @@ async def get_public_sequences():
             # Parse poses JSON back to list
             poses_data = json.loads(row["poses"]) if row["poses"] else []
             poses = [PoseData(**pose) for pose in poses_data]
+            
+            # Create user info
+            user_info = UserInfo(
+                id=row["user_id"],
+                first_name=row["first_name"],
+                last_name=row["last_name"],
+                profile_image=row["profile_image"],
+                business_name=row["business_name"]
+            )
             
             sequences.append(SequenceResponse(
                 id=row["id"],
@@ -287,7 +310,8 @@ async def get_public_sequences():
                 createdAt=row["created_at"].isoformat() if row["created_at"] else None,
                 category=row["category"] if "category" in row else None,
                 privacy=row["privacy"] if "privacy" in row else "public",
-                industryLabel=row["industry_label"] if "industry_label" in row else "Yoga"
+                industryLabel=row["industry_label"] if "industry_label" in row else "Yoga",
+                user=user_info
             ))
         
         return sequences
@@ -295,11 +319,43 @@ async def get_public_sequences():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to retrieve public sequences: {str(e)}")
 
+@router.get("/my-download-stats")
+async def get_my_download_stats(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Get download statistics for the authenticated user's public sequences from browse page"""
+    try:
+        # Get current user ID
+        user_id = get_current_user_id(credentials.credentials)
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid or missing authentication token")
+        
+        # Count downloads of user's public sequences from browse page only
+        # Excludes downloads by the user themselves
+        query = """
+        SELECT COUNT(*) as download_count
+        FROM downloads d
+        JOIN sequences s ON d.sequence_id = s.id
+        WHERE s.user_id = :user_id 
+        AND s.privacy = 'public'
+        AND d.download_source = 'browse'
+        AND (d.downloaded_by_user_id IS NULL OR d.downloaded_by_user_id != :user_id)
+        """
+        
+        result = await database.fetch_one(query, {"user_id": user_id})
+        return {"total_downloads": result["download_count"] if result else 0}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get download stats: {str(e)}")
+
 @router.get("/{sequence_id}", response_model=SequenceResponse)
 async def get_sequence(sequence_id: str):
-    """Get a specific sequence by ID"""
+    """Get a specific sequence by ID with user information"""
     try:
-        query = "SELECT * FROM sequences WHERE id = :id"
+        query = """
+        SELECT s.*, u.id as user_id, u.first_name, u.last_name, u.profile_image, u.business_name
+        FROM sequences s
+        JOIN users u ON s.user_id = u.id
+        WHERE s.id = :id
+        """
         result = await database.fetch_one(query, {"id": sequence_id})
         
         if not result:
@@ -308,6 +364,15 @@ async def get_sequence(sequence_id: str):
         # Parse poses JSON back to list
         poses_data = json.loads(result["poses"]) if result["poses"] else []
         poses = [PoseData(**pose) for pose in poses_data]
+        
+        # Create user info
+        user_info = UserInfo(
+            id=result["user_id"],
+            first_name=result["first_name"],
+            last_name=result["last_name"],
+            profile_image=result["profile_image"],
+            business_name=result["business_name"]
+        )
         
         return SequenceResponse(
             id=result["id"],
@@ -319,7 +384,8 @@ async def get_sequence(sequence_id: str):
             createdAt=result["created_at"].isoformat() if result["created_at"] else None,
             category=result["category"] if "category" in result else None,
             privacy=result["privacy"] if "privacy" in result else "private",
-            industryLabel=result["industry_label"] if "industry_label" in result else "Yoga"
+            industryLabel=result["industry_label"] if "industry_label" in result else "Yoga",
+            user=user_info
         )
         
     except Exception as e:
@@ -498,3 +564,108 @@ async def delete_sequence(sequence_id: str):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to delete sequence: {str(e)}")
+
+@router.post("/track-download")
+async def track_download(
+    sequence_id: str,
+    download_source: str = "browse",
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(HTTPBearer(auto_error=False))
+):
+    """Track a sequence download"""
+    try:
+        # Get user ID if authenticated
+        user_id = None
+        if credentials:
+            try:
+                user_id = get_current_user_id(credentials.credentials)
+            except:
+                # If token is invalid, just continue without user_id
+                user_id = None
+        
+        # Insert download record
+        query = """
+        INSERT INTO downloads (sequence_id, downloaded_by_user_id, download_source)
+        VALUES (:sequence_id, :downloaded_by_user_id, :download_source)
+        """
+        
+        await database.execute(
+            query,
+            {
+                "sequence_id": sequence_id,
+                "downloaded_by_user_id": user_id,
+                "download_source": download_source
+            }
+        )
+        
+        return {"message": "Download tracked successfully"}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to track download: {str(e)}")
+
+@router.get("/download-stats/{user_id}")
+async def get_download_stats(user_id: str):
+    """Get download statistics for a user's public sequences from browse page"""
+    try:
+        # Count downloads of user's public sequences from browse page only
+        # Excludes downloads by the user themselves
+        query = """
+        SELECT COUNT(*) as download_count
+        FROM downloads d
+        JOIN sequences s ON d.sequence_id = s.id
+        WHERE s.user_id = :user_id 
+        AND s.privacy = 'public'
+        AND d.download_source = 'browse'
+        AND (d.downloaded_by_user_id IS NULL OR d.downloaded_by_user_id != :user_id)
+        """
+        
+        result = await database.fetch_one(query, {"user_id": user_id})
+        return {"total_downloads": result["download_count"] if result else 0}
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get download stats: {str(e)}")
+@router.get("/user/{user_id}/public", response_model=List[SequenceResponse])
+async def get_user_public_sequences(user_id: str):
+    """Get all public sequences by a specific user"""
+    try:
+        query = """
+        SELECT s.*, u.id as user_id, u.first_name, u.last_name, u.profile_image, u.business_name
+        FROM sequences s
+        JOIN users u ON s.user_id = u.id
+        WHERE s.user_id = :user_id AND s.privacy = 'public'
+        ORDER BY s.created_at DESC
+        """
+        result = await database.fetch_all(query, {"user_id": user_id})
+        
+        sequences = []
+        for row in result:
+            # Parse poses JSON back to list
+            poses_data = json.loads(row["poses"]) if row["poses"] else []
+            poses = [PoseData(**pose) for pose in poses_data]
+            
+            # Create user info
+            user_info = UserInfo(
+                id=row["user_id"],
+                first_name=row["first_name"],
+                last_name=row["last_name"],
+                profile_image=row["profile_image"],
+                business_name=row["business_name"]
+            )
+            
+            sequences.append(SequenceResponse(
+                id=row["id"],
+                name=row["name"],
+                description=row["description"],
+                duration=row["duration"],
+                poseCount=row["pose_count"],
+                poses=poses,
+                createdAt=row["created_at"].isoformat() if row["created_at"] else None,
+                category=row["category"] if "category" in row else None,
+                privacy=row["privacy"] if "privacy" in row else "public",
+                industryLabel=row["industry_label"] if "industry_label" in row else "Yoga",
+                user=user_info
+            ))
+        
+        return sequences
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get user sequences: {str(e)}")

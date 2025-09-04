@@ -6,6 +6,7 @@ class UserRegister(BaseModel):
     email: EmailStr
     first_name: str
     last_name: str
+    phone: Optional[str] = None
     password: str
     location: Optional[str] = None
     bio: Optional[str] = None
@@ -35,10 +36,12 @@ class UserResponse(BaseModel):
     email: str
     first_name: str
     last_name: str
+    phone: Optional[str] = None
     location: Optional[str] = None
     bio: Optional[str] = None
     business_name: Optional[str] = None
     business_category: Optional[str] = None
+    profile_image: Optional[str] = None
     is_active: bool
     created_at: str
 

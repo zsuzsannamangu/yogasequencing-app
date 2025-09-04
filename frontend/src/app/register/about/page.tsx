@@ -43,7 +43,20 @@ export default function AboutYouPage() {
       // Get data from sessionStorage
       const email = sessionStorage.getItem('registration_email') || '';
       const password = sessionStorage.getItem('registration_password') || '';
-      const businessCategory = sessionStorage.getItem('registration_business_category') || '';
+      const businessCategoryId = sessionStorage.getItem('registration_business_category') || '';
+      
+      // Convert category ID to full name
+      const businessCategories = [
+        { id: 'yoga-teachers', name: 'Yoga Teachers & Therapists' },
+        { id: 'pilates-instructors', name: 'Pilates Instructors' },
+        { id: 'physical-therapists', name: 'Physical Therapists & Rehab Specialists' },
+        { id: 'occupational-therapists', name: 'Occupational Therapists' },
+        { id: 'dance-teachers', name: 'Dance Teachers & Choreographers' },
+        { id: 'personal-trainers', name: 'Personal Trainers & Fitness Coaches' }
+      ];
+      
+      const selectedCategory = businessCategories.find(cat => cat.id === businessCategoryId);
+      const businessCategoryName = selectedCategory ? selectedCategory.name : businessCategoryId;
       
       // Prepare registration data
       const registrationData = {
@@ -51,8 +64,9 @@ export default function AboutYouPage() {
         password,
         first_name: firstName,
         last_name: lastName,
+        phone: `${phonePrefix} ${phoneNumber}`.trim(),
         business_name: businessName,
-        business_category: businessCategory,
+        business_category: businessCategoryName,
         location: '', // Optional field
         bio: '', // Optional field
       };

@@ -230,3 +230,92 @@
     grid-template-columns: 1fr;
   }
 }
+
+// Profile Setup Notice Styles
+.profileSetupNotice {
+  background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
+  border: 1px solid #d1e7ff;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, vars.$accent-color, #ff6b9d);
+  }
+}
+
+.noticeContent {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+
+  h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: vars.$accent-color;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  p {
+    flex: 1;
+    margin: 0;
+    color: vars.$text-color;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    min-width: 300px;
+  }
+}
+
+.setupButton {
+  background-color: vars.$accent-color;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: vars.$transition;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(184, 51, 106, 0.2);
+
+  &:hover {
+    background-color: darken(vars.$accent-color, 10%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(184, 51, 106, 0.3);
+  }
+}
+
+// Responsive design for profile setup notice
+@media (max-width: 768px) {
+  .profileSetupNotice {
+    margin-bottom: 2rem;
+  }
+
+  .noticeContent {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+
+    p {
+      min-width: auto;
+    }
+
+    .setupButton {
+      align-self: stretch;
+      text-align: center;
+    }
+  }
+}

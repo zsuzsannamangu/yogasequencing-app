@@ -9,6 +9,14 @@ import Navbar from '@/components/Navbar';
 import styles from '@/styles/Browse.module.scss';
 import { svg2pdf } from 'svg2pdf.js';
 
+interface UserInfo {
+  id: string;
+  first_name: string;
+  last_name: string;
+  profile_image?: string;
+  business_name?: string;
+}
+
 interface Sequence {
   id: string;
   name: string;
@@ -20,6 +28,7 @@ interface Sequence {
   industryLabel?: string; // Industry/professional field (Yoga, Pilates, etc.)
   category?: string; // User-defined custom category (Morning Flow, Beginner, etc.)
   privacy?: 'private' | 'public';
+  user?: UserInfo;
 }
 
 // Define the available industry labels based on the homepage professional categories
@@ -81,7 +90,8 @@ export default function BrowsePage() {
           thumbnail: seq.poses?.[0]?.filePath || '/images/yoga2.jpg',
           industryLabel: seq.industryLabel || 'Yoga', // Default to Yoga if no industry label
           category: seq.category, // Include the category field
-          privacy: seq.privacy || 'public'
+          privacy: seq.privacy || 'public',
+          user: seq.user // Include the user information
         }));
 
         console.log('Transformed public sequences:', transformedSequences);
@@ -216,6 +226,24 @@ export default function BrowsePage() {
         ? `${sequenceData.name.replace(/[^a-zA-Z0-9]/g, '_')}_sequence.pdf`
         : 'sequence.pdf';
       pdf.save(filename);
+
+      // Track the download
+      try {
+        console.log('Tracking download for sequence:', sequence.id);
+        const response = await axios.post('http://localhost:8000/sequences/track-download', null, {
+          params: {
+            sequence_id: sequence.id,
+            download_source: 'browse'
+          },
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          }
+        });
+        console.log('Download tracking response:', response.data);
+      } catch (trackingError) {
+        console.error('Failed to track download:', trackingError);
+        // Don't show error to user, download still succeeded
+      }
 
     } catch (error: any) {
       console.error('Failed to generate PDF:', error);
@@ -418,7 +446,7 @@ export default function BrowsePage() {
           {/* Header */}
           <div className={styles.header}>
             <h1 className={styles.title}>Browse Sequences</h1>
-            <p className={styles.subtitle}>Discover and explore sequences shared by the community</p>
+            <p className={styles.subtitle}>Find sequences shared by the community</p>
           </div>
 
           {/* Controls */}
@@ -500,11 +528,39 @@ export default function BrowsePage() {
 
                   {/* Content */}
                   <div className={styles.content}>
-                    <h3 className={styles.sequenceName}>
-                      <Link href={`/browse/${sequence.id}`} className={styles.sequenceLink}>
-                        {sequence.name}
-                      </Link>
-                    </h3>
+                    {/* Header with title and user info */}
+                    <div className={styles.sequenceHeader}>
+                      <h3 className={styles.sequenceName}>
+                        <Link href={`/browse/${sequence.id}`} className={styles.sequenceLink}>
+                          {sequence.name}
+                        </Link>
+                      </h3>
+                      
+                      {/* User Information - Top Right */}
+                      {sequence.user && (
+                        <div className={styles.userInfoCompact}>
+                          <Link href={`/profile/${sequence.user.id}`} className={styles.userLink}>
+                          <span className={styles.uploadedByCompact}>by</span>
+                            <div className={styles.userAvatar}>
+                              {sequence.user.profile_image ? (
+                                <img 
+                                  src={sequence.user.profile_image.startsWith('http') ? 
+                                    sequence.user.profile_image : 
+                                    `http://localhost:8000/${sequence.user.profile_image}`} 
+                                  alt={`${sequence.user.first_name} ${sequence.user.last_name}`}
+                                  className={styles.avatarImage}
+                                />
+                              ) : (
+                                <div className={styles.avatarPlaceholder}>
+                                  {sequence.user.first_name.charAt(0)}{sequence.user.last_name.charAt(0)}
+                                </div>
+                              )}
+                            </div>
+                          </Link>
+                        </div>
+                      )}
+                    </div>
+                    
                     <p className={styles.sequenceDescription}>{sequence.description}</p>
 
                     {/* Metadata */}
