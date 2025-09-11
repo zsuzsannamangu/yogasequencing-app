@@ -113,6 +113,24 @@
   }
 }
 
+// Override global button styles for menu items
+.menuDropdown button.menuItem {
+  font-family: vars.$title-font !important;
+  font-weight: normal !important;
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+  padding: 1rem 1.5rem !important;
+  text-align: left !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 0.75rem !important;
+  width: 100% !important;
+  border: none !important;
+  background: none !important;
+  margin: 0 !important;
+}
+
 @media (max-width: 768px) {
   .userMenu {
     position: fixed;

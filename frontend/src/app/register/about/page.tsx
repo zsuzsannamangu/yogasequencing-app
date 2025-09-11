@@ -203,7 +203,7 @@ export default function AboutYouPage() {
 
             <button 
               type="submit" 
-              className={`${styles.primaryButton} ${!isFormValid || isSubmitting || isLoading ? styles.disabled : ''}`}
+              className={`btn-primary ${!isFormValid || isSubmitting || isLoading ? 'disabled' : ''}`}
               disabled={!isFormValid || isSubmitting || isLoading}
             >
               {isSubmitting || isLoading ? 'CREATING ACCOUNT...' : 'CREATE ACCOUNT'}

@@ -318,7 +318,7 @@
 }
 
 .privacyIndicator {
-  font-size: 1rem;
+  color: vars.$text-color;
   opacity: 0.8;
 }
 
@@ -380,8 +380,8 @@
   }
 }
 
-.actionButton {
-  padding: 0.375rem;
+.sequenceActions .actionButton {
+  padding: 0.75rem;
   background-color: #f3f4f6;
   color: vars.$text-color-2;
   border: none;
@@ -392,9 +392,10 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  min-width: 2rem;
 
   &:hover {
-    background-color: vars.$primary-color;
+    background-color: vars.$accent-color;
     color: white;
   }
 

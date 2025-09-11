@@ -104,7 +104,7 @@ export default function PasswordSetupPage() {
 
             <button 
               type="submit" 
-              className={`${styles.primaryButton} ${!isFormValid ? styles.disabled : ''}`}
+              className={`btn-primary ${!isFormValid ? 'disabled' : ''}`}
               disabled={!isFormValid}
             >
               CONTINUE

@@ -95,7 +95,7 @@ export default function UploadModal({
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <button className={styles.closeButton} onClick={handleClose}>
+        <button className={`btn-tertiary btn-sm ${styles.closeButton}`} onClick={handleClose}>
           <X size={24} />
         </button>
 
@@ -141,18 +141,18 @@ export default function UploadModal({
                 <p className={styles.fileInfoText}><strong>Size:</strong> {(selectedFile.size / (1024 * 1024)).toFixed(1)} MB</p>
               </div>
               
-              <div className={styles.buttonGroup}>
+              <div className="btn-group center">
                 <button
                   onClick={handleUpload}
                   disabled={uploading}
-                  className={styles.uploadButton}
+                  className="btn-primary"
                 >
                   {uploading ? 'Uploading...' : 'Upload Video'}
                 </button>
                 <button
                   onClick={() => setStep('select')}
                   disabled={uploading}
-                  className={styles.changeFileButton}
+                  className="btn-tertiary"
                 >
                   Cancel
                 </button>
@@ -173,17 +173,17 @@ export default function UploadModal({
                 <p className={styles.fileInfoText}><strong>Status:</strong> Upload Complete ✓</p>
               </div>
               
-              <div className={styles.buttonGroup}>
+              <div className="btn-group center">
                 <button
                   onClick={handleStartProcessing}
                   disabled={processing}
-                  className={styles.processButton}
+                  className="btn-primary"
                 >
                   {processing ? 'Starting...' : 'Next'}
                 </button>
                 <button
                   onClick={() => setStep('select')}
-                  className={styles.changeFileButton}
+                  className="btn-tertiary"
                 >
                   Cancel
                 </button>
@@ -204,16 +204,16 @@ export default function UploadModal({
                 <p className={styles.fileInfoText}><strong>Status:</strong> Ready to process</p>
               </div>
               
-              <div className={styles.buttonGroup}>
+              <div className="btn-group center">
                 <button
                   onClick={() => setStep('select')}
-                  className={styles.cancelButton}
+                  className="btn-tertiary"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleStartProcessing}
-                  className={styles.primaryButton}
+                  className="btn-primary"
                 >
                   Start Processing
                 </button>
@@ -266,10 +266,10 @@ export default function UploadModal({
                 <p className={styles.resultsText}><strong>Status:</strong> Ready for sequence creation ✓</p>
               </div>
               
-              <div className={styles.buttonGroup}>
+              <div className="btn-group center">
                 <button
                   onClick={handleClose}
-                  className={styles.primaryButton}
+                  className="btn-primary"
                 >
                   Continue to Sequence Editor
                 </button>

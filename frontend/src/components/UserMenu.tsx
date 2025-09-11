@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Upload, BookOpen, HelpCircle, Settings, LogOut, List } from 'lucide-react';
+import { Upload, BookOpen, HelpCircle, Settings, LogOut, List, Search } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
@@ -119,6 +119,11 @@ export default function UserMenu({ firstName, lastName, profileImage, location, 
         <Link href="/sequences" className={styles.menuItem} onClick={closeMenu}>
           <List size={20} />
           <span>View Sequences</span>
+        </Link>
+        
+        <Link href="/browse" className={styles.menuItem} onClick={closeMenu}>
+          <Search size={20} />
+          <span>Browse</span>
         </Link>
         
         <Link href="/help" className={styles.menuItem} onClick={closeMenu}>

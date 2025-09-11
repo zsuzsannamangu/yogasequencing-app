@@ -43,8 +43,12 @@ export default function Navbar({ showUserMenu = false, firstName = '', lastName 
         />
       </Link>
       <nav className={styles.nav}>
-        <Link href="/browse" className={styles.navLink}>Browse</Link>
-        <Link href="/#contact" className={styles.navLink}>Contact</Link>
+        {!isAuthenticated && (
+          <>
+            <Link href="/browse" className={styles.navLink}>Browse</Link>
+            <Link href="/#contact" className={styles.navLink}>Contact</Link>
+          </>
+        )}
         {isAuthenticated && user ? (
           <UserMenu 
             firstName={user.first_name} 

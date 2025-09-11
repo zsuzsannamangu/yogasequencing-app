@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, FileText, Clock, Eye, EyeOff } from 'lucide-react';
+import { X, FileText, Clock, Lock, Globe } from 'lucide-react';
 import styles from '@/styles/UploadModal.module.scss';
 
 interface SequenceDetailsModalProps {
@@ -57,7 +57,7 @@ export default function SequenceDetailsModal({
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <button className={styles.closeButton} onClick={handleClose}>
+        <button className={`btn-tertiary btn-sm ${styles.closeButton}`} onClick={handleClose}>
           <X size={24} />
         </button>
 
@@ -130,7 +130,7 @@ export default function SequenceDetailsModal({
                       onChange={(e) => setPrivacy(e.target.value as 'private' | 'public')}
                     />
                     <span className={styles.radioLabel}>
-                      <EyeOff size={16} />
+                      <Lock size={16} />
                       Private
                     </span>
                   </label>
@@ -143,7 +143,7 @@ export default function SequenceDetailsModal({
                       onChange={(e) => setPrivacy(e.target.value as 'private' | 'public')}
                     />
                     <span className={styles.radioLabel}>
-                      <Eye size={16} />
+                      <Globe size={16} />
                       Public
                     </span>
                   </label>
@@ -151,16 +151,16 @@ export default function SequenceDetailsModal({
               </div>
             </div>
 
-            <div className={styles.buttonGroup}>
+            <div className="btn-group">
               <button
                 onClick={handleClose}
-                className={styles.cancelButton}
+                className="btn-tertiary"
               >
                 Cancel
               </button>
               <button
                 onClick={handleNext}
-                className={styles.primaryButton}
+                className="btn-primary"
                 disabled={!title.trim() || !description.trim() || !duration.trim()}
               >
                 Next: Categories

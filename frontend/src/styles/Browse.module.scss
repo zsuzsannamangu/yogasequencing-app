@@ -1,7 +1,7 @@
 @use 'variables' as vars;
 
 .main {
-  margin-top: 200px;
+  margin-top: 120px;
   min-height: 150vh;
   background-color: vars.$background-color;
   display: flex;
@@ -24,12 +24,12 @@
 // Header
 .header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 4rem;
 
   .title {
-    font-size: 3rem;
-    font-weight: 700;
-    color: vars.$primary-color;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: vars.$accent-color;
     margin-bottom: 1rem;
     font-family: vars.$title-font;
   }

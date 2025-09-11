@@ -74,7 +74,7 @@ const DraggablePose = ({ id, poseName, image, index, onDelete, onNameChange }) =
           {...listeners}
         >
           <GripVertical size={16} />
-        </div>
+      </div>
         <div className={styles.poseNumber}>{index + 1}</div>
         <div
           onClick={() => onDelete(id)}
@@ -86,15 +86,15 @@ const DraggablePose = ({ id, poseName, image, index, onDelete, onNameChange }) =
       <div className={styles.poseImage}>
         <img 
           src={image} 
-          alt={`Pose ${index + 1}`}
+        alt={`Pose ${index + 1}`}
           onLoad={() => console.log(`Image ${index} loaded successfully:`, image)}
           onError={(e) => console.error(`Image ${index} failed to load:`, e, 'URL:', image)}
-        />
+      />
       </div>
       <div className={styles.poseName}>
-        <input
-          type="text"
-          value={poseName}
+      <input
+        type="text"
+        value={poseName}
           onChange={(e) => onNameChange(id, e.target.value)}
           className={styles.poseNameInput}
         />
@@ -136,19 +136,19 @@ export default function UploadPage() {
   // Fetch categories when token is available
   useEffect(() => {
     if (!token) return;
-    
-    const fetchCategories = async () => {
-      try {
+
+  const fetchCategories = async () => {
+    try {
         const response = await axios.get('http://localhost:8000/sequences/categories/', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
         });
-        setCategories(response.data);
-      } catch (error) {
-        console.error('Failed to fetch categories:', error);
-      }
-    };
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Failed to fetch categories:', error);
+    }
+  };
 
     fetchCategories();
   }, [token]);
@@ -462,11 +462,11 @@ export default function UploadPage() {
       // Get the sequence ID from the response
       const sequenceId = response.data?.id;
       
-      Swal.fire({
+    Swal.fire({
         title: 'Success!',
         text: 'Sequence saved to library successfully',
-        icon: 'success',
-        confirmButtonColor: '#b8336a',
+      icon: 'success',
+      confirmButtonColor: '#b8336a',
         showCancelButton: true,
         confirmButtonText: sequenceId ? 'View & Edit Sequence' : 'Go to Library',
         cancelButtonText: 'Stay Here'
@@ -518,7 +518,7 @@ export default function UploadPage() {
         // Request was made but no response received
         console.error('No response received:', error.request);
         errorMessage = 'Unable to connect to server. Please check your connection.';
-      } else {
+        } else {
         // Something else happened
         console.error('Error setting up request:', error.message);
         errorMessage = 'An unexpected error occurred.';
@@ -534,15 +534,15 @@ export default function UploadPage() {
   };
 
   const handleDownloadSequence = async () => {
-    if (!sequenceTitle.trim()) {
-      Swal.fire({
+      if (!sequenceTitle.trim()) {
+        Swal.fire({
         title: 'Error',
         text: 'Please enter a sequence title',
         icon: 'error',
         confirmButtonColor: '#f87171',
-      });
-      return;
-    }
+        });
+        return;
+      }
 
     try {
       // Generate PDF using jsPDF
@@ -622,12 +622,12 @@ export default function UploadPage() {
       const fileName = `${sequenceTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_sequence.pdf`;
       pdf.save(fileName);
 
-      Swal.fire({
+        Swal.fire({
         title: 'Success!',
         text: 'Sequence downloaded successfully',
-        icon: 'success',
-        confirmButtonColor: '#b8336a',
-      });
+          icon: 'success',
+          confirmButtonColor: '#b8336a',
+        });
 
     } catch (error) {
       console.error('Failed to download sequence:', error);
@@ -718,6 +718,24 @@ export default function UploadPage() {
           </p>
         </div>
 
+        {/* Workflow Steps - Always visible at the top */}
+        <div className={styles.workflowSteps}>
+          <div className={`${styles.step} ${uploadComplete ? styles.completed : (uploading ? styles.current : styles.pending)}`}>
+            <span className={styles.stepNumber}>1</span>
+            <span className={styles.stepText}>Upload Video</span>
+                </div>
+          <div className={styles.stepArrow}>→</div>
+          <div className={`${styles.step} ${uploadComplete && !silhouettes.length ? styles.current : (silhouettes.length > 0 ? styles.completed : styles.pending)}`}>
+            <span className={styles.stepNumber}>2</span>
+            <span className={styles.stepText}>Process Video</span>
+                </div>
+          <div className={styles.stepArrow}>→</div>
+          <div className={`${styles.step} ${silhouettes.length > 0 ? styles.completed : styles.pending}`}>
+            <span className={styles.stepNumber}>3</span>
+            <span className={styles.stepText}>Create Sequence</span>
+                </div>
+              </div>
+
         {/* Video Guidelines */}
         <div className={styles.guidelinesSection}>
           <button
@@ -743,44 +761,25 @@ export default function UploadPage() {
           )}
         </div>
 
-        {/* Workflow Steps - Always visible at the top */}
-        <div className={styles.workflowSteps}>
-          <div className={`${styles.step} ${uploadComplete ? styles.completed : (uploading ? styles.current : styles.pending)}`}>
-            <span className={styles.stepNumber}>1</span>
-            <span className={styles.stepText}>Upload Video</span>
-          </div>
-          <div className={styles.stepArrow}>→</div>
-          <div className={`${styles.step} ${uploadComplete && !silhouettes.length ? styles.current : (silhouettes.length > 0 ? styles.completed : styles.pending)}`}>
-            <span className={styles.stepNumber}>2</span>
-            <span className={styles.stepText}>Process Video</span>
-          </div>
-          <div className={styles.stepArrow}>→</div>
-          <div className={`${styles.step} ${silhouettes.length > 0 ? styles.completed : styles.pending}`}>
-            <span className={styles.stepNumber}>3</span>
-            <span className={styles.stepText}>Create Sequence</span>
-          </div>
-        </div>
-
-
         {/* Upload Section - Only show if no silhouettes */}
         {silhouettes.length === 0 && (
           <div className={styles.buttonContainer}>
-            <button
+                    <button
               onClick={() => setShowUploadModal(true)}
-              className={styles.chooseFileButton}
+              className="btn-primary"
             >
               Choose File
-            </button>
+                    </button>
             {(selectedFile || uploadComplete || processingStarted) && (
-              <button
+                    <button
                 onClick={handleClearSequence}
-                className={styles.resetButton}
-              >
+                className="btn-tertiary"
+                    >
                 Reset
-              </button>
+                    </button>
             )}
-          </div>
-        )}
+              </div>
+            )}
 
 
 
@@ -872,7 +871,7 @@ export default function UploadPage() {
         {silhouettes.length > 0 && modalFlowCompleted && (
           <div className={styles.silhouetteSection}>
             <h3 className={styles.silhouetteTitle}>{silhouettes.length} poses</h3>
-            
+
             <DndContext
               sensors={sensors}
               collisionDetection={closestCenter}
@@ -883,46 +882,46 @@ export default function UploadPage() {
                   {silhouettes.map((silhouette, index) => {
                     console.log(`Rendering pose ${index}:`, silhouette);
                     return (
-                      <DraggablePose
+                    <DraggablePose
                         key={silhouette}
                         id={silhouette}
                         poseName={poseNames[index]}
                         image={silhouette}
                         index={index}
-                        onDelete={handleDeletePose}
-                        onNameChange={handlePoseNameChange}
-                      />
+                      onDelete={handleDeletePose}
+                      onNameChange={handlePoseNameChange}
+                    />
                     );
                   })}
                 </div>
               </SortableContext>
             </DndContext>
 
-            <div className={`${styles.actionButtons} ${styles.actionButtonsSpacing}`}>
+            <div className={`btn-group center ${styles.actionButtonsSpacing}`}>
               <button
                 onClick={handleSaveToLibrary}
-                className={styles.saveButton}
+                className="btn-primary"
               >
                 
                 Save to Library
               </button>
               <button
                 onClick={handleDownloadSequence}
-                className={styles.downloadButton}
+                className="btn-secondary"
               >
                 
                 Download Sequence
               </button>
               <button
                 onClick={handleClearSequence}
-                className={styles.clearButton}
+                className="btn-tertiary"
               >
                 
                 Clear Sequence
-              </button>
+                </button>
             </div>
-          </div>
-        )}
+              </div>
+            )}
 
         {loading && (
           <p className={styles.loadingText}>Generating sequence...</p>

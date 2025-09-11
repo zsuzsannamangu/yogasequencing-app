@@ -130,7 +130,7 @@ export default function HomePage() {
                         Visualize movement into a sequence.
                     </motion.p>
                     <button 
-                        className={styles.heroButton}
+                        className="btn-primary btn-lg"
                         onClick={() => {
                             document.getElementById('how')?.scrollIntoView({ 
                                 behavior: 'smooth' 
@@ -155,7 +155,7 @@ export default function HomePage() {
                                 Every movement professional has experienced that moment when a student asks, "Can you show me that sequence again?" or "What was that flow we did last week?" With MoveMosaic, you'll never have to rely on memory alone. Your embodied knowledge becomes a tangible, shareable resource that grows with every practice session.
                             </p>
                             <button 
-                                className={styles.primaryButton}
+                                className="btn-primary"
                                 onClick={() => {
                                     document.getElementById('upload')?.scrollIntoView({ 
                                         behavior: 'smooth' 
@@ -191,10 +191,10 @@ export default function HomePage() {
                 </div>
                 
                 <div className={styles.navigationArrows}>
-                    <button className={styles.navArrow} onClick={() => document.getElementById('professionalsGrid')?.scrollBy({ left: -1180, behavior: 'smooth' })}>
+                    <button className="btn-tertiary btn-sm" onClick={() => document.getElementById('professionalsGrid')?.scrollBy({ left: -1180, behavior: 'smooth' })}>
                         ←
                     </button>
-                    <button className={styles.navArrow} onClick={() => document.getElementById('professionalsGrid')?.scrollBy({ left: 1180, behavior: 'smooth' })}>
+                    <button className="btn-tertiary btn-sm" onClick={() => document.getElementById('professionalsGrid')?.scrollBy({ left: 1180, behavior: 'smooth' })}>
                         →
                     </button>
                 </div>
@@ -444,12 +444,12 @@ export default function HomePage() {
                     
                     <div className={styles.uploadButtons}>
                         <Link href="/register">
-                            <button className={styles.outlineButton}>
+                            <button className="btn-primary btn-outline">
                                 Start Free Trial
                             </button>
                         </Link>
                         <button 
-                            className={styles.primaryButton}
+                            className="btn-primary"
                             onClick={() => {
                                 window.location.href = '/login';
                             }}
@@ -528,7 +528,7 @@ export default function HomePage() {
                             
                             <button 
                                 type="submit" 
-                                className={styles.primaryButton}
+                                className="btn-primary"
                                 disabled={isSubmitting}
                             >
                                 {isSubmitting ? 'Sending...' : 'Submit'}

@@ -80,7 +80,7 @@ export default function HelpPage() {
         <div className={styles.helpContainer}>
           <div className={styles.header}>
             <h1 className={styles.title}>Help & Support</h1>
-            <p className={styles.subtitle}>Find answers to common questions and get the help you need</p>
+            <p className={styles.subtitle}>Find answers to common questions</p>
           </div>
 
           <div className={styles.searchSection}>
@@ -94,7 +94,6 @@ export default function HelpPage() {
           </div>
 
           <div className={styles.faqSection}>
-            <h2 className={styles.sectionTitle}>Frequently Asked Questions</h2>
             <div className={styles.faqList}>
               {faqData.map((faq) => (
                 <div key={faq.id} className={styles.faqItem}>
@@ -122,7 +121,7 @@ export default function HelpPage() {
           <div className={styles.simpleContactSection}>
             <h2 className={styles.sectionTitle}>Still Need Help?</h2>
             <p className={styles.contactText}>
-             Visit our <a href="/#contact" className={styles.homepageLink}>contact section</a> on the homepage to get in touch.
+             Email us at <a href="mailto:support@movemosaic.com" className={styles.emailLink}>support@movemosaic.com</a> to get in touch.
             </p>
           </div>
         </div>

@@ -144,7 +144,7 @@ export default function CategorySelectionModal({
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <button className={styles.closeButton} onClick={handleClose}>
+        <button className={`btn-tertiary btn-sm ${styles.closeButton}`} onClick={handleClose}>
           <X size={24} />
         </button>
 
@@ -179,7 +179,7 @@ export default function CategorySelectionModal({
                   
                   <button
                     onClick={() => setShowNewCategory(!showNewCategory)}
-                    className={styles.addCategoryButton}
+                    className="btn-secondary btn-sm"
                   >
                     <Plus size={16} />
                     {showNewCategory ? 'Cancel' : 'New Category'}
@@ -204,7 +204,7 @@ export default function CategorySelectionModal({
                     />
                     <button
                       onClick={handleCreateCategory}
-                      className={styles.createButton}
+                      className="btn-primary btn-sm"
                     >
                       Create Category
                     </button>
@@ -232,16 +232,16 @@ export default function CategorySelectionModal({
               </div>
             </div>
 
-            <div className={styles.buttonGroup}>
+            <div className="btn-group">
               <button
                 onClick={handleClose}
-                className={styles.cancelButton}
+                className="btn-tertiary"
               >
                 Back
               </button>
               <button
                 onClick={handleNext}
-                className={styles.primaryButton}
+                className="btn-primary"
               >
                 Next: Preview
               </button>

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { X, CheckCircle, Clock, Eye, EyeOff, Tag, FileText } from 'lucide-react';
+import { X, CheckCircle, Clock, Eye, EyeOff, Tag, FileText, Lock, Globe } from 'lucide-react';
 import styles from '@/styles/UploadModal.module.scss';
 
 interface PreviewModalProps {
@@ -38,7 +38,7 @@ export default function PreviewModal({
   return (
     <div className={styles.overlay}>
       <div className={styles.modal}>
-        <button className={styles.closeButton} onClick={handleClose}>
+        <button className={`btn-tertiary btn-sm ${styles.closeButton}`} onClick={handleClose}>
           <X size={24} />
         </button>
 
@@ -62,7 +62,7 @@ export default function PreviewModal({
                     {sequenceData.duration || 'No duration set'}
                   </span>
                   <span className={styles.metaItem}>
-                    {sequenceData.privacy === 'private' ? <EyeOff size={16} /> : <Eye size={16} />}
+                    {sequenceData.privacy === 'private' ? <Lock size={16} /> : <Globe size={16} />}
                     {sequenceData.privacy === 'private' ? 'Private' : 'Public'}
                   </span>
                   <span className={styles.metaItem}>
@@ -93,16 +93,16 @@ export default function PreviewModal({
               </div>
             </div>
 
-            <div className={styles.buttonGroup}>
+            <div className="btn-group">
               <button
                 onClick={handleClose}
-                className={styles.cancelButton}
+                className="btn-tertiary"
               >
                 Back
               </button>
               <button
                 onClick={handleConfirm}
-                className={styles.primaryButton}
+                className="btn-primary"
               >
                 Continue to Pose Editor
               </button>

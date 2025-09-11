@@ -24,15 +24,156 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Global Button System */
 button {
   cursor: pointer;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   transition: all 0.3s ease;
   font-weight: bold;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  min-height: 44px; /* Accessibility: minimum touch target */
 }
 
-button:hover {
-  opacity: 0.9;
+/* Primary Black Button */
+.btn-primary {
+  background-color: #000000;
+  color: #ffffff;
+  border: 2px solid #000000;
+}
+
+.btn-primary:hover {
+  background-color: #353538;
+  border-color: #353538;
+}
+
+.btn-primary:disabled {
+  background-color: #9ca3af;
+  border-color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Secondary Pink Button */
+.btn-secondary {
+  background-color: #de4576;
+  color: #ffffff;
+  border: 2px solid #de4576;
+}
+
+.btn-secondary:hover {
+  background-color: #a01f5a;
+  border-color: #a01f5a;
+}
+
+.btn-secondary:disabled {
+  background-color: #9ca3af;
+  border-color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Tertiary Grey Button (for cancel, reset, clear actions) */
+.btn-tertiary {
+  background-color: #6b7280;
+  color: #ffffff;
+  border: 2px solid #6b7280;
+}
+
+.btn-tertiary:hover {
+  background-color: #4b5563;
+  border-color: #4b5563;
+}
+
+.btn-tertiary:disabled {
+  background-color: #9ca3af;
+  border-color: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Button Sizes */
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  min-height: 36px;
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1.125rem;
+  min-height: 52px;
+}
+
+/* Button Variants */
+.btn-outline {
+  background-color: transparent;
+}
+
+.btn-outline.btn-primary {
+  color: #000000;
+  border-color: #000000;
+}
+
+.btn-outline.btn-primary:hover {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.btn-outline.btn-secondary {
+  color: #de4576;
+  border-color: #de4576;
+}
+
+.btn-outline.btn-secondary:hover {
+  background-color: #de4576;
+  color: #ffffff;
+}
+
+.btn-outline.btn-tertiary {
+  color: #6b7280;
+  border-color: #6b7280;
+}
+
+.btn-outline.btn-tertiary:hover {
+  background-color: #6b7280;
+  color: #ffffff;
+}
+
+/* Button Groups */
+.btn-group {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-end; /* Default to right alignment */
+  margin-top: 4rem; /* Add space above buttons */
+}
+
+.btn-group.vertical {
+  flex-direction: column;
+}
+
+.btn-group.center {
+  justify-content: center;
+}
+
+.btn-group.start {
+  justify-content: flex-start;
+}
+
+.btn-group.end {
+  justify-content: flex-end;
+}
+
+.btn-group.space-between {
+  justify-content: space-between;
 }
 
 h1 {

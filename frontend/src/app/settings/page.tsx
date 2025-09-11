@@ -331,7 +331,7 @@ export default function SettingsPage() {
             {isEditing && (
               <div className={styles.imageActions}>
                 <button 
-                  className={styles.imageActionButton}
+                  className="btn-primary btn-sm"
                   onClick={triggerImageUpload}
                   title="Upload new image"
                 >
@@ -339,7 +339,7 @@ export default function SettingsPage() {
                 </button>
                 {profileImage !== '/images/default-avatar.png' && (
                   <button 
-                    className={styles.imageActionButton}
+                    className="btn-tertiary btn-sm"
                     onClick={handleRemoveImage}
                     title="Remove image"
                   >
@@ -478,7 +478,7 @@ export default function SettingsPage() {
         <div className={styles.formActions}>
           {!isEditing ? (
             <button 
-              className={styles.editButton}
+              className="btn-primary"
               onClick={() => setIsEditing(true)}
             >
               <Edit2 size={16} />
@@ -487,14 +487,14 @@ export default function SettingsPage() {
           ) : (
             <>
               <button 
-                className={styles.saveButton}
+                className="btn-primary"
                 onClick={handleSave}
               >
                 <Save size={16} />
                 Save Changes
               </button>
               <button 
-                className={styles.cancelButton}
+                className="btn-tertiary"
                 onClick={handleCancel}
               >
                 Cancel
@@ -523,8 +523,8 @@ export default function SettingsPage() {
             </div>
           </div>
           <div className={styles.subscriptionActions}>
-            <button className={styles.actionButton}>Change Plan</button>
-            <button className={styles.actionButton}>Update Payment</button>
+            <button className="btn-primary">Change Plan</button>
+            <button className="btn-secondary">Update Payment</button>
           </div>
         </div>
 
@@ -544,7 +544,7 @@ export default function SettingsPage() {
         </div>
 
         <div className={styles.subscriptionFooter}>
-          <button className={styles.cancelSubscriptionButton}>
+          <button className="btn-tertiary">
             Cancel Subscription
           </button>
         </div>
@@ -565,7 +565,7 @@ export default function SettingsPage() {
             <h3>Change Password</h3>
             <p>Update your password to keep your account secure</p>
           </div>
-          <button className={styles.securityButton}>Change Password</button>
+          <button className="btn-primary">Change Password</button>
         </div>
 
         <div className={styles.securityItem}>
@@ -573,7 +573,7 @@ export default function SettingsPage() {
             <h3>Two-Factor Authentication</h3>
             <p>Add an extra layer of security to your account</p>
           </div>
-          <button className={styles.securityButton}>Enable 2FA</button>
+          <button className="btn-secondary">Enable 2FA</button>
         </div>
 
         <div className={styles.securityItem}>
@@ -581,7 +581,7 @@ export default function SettingsPage() {
             <h3>Login History</h3>
             <p>View recent login activity and device information</p>
           </div>
-          <button className={styles.securityButton}>View History</button>
+          <button className="btn-tertiary">View History</button>
         </div>
       </div>
     </div>
@@ -644,7 +644,7 @@ export default function SettingsPage() {
             <h3>Data Export</h3>
             <p>Download all your sequences and data</p>
           </div>
-          <button className={styles.preferenceButton}>
+          <button className="btn-primary">
             <Download size={16} />
             Export Data
           </button>
@@ -655,7 +655,7 @@ export default function SettingsPage() {
             <h3>Account Deletion</h3>
             <p>Permanently delete your account and all data</p>
           </div>
-          <button className={`${styles.preferenceButton} ${styles.deleteButton}`}>
+          <button className="btn-tertiary">
             <Trash2 size={16} />
             Delete Account
           </button>

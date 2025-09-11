@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Download, Edit, Trash2, Calendar, Clock, Share2, Tag, Layers } from 'lucide-react';
+import { Download, Edit, Trash2, Calendar, Clock, Share2, Tag, Layers, Lock, Globe } from 'lucide-react';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import styles from '@/styles/Sequences.module.scss';
@@ -346,7 +346,7 @@ export default function SequencesPage() {
         <div className={styles.errorState}>
           <h3>Error loading sequences</h3>
           <p>{error}</p>
-          <button onClick={() => window.location.reload()}>Retry</button>
+          <button onClick={() => window.location.reload()} className="btn-primary">Retry</button>
         </div>
         <Footer />
       </main>
@@ -442,7 +442,7 @@ export default function SequencesPage() {
                         {sequence.name}
                       </Link>
                       <span className={styles.privacyIndicator}>
-                        {sequence.privacy === 'public' ? '🌍' : '🔒'}
+                        {sequence.privacy === 'public' ? <Globe size={16} /> : <Lock size={16} />}
                       </span>
                     </h3>
                     <p className={styles.sequenceDescription}>
@@ -647,7 +647,7 @@ export default function SequencesPage() {
                       </Link>
                       <button
                         id="deleteSeq"
-                        className={`${styles.actionButton} ${styles.deleteButton}`} 
+                        className={styles.actionButton} 
                         data-tooltip="Delete Sequence"
                         onClick={() => handleDelete(sequence.id)}
                       >

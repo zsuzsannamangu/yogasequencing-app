@@ -43,7 +43,7 @@
 
 .settingsContent {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: auto 1fr;
   gap: 3rem;
   background-color: white;
   border-radius: 1rem;
@@ -54,6 +54,8 @@
 .sidebar {
   background-color: #f8fafc;
   border-right: 1px solid #e5e7eb;
+  min-width: 280px;
+  width: fit-content;
 }
 
 .tabNavigation {
@@ -73,9 +75,10 @@
   cursor: pointer;
   transition: vars.$transition;
   color: vars.$text-color-2;
+  justify-content: flex-start;
+  width: 100%;
   font-size: 1rem;
   font-weight: 500;
-  width: 100%;
 
   &:hover {
     background-color: #f1f5f9;

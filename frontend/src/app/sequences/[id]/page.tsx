@@ -4,13 +4,27 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
-import { ArrowLeft, Download, Share2, Calendar, Clock, Tag, Layers, Edit, Trash2, Plus, X, GripVertical } from 'lucide-react';
+import { ArrowLeft, Download, Share2, Calendar, Clock, Tag, Layers, Edit, Trash2, Plus, X, GripVertical, Lock, Globe } from 'lucide-react';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import styles from '@/styles/SequenceDetail.module.scss';
 import { svg2pdf } from 'svg2pdf.js';
 import jsPDF from 'jspdf';
 import Swal from 'sweetalert2';
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  arrayMove,
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 
 interface PoseData {
   filePath: string;
@@ -40,22 +54,22 @@ export default function SequenceDetailPage() {
   const params = useParams();
   const router = useRouter();
   const sequenceId = params.id as string;
-  
+
   // Available industry labels
   const AVAILABLE_INDUSTRY_LABELS = [
-    'Yoga', 'Pilates', 'Physical Therapy', 'Chiropractic', 
+    'Yoga', 'Pilates', 'Physical Therapy', 'Chiropractic',
     'Dance', 'Martial Arts', 'Personal Training', 'Occupational Therapy'
   ];
-  
+
   // Debug logging
   console.log('Params object:', params);
   console.log('Sequence ID:', sequenceId);
-  
+
   const [sequence, setSequence] = useState<Sequence | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isOwner, setIsOwner] = useState(false); // TODO: Implement when auth is implemented
-  
+
   // Edit mode state
   const [isEditing, setIsEditing] = useState(false);
   const [editTitle, setEditTitle] = useState('');
@@ -64,14 +78,23 @@ export default function SequenceDetailPage() {
   const [editIndustryLabel, setEditIndustryLabel] = useState('');
   const [editPrivacy, setEditPrivacy] = useState<'private' | 'public'>('private');
   const [editPoseNames, setEditPoseNames] = useState<string[]>([]);
-  const [editPoses, setEditPoses] = useState<{filePath: string, poseName: string}[]>([]);
+  const [editPoses, setEditPoses] = useState<{ filePath: string, poseName: string }[]>([]);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newCategoryDescription, setNewCategoryDescription] = useState('');
   const [showNewCategoryForm, setShowNewCategoryForm] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
-  
+
   // Drag and drop state
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+
+  // DnD Kit sensors
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    })
+  );
 
   // DraggablePose component for editing
   const DraggablePose = ({ id, poseName, image, index, onDelete, onNameChange }: {
@@ -82,35 +105,38 @@ export default function SequenceDetailPage() {
     onDelete: (index: number) => void;
     onNameChange: (index: number, value: string) => void;
   }) => {
-    const handleDragStart = (e: React.DragEvent) => {
-      setDraggedIndex(index);
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', index.toString());
-    };
+    const {
+      attributes,
+      listeners,
+      setNodeRef,
+      transform,
+      transition,
+      isDragging,
+    } = useSortable({ id });
 
-    const handleDragOver = (e: React.DragEvent) => {
-      e.preventDefault();
-      e.dataTransfer.dropEffect = 'move';
-    };
-
-    const handleDrop = (e: React.DragEvent) => {
-      e.preventDefault();
-      const draggedIndex = parseInt(e.dataTransfer.getData('text/html'));
-      if (draggedIndex !== index) {
-        handleDragEnd(draggedIndex, index);
-      }
+    const style = {
+      transform: CSS.Transform.toString(transform),
+      transition,
+      opacity: isDragging ? 0.5 : 1,
     };
 
     return (
-      <div 
-        className={`${styles.draggablePose} ${draggedIndex === index ? styles.dragging : ''}`}
-        draggable
-        onDragStart={handleDragStart}
-        onDragOver={handleDragOver}
-        onDrop={handleDrop}
-      >
-        <div className={styles.gripHandle}>
-          <GripVertical size={16} />
+      <div ref={setNodeRef} style={style} className={styles.poseCard}>
+        <div className={styles.poseHeader}>
+          <div
+            className={styles.gripHandle}
+            {...attributes}
+            {...listeners}
+          >
+            <GripVertical size={16} />
+          </div>
+          <button
+            onClick={() => onDelete(index)}
+            className={styles.deleteButton}
+            title="Delete Pose"
+          >
+            <Trash2 size={16} />
+          </button>
         </div>
         <img
           src={image}
@@ -124,35 +150,27 @@ export default function SequenceDetailPage() {
           placeholder={`Pose ${index + 1}`}
           className={styles.poseInput}
         />
-        <button
-          onClick={() => onDelete(index)}
-          className={styles.deleteButton}
-          title="Delete Pose"
-        >
-          ✕
-        </button>
       </div>
     );
   };
 
   // Drag and drop functions
-  const handleDragEnd = (fromIndex: number, toIndex: number) => {
-    if (fromIndex === toIndex) return;
-    
-    const newPoses = [...editPoses];
-    const newPoseNames = [...editPoseNames];
-    
-    // Remove the dragged item
-    const [draggedPose] = newPoses.splice(fromIndex, 1);
-    const [draggedPoseName] = newPoseNames.splice(fromIndex, 1);
-    
-    // Insert at new position
-    newPoses.splice(toIndex, 0, draggedPose);
-    newPoseNames.splice(toIndex, 0, draggedPoseName);
-    
-    setEditPoses(newPoses);
-    setEditPoseNames(newPoseNames);
-    setDraggedIndex(null);
+  const handleDragEnd = (event: any) => {
+    const { active, over } = event;
+
+    if (active.id !== over.id) {
+      setEditPoses((items) => {
+        const oldIndex = items.findIndex((item) => item.filePath === active.id);
+        const newIndex = items.findIndex((item) => item.filePath === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+
+      setEditPoseNames((items) => {
+        const oldIndex = items.findIndex((_, index) => editPoses[index]?.filePath === active.id);
+        const newIndex = items.findIndex((_, index) => editPoses[index]?.filePath === over.id);
+        return arrayMove(items, oldIndex, newIndex);
+      });
+    }
   };
 
   // Add DOMParser for PDF generation
@@ -172,21 +190,21 @@ export default function SequenceDetailPage() {
     const fetchSequence = async () => {
       try {
         console.log('Fetching sequence with ID:', sequenceId); // Debug log
-        
+
         if (!sequenceId) {
           setError('No sequence ID provided');
           setLoading(false);
           return;
         }
-        
+
         setLoading(true);
         setError(null);
-        
+
         const response = await axios.get(`http://localhost:8000/sequences/${sequenceId}`);
         console.log('Sequence response:', response.data); // Debug log
         const sequenceData = response.data;
         setSequence(sequenceData);
-        
+
         // Populate edit fields
         setEditTitle(sequenceData.name);
         setEditDescription(sequenceData.description || '');
@@ -195,13 +213,13 @@ export default function SequenceDetailPage() {
         setEditPrivacy(sequenceData.privacy || 'private');
         setEditPoseNames(sequenceData.poses?.map((pose: any) => pose.poseName) || []);
         setEditPoses(sequenceData.poses || []);
-        
+
         // Fetch categories for dropdown
         fetchCategories();
-        
+
         // TODO: Check if current user is the owner when auth is implemented
         // setIsOwner(response.data.userId === currentUserId);
-        
+
       } catch (error: any) {
         console.error('Failed to fetch sequence:', error);
         if (error.response?.status === 404) {
@@ -250,10 +268,10 @@ export default function SequenceDetailPage() {
       // Add metadata
       pdf.setFontSize(12);
       pdf.setTextColor(100);
-      const creationDate = new Date(sequence.createdAt).toLocaleDateString('en-US', { 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
+      const creationDate = new Date(sequence.createdAt).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
       });
       const metadataText = `${sequence.duration} • ${sequence.poseCount} poses • ${creationDate}`;
       const metadataWidth = pdf.getTextWidth(metadataText);
@@ -264,10 +282,10 @@ export default function SequenceDetailPage() {
       // Add poses
       if (sequence.poses && sequence.poses.length > 0) {
         y += 20;
-        
+
         for (let i = 0; i < sequence.poses.length; i++) {
           const pose = sequence.poses[i];
-          
+
           try {
             if (pose.filePath) {
               console.log(`Fetching SVG from: ${pose.filePath}`); // Debug log
@@ -317,7 +335,7 @@ export default function SequenceDetailPage() {
       // Save the PDF
       const filename = `${sequence.name.replace(/[^a-zA-Z0-9]/g, '_')}_sequence.pdf`;
       pdf.save(filename);
-      
+
     } catch (error: any) {
       console.error('Failed to generate PDF:', error);
       Swal.fire({
@@ -338,23 +356,23 @@ export default function SequenceDetailPage() {
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
-      
+
       // Add title
       pdf.setFontSize(20);
       pdf.setTextColor(50);
       pdf.text(sequence.name, pageWidth / 2, 30, { align: 'center' });
-      
+
       // Add sequence info
       pdf.setFontSize(10);
       pdf.setTextColor(80);
       let yPosition = 70;
-      
+
       pdf.text(`Duration: ${sequence.duration}`, 20, yPosition);
       pdf.text(`Poses: ${sequence.poseCount}`, 20, yPosition + 8);
       pdf.text(`Category: ${sequence.category || 'None'}`, 20, yPosition + 16);
       pdf.text(`Industry: ${sequence.industryLabel || 'Yoga'}`, 20, yPosition + 24);
       pdf.text(`Privacy: ${sequence.privacy}`, 20, yPosition + 32);
-      
+
       // Add poses grid
       yPosition += 50;
       const maxWidth = 40;
@@ -362,25 +380,25 @@ export default function SequenceDetailPage() {
       const spacingY = 15;
       let x = 20;
       let y = yPosition;
-      
+
       for (let i = 0; i < sequence.poses.length; i++) {
         const pose = sequence.poses[i];
-        
+
         try {
           // Fetch SVG content
           const response = await fetch(pose.filePath);
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          
+
           const svgText = await response.text();
           const parser = new window.DOMParser();
           const svgDoc = parser.parseFromString(svgText, 'image/svg+xml');
           const svgElement = svgDoc.documentElement;
-          
+
           if (svgElement) {
             svgElement.setAttribute('width', `${maxWidth}px`);
             svgElement.setAttribute('height', `${maxWidth}px`);
             await svg2pdf(svgElement, pdf, { x, y });
-            
+
             // Add pose name below the image
             if (pose.poseName) {
               pdf.setFontSize(10);
@@ -390,7 +408,7 @@ export default function SequenceDetailPage() {
               pdf.setTextColor(100);
               pdf.text(pose.poseName, centerX, y + maxWidth + 15);
             }
-            
+
             // Move to next position
             x += maxWidth + spacingX;
             if (x + maxWidth > pageWidth - spacingX) {
@@ -412,11 +430,11 @@ export default function SequenceDetailPage() {
           }
         }
       }
-      
+
       // Convert PDF to blob for sharing
       const pdfBlob = pdf.output('blob') as Blob;
       const pdfFile = new File([pdfBlob], `${sequence.name.replace(/[^a-zA-Z0-9]/g, '_')}_sequence.pdf`, { type: 'application/pdf' });
-      
+
       // Try to use Web Share API first (for mobile devices)
       if (navigator.share && navigator.canShare && navigator.canShare({ files: [pdfFile] })) {
         await navigator.share({
@@ -428,7 +446,7 @@ export default function SequenceDetailPage() {
         // Fallback: download the PDF for manual sharing
         const filename = `${sequence.name.replace(/[^a-zA-Z0-9]/g, '_')}_sequence.pdf`;
         pdf.save(filename);
-        
+
         Swal.fire({
           title: 'PDF Downloaded!',
           text: 'The PDF has been downloaded. You can now share it manually.',
@@ -437,7 +455,7 @@ export default function SequenceDetailPage() {
           confirmButtonText: 'OK',
         });
       }
-      
+
     } catch (error) {
       console.error('Failed to share PDF:', error);
       Swal.fire({
@@ -501,11 +519,11 @@ export default function SequenceDetailPage() {
 
       // Send update to backend
       const response = await axios.put(`http://localhost:8000/sequences/${sequenceId}`, updatedSequence);
-      
+
       // Update local state
       setSequence(response.data);
       setIsEditing(false);
-      
+
       Swal.fire({
         title: 'Updated!',
         text: 'Sequence has been updated successfully.',
@@ -513,7 +531,7 @@ export default function SequenceDetailPage() {
         confirmButtonColor: '#b8336a',
         confirmButtonText: 'OK',
       });
-      
+
     } catch (error: any) {
       console.error('Failed to update sequence:', error);
       Swal.fire({
@@ -534,37 +552,58 @@ export default function SequenceDetailPage() {
   const handleDragOver = (e: React.DragEvent, index: number) => {
     e.preventDefault();
     if (draggedIndex === null || draggedIndex === index) return;
-    
+
     const newPoses = [...editPoses];
     const newPoseNames = [...editPoseNames];
-    
+
     // Remove dragged item from original position
     const draggedPose = newPoses[draggedIndex];
     const draggedName = newPoseNames[draggedIndex];
     newPoses.splice(draggedIndex, 1);
     newPoseNames.splice(draggedIndex, 1);
-    
+
     // Insert at new position
     newPoses.splice(index, 0, draggedPose);
     newPoseNames.splice(index, 0, draggedName);
-    
+
     setEditPoses(newPoses);
     setEditPoseNames(newPoseNames);
     setDraggedIndex(index);
   };
 
 
-  const handleDeletePose = (index: number) => {
-    const newPoses = editPoses.filter((_, i) => i !== index);
-    const newPoseNames = editPoseNames.filter((_, i) => i !== index);
-    setEditPoses(newPoses);
-    setEditPoseNames(newPoseNames);
-    
-    // Update the sequence's pose count
-    if (sequence) {
-      setSequence({
-        ...sequence,
-        poseCount: newPoses.length
+  const handleDeletePose = async (index: number) => {
+    const result = await Swal.fire({
+      title: 'Delete Pose?',
+      text: 'Are you sure you want to delete this pose?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#6b7280',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel'
+    });
+
+    if (result.isConfirmed) {
+      const newPoses = editPoses.filter((_, i) => i !== index);
+      const newPoseNames = editPoseNames.filter((_, i) => i !== index);
+      setEditPoses(newPoses);
+      setEditPoseNames(newPoseNames);
+
+      // Update the sequence's pose count
+      if (sequence) {
+        setSequence({
+          ...sequence,
+          poseCount: newPoses.length
+        });
+      }
+
+      Swal.fire({
+        title: 'Deleted!',
+        text: 'The pose has been deleted.',
+        icon: 'success',
+        timer: 2000,
+        showConfirmButton: false
       });
     }
   };
@@ -583,12 +622,12 @@ export default function SequenceDetailPage() {
         name: newCategoryName.trim(),
         description: newCategoryDescription
       });
-      
+
       setEditCategory(response.data.name);
       setNewCategoryName('');
       setNewCategoryDescription('');
       setShowNewCategoryForm(false);
-      
+
       Swal.fire({
         title: 'Category Created!',
         text: 'New category has been added.',
@@ -596,7 +635,7 @@ export default function SequenceDetailPage() {
         confirmButtonColor: '#b8336a',
         confirmButtonText: 'OK',
       });
-      
+
     } catch (error: any) {
       console.error('Failed to create category:', error);
       Swal.fire({
@@ -625,7 +664,7 @@ export default function SequenceDetailPage() {
 
       if (result.isConfirmed) {
         await axios.delete(`http://localhost:8000/sequences/${sequenceId}`);
-        
+
         Swal.fire({
           title: 'Deleted!',
           text: 'Sequence has been deleted.',
@@ -633,7 +672,7 @@ export default function SequenceDetailPage() {
           confirmButtonColor: '#b8336a',
           confirmButtonText: 'OK',
         });
-        
+
         router.push('/sequences');
       }
     } catch (error: any) {
@@ -681,7 +720,7 @@ export default function SequenceDetailPage() {
   return (
     <main className={styles.main}>
       <Navbar showUserMenu={true} firstName="User" lastName="Name" profileImage={null} />
-      
+
       <section className={styles.sequenceSection}>
         <div className={styles.container}>
           {/* Header */}
@@ -690,7 +729,7 @@ export default function SequenceDetailPage() {
               <ArrowLeft size={20} />
               Back to Sequences
             </Link>
-            
+
             <div className={styles.titleSection}>
               <h1 className={styles.title}>{sequence.name}</h1>
             </div>
@@ -728,60 +767,19 @@ export default function SequenceDetailPage() {
           {sequence.description && (
             <div className={styles.descriptionSection}>
               <p className={styles.description}>
-                {sequence.description.length > 100 
-                  ? `${sequence.description.substring(0, 100)}...` 
+                {sequence.description.length > 100
+                  ? `${sequence.description.substring(0, 100)}...`
                   : sequence.description
                 }
               </p>
             </div>
           )}
 
-          {/* Action Buttons */}
-          <div className={styles.actions}>
-            <button
-              onClick={handleDownloadPDF}
-              className={styles.actionButton}
-              title="Download PDF"
-            >
-              <Download size={18} />
-              Download PDF
-            </button>
-            
-            <button
-              onClick={handleShare}
-              className={styles.actionButton}
-              title="Share PDF"
-            >
-              <Share2 size={18} />
-              Share PDF
-            </button>
-
-            <button
-              onClick={handleEdit}
-              className={styles.actionButton}
-              title="Edit Sequence"
-            >
-              <Edit size={18} />
-              Edit
-            </button>
-            
-            {isOwner && (
-              <button
-                onClick={handleDelete}
-                className={styles.actionButton}
-                title="Delete Sequence"
-              >
-                <Trash2 size={18} />
-                Delete
-              </button>
-            )}
-          </div>
-
           {isEditing ? (
             /* Edit Form */
             <div className={styles.editForm}>
               <h2 className={styles.editTitle}>Edit Sequence</h2>
-              
+
               {/* Basic Information */}
               <div className={styles.formSection}>
                 <h3>Basic Information</h3>
@@ -797,7 +795,7 @@ export default function SequenceDetailPage() {
                       required
                     />
                   </div>
-                  
+
                   <div className={styles.inputGroup}>
                     <label htmlFor="editDescription" className={styles.label}>Description</label>
                     <textarea
@@ -809,7 +807,7 @@ export default function SequenceDetailPage() {
                     />
                   </div>
                 </div>
-                
+
 
               </div>
 
@@ -836,7 +834,7 @@ export default function SequenceDetailPage() {
                       <button
                         type="button"
                         onClick={() => setShowNewCategoryForm(true)}
-                        className={styles.addCategoryButton}
+                        className="btn-secondary btn-sm"
                         title="Create New Category"
                       >
                         <Plus size={16} />
@@ -874,7 +872,7 @@ export default function SequenceDetailPage() {
                           className={styles.radio}
                         />
                         <span className={styles.privacyLabel}>
-                          <span className={styles.privacyIcon}>🔒</span>
+                          <Lock size={16} className={styles.privacyIcon} />
                           Private
                         </span>
                       </label>
@@ -888,7 +886,7 @@ export default function SequenceDetailPage() {
                           className={styles.radio}
                         />
                         <span className={styles.privacyLabel}>
-                          <span className={styles.privacyIcon}>🌍</span>
+                          <Globe size={16} className={styles.privacyIcon} />
                           Public
                         </span>
                       </label>
@@ -910,7 +908,7 @@ export default function SequenceDetailPage() {
                       className={styles.input}
                     />
                     <div className={styles.newCategoryActions}>
-                      <button onClick={handleCreateCategory} className={styles.createButton}>
+                      <button onClick={handleCreateCategory} className="btn-primary btn-sm">
                         Create
                       </button>
                       <button
@@ -919,7 +917,7 @@ export default function SequenceDetailPage() {
                           setNewCategoryName('');
                           setNewCategoryDescription('');
                         }}
-                        className={styles.cancelButton}
+                        className="btn-tertiary btn-sm"
                       >
                         Cancel
                       </button>
@@ -931,30 +929,38 @@ export default function SequenceDetailPage() {
               {/* Editable Poses */}
               <div className={styles.formSection}>
                 <p className={styles.helpText}>
-                  Drag poses to reorder them, click the red ✕ to delete poses, and edit pose names by typing in the input fields.
+                  Drag poses to reorder them, click the trashcan icon to delete poses, and edit pose names by typing in the input fields.
                 </p>
-                
-                <div className={styles.grid}>
-                  {editPoses.map((pose, index) => (
-                    <DraggablePose
-                      key={index}
-                      id={`pose-${index}`}
-                      poseName={editPoseNames[index] || ''}
-                      image={pose.filePath}
-                      index={index}
-                      onDelete={handleDeletePose}
-                      onNameChange={handlePoseNameChange}
-                    />
-                  ))}
-                </div>
+
+                <DndContext
+                  sensors={sensors}
+                  collisionDetection={closestCenter}
+                  onDragEnd={handleDragEnd}
+                >
+                  <SortableContext items={editPoses.map(pose => pose.filePath)} strategy={verticalListSortingStrategy}>
+                    <div className={styles.grid}>
+                      {editPoses.map((pose, index) => (
+                        <DraggablePose
+                          key={pose.filePath}
+                          id={pose.filePath}
+                          poseName={editPoseNames[index] || ''}
+                          image={pose.filePath}
+                          index={index}
+                          onDelete={handleDeletePose}
+                          onNameChange={handlePoseNameChange}
+                        />
+                      ))}
+                    </div>
+                  </SortableContext>
+                </DndContext>
               </div>
 
               {/* Edit Actions */}
-              <div className={styles.editActions}>
-                <button onClick={handleSaveEdit} className={styles.saveButton}>
+              <div className="btn-group">
+                <button onClick={handleSaveEdit} className="btn-primary">
                   Save Changes
                 </button>
-                <button onClick={handleCancelEdit} className={styles.cancelButton}>
+                <button onClick={handleCancelEdit} className="btn-tertiary">
                   Cancel
                 </button>
               </div>
@@ -966,7 +972,7 @@ export default function SequenceDetailPage() {
                 {sequence.poses.map((pose, index) => (
                   <div key={index} className={styles.poseCard}>
                     <div className={styles.poseImage}>
-                      <img 
+                      <img
                         src={pose.filePath}
                         alt={pose.poseName}
                         className={styles.poseSvg}
@@ -978,6 +984,49 @@ export default function SequenceDetailPage() {
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* Action Buttons - Only show when not editing */}
+          {!isEditing && (
+            <div className={styles.actions}>
+              <button
+                onClick={handleDownloadPDF}
+                className="btn-primary"
+                title="Download PDF"
+              >
+                <Download size={18} />
+                Download PDF
+              </button>
+
+              <button
+                onClick={handleShare}
+                className="btn-secondary"
+                title="Share PDF"
+              >
+                <Share2 size={18} />
+                Share PDF
+              </button>
+
+              <button
+                onClick={handleEdit}
+                className="btn-primary"
+                title="Edit Sequence"
+              >
+                <Edit size={18} />
+                Edit
+              </button>
+
+              {isOwner && (
+                <button
+                  onClick={handleDelete}
+                  className="btn-tertiary"
+                  title="Delete Sequence"
+                >
+                  <Trash2 size={18} />
+                  Delete
+                </button>
+              )}
             </div>
           )}
         </div>

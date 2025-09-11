@@ -67,7 +67,7 @@ export default function PaymentPage() {
 
             <button 
               onClick={handleStartTrial}
-              className={`${styles.primaryButton} ${isProcessing ? styles.processing : ''}`}
+              className={`btn-primary ${isProcessing ? 'disabled' : ''}`}
               disabled={isProcessing}
             >
               {isProcessing ? 'Processing...' : 'Start Free Trial'}
