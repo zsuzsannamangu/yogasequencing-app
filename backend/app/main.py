@@ -16,7 +16,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.database import database
-from app.routes import upload, detect, silhouettes, sequences, auth
+from app.routes import upload, detect, silhouettes, sequences, auth, contact, long_video, fast_upload
 
 # ──────────────────────────────────────────────────────────────
 # Global Constants & Directory Setup
@@ -56,8 +56,11 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(sequences.router)
 app.include_router(upload.router)
+app.include_router(fast_upload.router, prefix="/fast", tags=["fast-upload"])
 app.include_router(detect.router)
 app.include_router(silhouettes.router)
+app.include_router(contact.router)
+app.include_router(long_video.router, prefix="/long-video", tags=["long-video"])
 
 # Mount static files AFTER CORS is configured
 app.mount("/sequence-assets", StaticFiles(directory="sequences"), name="sequence-assets")

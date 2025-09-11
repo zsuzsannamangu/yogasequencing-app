@@ -15,3 +15,15 @@ SUPABASE_JWT_SECRET=your-jwt-secret-here
 
 # Database Connection (found in Settings > Database)
 DATABASE_URL=postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-ID].supabase.co:5432/postgres
+
+# SendGrid Configuration
+# Get these values from your SendGrid account dashboard
+
+# SendGrid API Key (found in Settings > API Keys)
+SENDGRID_API_KEY=your-sendgrid-api-key-here
+
+# From Email (verified sender email in SendGrid)
+SENDGRID_FROM_EMAIL=noreply@yourdomain.com
+
+# To Email (where contact form emails will be sent)
+SENDGRID_TO_EMAIL=contact@yourdomain.com

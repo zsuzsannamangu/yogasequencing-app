@@ -1,0 +1,184 @@
+@use './variables.scss' as vars;
+
+  .container {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+  }
+
+.header {
+  text-align: center;
+  margin-bottom: 2rem;
+  
+  p {
+    color: vars.$text-color-2;
+    font-family: vars.$body-font;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+}
+
+.jobInfo {
+  margin-bottom: 2rem;
+}
+
+.statusRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: vars.$muted-bg;
+  border-radius: 0.2rem;
+  margin-bottom: 1.5rem;
+  color: vars.$text-color;
+  
+  .statusLabel {
+    font-weight: 600;
+    color: vars.$text-color;
+    font-family: vars.$body-font;
+  }
+  
+  .status {
+    font-weight: 700;
+    font-family: vars.$body-font;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: vars.$text-color;
+  }
+}
+
+.videoInfo, .resultInfo {
+  margin-bottom: 1.5rem;
+  
+  h4 {
+    font-family: vars.$title-font;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: vars.$text-color;
+    margin: 0 0 1rem 0;
+  }
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  max-width: 100%;
+}
+
+.infoItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: vars.$muted-bg-2;
+  border-radius: 0.5rem;
+  font-family: vars.$body-font;
+  
+  .infoLabel {
+    font-weight: 500;
+    color: vars.$text-color-2;
+  }
+  
+  span:last-child {
+    font-weight: 600;
+    color: vars.$text-color;
+  }
+}
+
+.progressContainer {
+  margin-bottom: 2rem;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: vars.$muted-bg;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.5rem;
+}
+
+.progressFill {
+  height: 100%;
+  background: linear-gradient(90deg, vars.$primary-color, vars.$accent-color);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progressText {
+  text-align: center;
+  font-family: vars.$body-font;
+  font-weight: 500;
+  color: vars.$text-color;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  max-width: 100%;
+  padding: 0 2rem;
+}
+
+.startButton, .viewButton {
+  background: vars.$primary-color;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.5rem 1.5rem;
+  font-family: vars.$title-font;
+  font-weight: 600;
+  font-size: 0.875rem;
+  min-width: 140px;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: vars.$button-hover-color;
+    transform: translateY(-2px);
+  }
+}
+
+.cancelButton {
+  background: vars.$accent-color;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-family: vars.$body-font;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: vars.$accent-hover-color;
+    transform: translateY(-2px);
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem;
+    margin: 1rem 0;
+  }
+  
+  .infoGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .actions {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .startButton, .viewButton, .cancelButton {
+    width: 100%;
+    max-width: 300px;
+  }
+}

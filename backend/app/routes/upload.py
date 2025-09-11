@@ -22,6 +22,9 @@ os.makedirs(PROFILE_IMAGES_DIR, exist_ok=True)
 ALLOWED_IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp"}
 MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
 
+# Video upload constants
+MAX_VIDEO_SIZE = 1000 * 1024 * 1024  # 1000MB (1GB) - reasonable limit for very large videos
+
 def convert_to_mp4(input_path):
     base, _ = os.path.splitext(input_path)
     output_path = f"{base}.mp4"
@@ -55,6 +58,17 @@ async def upload_file(file: UploadFile = File(...)):
     Converts to .mp4 if necessary.
     Returns saved filename and video_id.
     """
+    # Check file size before processing
+    file_content = await file.read()
+    if len(file_content) > MAX_VIDEO_SIZE:
+        raise HTTPException(
+            status_code=413,
+            detail=f"File too large. Maximum size is {MAX_VIDEO_SIZE // (1024 * 1024)}MB."
+        )
+    
+    # Reset file pointer after reading
+    await file.seek(0)
+    
     file_location = os.path.join(UPLOAD_DIR, file.filename)
 
     with open(file_location, "wb") as buffer:

@@ -55,3 +55,23 @@ class TokenData(BaseModel):
     """Schema for JWT token payload"""
     user_id: Optional[str] = None
     email: Optional[str] = None
+
+class ContactForm(BaseModel):
+    """Schema for contact form submission"""
+    first_name: str
+    last_name: str
+    email: EmailStr
+    phone: Optional[str] = None
+    message: str
+    
+    @validator('first_name', 'last_name')
+    def validate_names(cls, v):
+        if not v.strip():
+            raise ValueError('Name cannot be empty')
+        return v.strip()
+    
+    @validator('message')
+    def validate_message(cls, v):
+        if not v.strip():
+            raise ValueError('Message cannot be empty')
+        return v.strip()

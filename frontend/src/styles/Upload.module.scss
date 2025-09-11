@@ -1,9 +1,9 @@
-@use './variables.scss' as vars;
+@import './variables.scss';
 
 .main {
-  background-color: vars.$muted-bg; // Grey background for entire page
-  color: vars.$text-color;
-  font-family: vars.$title-font;
+  background-color: $muted-bg; // Grey background for entire page
+  color: $text-color;
+  font-family: $title-font;
   min-height: 150vh;
   display: flex;
   flex-direction: column;
@@ -11,8 +11,8 @@
 
 .section {
   flex-grow: 1;
-  padding: 0 1rem 8rem;
-  max-width: 1400px;
+  padding: 0 2rem 8rem;
+  max-width: 1200px;
   margin: 0 auto;
   margin-top: 10rem;
   text-align: center;
@@ -25,14 +25,14 @@
   .title {
     font-size: 2.5rem;
     font-weight: 900;
-    color: vars.$accent-color;
+    color: $accent-color;
     margin-bottom: 1rem;
     margin-top: 0;
   }
 
   .subtitle {
     font-size: 1.125rem;
-    color: vars.$text-color-2;
+    color: $text-color-2;
     max-width: 800px;
     margin: 3rem auto;
     line-height: 1.5;
@@ -57,16 +57,62 @@
 
 .fileLabel {
   padding: 0.5rem 1.5rem;
-  background-color: vars.$primary-color;
+  background-color: $primary-color;
   color: white;
   border-radius: 9999px;
   cursor: pointer;
-  transition: vars.$transition;
-  font-family: vars.$title-font;
+  transition: $transition;
+  font-family: $title-font;
   font-weight: 600;
+  font-size: 0.875rem;
+  min-width: 120px;
+  text-align: center;
+  white-space: nowrap;
 
   &:hover {
-    background-color: vars.$button-hover-color;
+    background-color: $button-hover-color;
+  }
+}
+
+.chooseFileButton {
+  padding: 0.75rem 2rem;
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: $transition;
+  font-family: $title-font;
+  font-weight: 600;
+  font-size: 1rem;
+  min-width: 160px;
+  text-align: center;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: $button-hover-color;
+    transform: translateY(-1px);
+  }
+}
+
+.resetButton {
+  padding: 0.75rem 2rem;
+  background-color: $accent-color;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: $transition;
+  font-family: $title-font;
+  font-weight: 600;
+  font-size: 1rem;
+  min-width: 160px;
+  text-align: center;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: $accent-hover-color;
+    transform: translateY(-1px);
   }
 }
 
@@ -76,7 +122,7 @@
 
 .fileName {
   font-size: 0.875rem;
-  color: vars.$text-color;
+  color: $text-color;
   margin-top: 0.5rem;
   display: block;
 }
@@ -84,26 +130,113 @@
 .uploadButton {
   padding: 0.5rem 1.5rem;
   border-radius: 9999px;
-  background-color: vars.$accent-color;
+  background-color: $accent-color;
   color: white;
-  transition: vars.$transition;
-  font-family: vars.$title-font;
+  transition: $transition;
+  font-family: $title-font;
+  font-size: 0.875rem;
+  min-width: 140px;
+  text-align: center;
+  white-space: nowrap;
 
   &:hover {
-    background-color: vars.$accent-hover-color;
+    background-color: $accent-hover-color;
+  }
+
+  &.uploadComplete {
+    background-color: $accent-color; // Accent color
+    color: white;
+    
+    &:hover {
+      background-color: $accent-hover-color; // Darker accent on hover
+    }
+  }
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    
+    &:hover {
+      background-color: $accent-color; // Don't change color on hover when disabled
+    }
+  }
+}
+
+.uploadSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.uploadButtons {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  flex-wrap: nowrap;
+  justify-content: center;
+  max-width: 1200px;
+  width: 100%;
+  padding: 0 2rem;
+  margin: 0 auto;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 100%;
+  padding: 0 2rem;
+}
+
+.startProcessingButton {
+  padding: 0.5rem 1.5rem;
+  border-radius: 9999px;
+  background-color: $primary-color;
+  color: white;
+  transition: $transition;
+  font-family: $title-font;
+  font-weight: 600;
+
+  &:hover {
+    background-color: $accent-hover-color; // Darker accent
+    transform: translateY(-1px);
+  }
+}
+
+.resetButton {
+  padding: 0.75rem 2rem;
+  background-color: $accent-color;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: $transition;
+  font-family: $title-font;
+  font-weight: 600;
+  font-size: 1rem;
+  min-width: 160px;
+  text-align: center;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: $accent-hover-color;
+    transform: translateY(-1px);
   }
 }
 
 .generateButton {
   padding: 0.5rem 1.5rem;
   border-radius: 9999px;
-  background-color: vars.$primary-color;
+  background-color: $primary-color;
   color: white;
-  transition: vars.$transition;
-  font-family: vars.$title-font;
+  transition: $transition;
+  font-family: $title-font;
 
   &:hover {
-    background-color: vars.$button-hover-color;
+    background-color: $button-hover-color;
   }
 
   &:disabled {
@@ -114,19 +247,19 @@
 .downloadButton {
   padding: 0.5rem 1.5rem;
   border-radius: 9999px;
-  background-color: vars.$primary-color;
+  background-color: $primary-color;
   color: white;
-  transition: vars.$transition;
-  font-family: vars.$title-font;
+  transition: $transition;
+  font-family: $title-font;
 
   &:hover {
-    background-color: vars.$button-hover-color;
+    background-color: $button-hover-color;
   }
 }
 
 .uploadingText {
   text-align: center;
-  color: vars.$text-color-2;
+  color: $text-color-2;
   font-weight: 600;
   margin-top: 1rem;
   animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -151,7 +284,121 @@
 
 .emptyText {
   text-align: center;
-  color: #4b5563;
+  color: $text-color-2;
+}
+
+.shortVideoNotice {
+  background: $muted-bg-2;
+  border: 1px solid $border-color;
+  border-radius: 0.5rem;
+  padding: 1rem;
+  margin: 1rem 0;
+  text-align: center;
+  
+  p {
+    margin: 0;
+    color: $text-color;
+    font-family: $body-font;
+    font-weight: 500;
+  }
+}
+
+.longVideoContainer {
+  margin: 2rem 0;
+}
+
+.workflowSteps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4rem;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2rem 4rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+  font-family: $title-font;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-family: $body-font;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  
+  &.completed {
+    background: $muted-bg-2;
+    color: $text-color;
+    border: 1px solid $accent-color;
+  }
+  
+  &.current {
+    background: $muted-bg-2;
+    color: $text-color;
+    border: 1px solid $accent-color;
+  }
+  
+  &.pending {
+    background: $muted-bg;
+    color: $text-color-2;
+    border: 1px solid $border-color;
+  }
+}
+
+.stepNumber {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  font-size: 0.875rem;
+  font-weight: 600;
+  
+  .completed & {
+    background: $accent-color;
+    color: white;
+  }
+  
+  .current & {
+    background: $accent-color;
+    color: white;
+  }
+  
+  .pending & {
+    background: $text-color-2;
+    color: white;
+  }
+}
+
+.stepText {
+  font-size: 0.875rem;
+  font-family: $title-font;
+}
+
+.stepArrow {
+  color: $text-color-2;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+@media (max-width: 768px) {
+  .workflowSteps {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .stepArrow {
+    transform: rotate(90deg);
+  }
 }
 
 .helpMessage {
@@ -162,46 +409,71 @@
 
   p {
     margin: 0;
-    color: vars.$text-color;
+    color: $text-color;
     font-size: 1rem;
     line-height: 1.5;
   }
 }
 
 .sequenceInfoSection {
-  padding: 2rem;
-  max-width: 1200px;
+  background: $background-color;
+  border: 1px solid rgba($border-color, 0.35);
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+  padding: clamp(1rem, 3vw, 1.75rem);
+  display: grid;
+  gap: 1.25rem;
 }
 
 .sequenceInfoTitle {
-  font-size: 1.5rem;
+  font-family: $title-font;
   font-weight: 700;
-  color: vars.$accent-color;
-  margin-bottom: 2rem;
-  text-align: center;
+  font-size: clamp(1.1rem, 1.4vw, 1.35rem);
+  margin: 0;
+  color: $primary-color;
+  letter-spacing: 0.2px;
+}
+
+.sequenceInfoSubtitle {
+  margin: -0.2rem 0 0.6rem;
+  color: $text-color-2;
+  font-size: 0.95rem;
 }
 
 .sequenceInfoGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 2rem;
 
+  @media (max-width: 1600px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
   @media (max-width: 1200px) {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   @media (max-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 480px) {
     grid-template-columns: 1fr;
   }
 }
 
 .inputRow {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: 2fr 1fr 1fr 1fr;
   gap: 2rem;
   margin-bottom: 2rem;
+  max-width: 100%;
   
-  @media (max-width: 1200px) {
+  @media (max-width: 1400px) {
+    grid-template-columns: 2fr 1fr 1fr;
+  }
+  
+  @media (max-width: 1000px) {
     grid-template-columns: repeat(2, 1fr);
   }
   
@@ -219,51 +491,54 @@
 .label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: vars.$text-color;
-  margin-bottom: 0.5rem;
+  color: $primary-color;
+  margin-bottom: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-family: $title-font;
 }
 
 .textInput {
-  padding: 0.75rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
+  padding: 1rem;
+  border: 1px solid $border-color;
+  border-radius: 8px;
   font-size: 1rem;
-  font-family: vars.$title-font;
-  transition: vars.$transition;
-  background-color: white;
-  color: vars.$text-color;
+  font-family: $body-font;
+  transition: $transition;
+  background-color: $background-color;
+  color: $text-color;
+  width: 100%;
 
   &:focus {
     outline: none;
-    border-color: vars.$accent-color;
+    border-color: $accent-color;
     box-shadow: 0 0 0 3px rgba(176, 51, 106, 0.1);
   }
 
   &:read-only {
-    background-color: #f9fafb;
-    color: #6b7280;
+    background-color: $muted-bg;
+    color: $text-color-2;
     cursor: not-allowed;
   }
 }
 
 .textarea {
   padding: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
+  border: 1px solid $border-color;
+  border-radius: 8px;
   font-size: 1rem;
-  font-family: vars.$title-font;
-  transition: vars.$transition;
-  background-color: white;
-  color: vars.$text-color;
+  font-family: $body-font;
+  transition: $transition;
+  background-color: $background-color;
+  color: $text-color;
   resize: vertical;
   min-height: 120px;
   line-height: 1.5;
+  width: 100%;
 
   &:focus {
     outline: none;
-    border-color: vars.$accent-color;
+    border-color: $accent-color;
     box-shadow: 0 0 0 3px rgba(176, 51, 106, 0.1);
   }
 }
@@ -284,7 +559,7 @@
 
 .helpText {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: $text-color-2;
   margin-top: 0.25rem;
   font-style: italic;
 }
@@ -298,13 +573,13 @@
 .categorySelect {
   flex: 1;
   padding: 0.75rem 2.5rem 0.75rem 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid $border-color;
   border-radius: 0.5rem;
   font-size: 1rem;
-  font-family: vars.$title-font;
+  font-family: $title-font;
   background-color: white;
   cursor: pointer;
-  transition: vars.$transition;
+  transition: $transition;
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
   background-position: right 0.75rem center;
   background-repeat: no-repeat;
@@ -313,25 +588,25 @@
 
   &:focus {
     outline: none;
-    border-color: vars.$primary-color;
+    border-color: $primary-color;
     box-shadow: 0 0 0 3px rgba(0, 50, 33, 0.1);
   }
 }
 
 .addCategoryButton {
   padding: 0.75rem;
-  background-color: vars.$accent-color;
+  background-color: $accent-color;
   color: white;
   border: none;
   border-radius: 0.5rem;
   cursor: pointer;
-  transition: vars.$transition;
+  transition: $transition;
   display: flex;
   align-items: center;
   justify-content: center;
 
   &:hover {
-    background-color: vars.$accent-hover-color;
+    background-color: $accent-hover-color;
     transform: translateY(-1px);
   }
 }
@@ -344,38 +619,38 @@
 .newCategoryTitle {
   font-size: 1.125rem;
   font-weight: 600;
-  color: vars.$text-color;
+  color: $text-color;
   margin-bottom: 1rem;
-  font-family: vars.$title-font;
+  font-family: $title-font;
   text-align: left;
 }
 
 .newCategoryInputs {
   display: flex;
   flex-direction: column;
-  font-family: vars.$title-font;
+  font-family: $title-font;
   gap: 1rem;
   width: 30%;
 }
 
 .newCategoryInput {
   padding: 0.75rem 1rem;
-  border: 1px solid #e5e7eb;
+  border: 1px solid $border-color;
   border-radius: 0.5rem;
   font-size: 1rem;
-  font-family: vars.$title-font;
+  font-family: $title-font;
   background-color: white;
-  transition: vars.$transition;
+  transition: $transition;
 
   &:focus {
     outline: none;
-    border-color: vars.$primary-color;
+    border-color: $primary-color;
     box-shadow: 0 0 0 3px rgba(0, 50, 33, 0.1);
   }
 
   &::placeholder {
-    color: vars.$text-color-2;
-    font-family: vars.$body-font;
+    color: $text-color-2;
+    font-family: $body-font;
   }
 }
 
@@ -387,45 +662,47 @@
 
 .saveCategoryButton {
   padding: 0.75rem 1.5rem;
-  background-color: vars.$primary-color;
+  background-color: $primary-color;
   color: white;
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  font-family: vars.$title-font;
+  font-family: $title-font;
   cursor: pointer;
-  transition: vars.$transition;
+  transition: $transition;
 
   &:hover {
-    background-color: vars.$button-hover-color;
+    background-color: $button-hover-color;
     transform: translateY(-1px);
   }
 }
 
 .cancelCategoryButton {
   padding: 0.75rem 1.5rem;
-  background-color: vars.$text-color-2;
+  background-color: $text-color-2;
   color: white;
   border: none;
   border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  font-family: vars.$title-font;
+  font-family: $title-font;
   cursor: pointer;
-  transition: vars.$transition;
+  transition: $transition;
 
   &:hover {
-    background-color: vars.$text-color;
+    background-color: $text-color;
     transform: translateY(-1px);
   }
 }
 
 .privacyContainer {
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
   margin-top: 0.5rem;
   width: 100%;
+  max-width: 100%;
+  justify-content: center;
 }
 
 .privacyOption {
@@ -433,18 +710,18 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 0.75rem 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 0.5rem;
+  padding: 1rem 1.5rem;
+  border: 1px solid $border-color;
+  border-radius: 8px;
   cursor: pointer;
-  transition: vars.$transition;
-  background-color: white;
+  transition: $transition;
+  background-color: $background-color;
   flex: 1;
-  gap: 0.5rem;
+  gap: 0.75rem;
   position: relative;
 
   &:hover {
-    border-color: vars.$accent-color;
+    border-color: $accent-color;
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
@@ -455,7 +732,7 @@
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #1f2937;
+    background-color: $primary-color;
     color: white;
     padding: 0.5rem 0.75rem;
     border-radius: 0.375rem;
@@ -473,7 +750,7 @@
     left: 50%;
     transform: translateX(-50%);
     border: 5px solid transparent;
-    border-top-color: #1f2937;
+    border-top-color: $primary-color;
     margin-bottom: -0.25rem;
     z-index: 1000;
   }
@@ -483,11 +760,11 @@
   }
 
   input[type="radio"]:checked + .privacyLabel {
-    color: vars.$accent-color;
+    color: $accent-color;
   }
 
   &:has(input[type="radio"]:checked) {
-    border-color: vars.$accent-color;
+    border-color: $accent-color;
     background-color: rgba(176, 51, 106, 0.05);
   }
 }
@@ -498,8 +775,8 @@
   gap: 0.5rem;
   font-weight: 600;
   font-size: 0.875rem;
-  color: vars.$text-color;
-  transition: vars.$transition;
+  color: $text-color;
+  transition: $transition;
 }
 
 .privacyIcon {
@@ -514,76 +791,20 @@
   max-width: 600px;
 }
 
-.saveButton {
-  padding: 0.75rem 2rem;
-  border-radius: 9999px;
-  background-color: vars.$primary-color;
-  color: white;
-  border: none;
-  font-family: vars.$title-font;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: vars.$transition;
-  min-width: 160px;
-
-  &:hover {
-    background-color: vars.$button-hover-color;
-    transform: translateY(-2px);
-  }
-}
-
-.downloadButton {
-  padding: 0.75rem 2rem;
-  border-radius: 9999px;
-  background-color: vars.$accent-color;
-  color: white;
-  border: none;
-  font-family: vars.$title-font;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: vars.$transition;
-  min-width: 160px;
-
-  &:hover {
-    background-color: vars.$accent-hover-color;
-    transform: translateY(-2px);
-  }
-}
-
-.clearButton {
-  padding: 0.75rem 2rem;
-  border-radius: 9999px;
-  background-color: #6b7280;
-  color: white;
-  border: none;
-  font-family: vars.$title-font;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: vars.$transition;
-  min-width: 160px;
-
-  &:hover {
-    background-color: #4b5563;
-    transform: translateY(-2px);
-  }
-}
 
 .draggablePose {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid vars.$text-color;
+  border: 1px solid $text-color;
   border-radius: 0.25rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   background-color: white;
   padding: 0.5rem;
 
   &.dragging {
-    ring: 2px solid vars.$text-color-2;
+    ring: 2px solid $text-color-2;
   }
 }
 
@@ -591,7 +812,7 @@
   position: absolute;
   top: 0.25rem;
   left: 0.5rem;
-  color: vars.$text-color-2;
+  color: $text-color-2;
   cursor: grab;
 }
 
@@ -605,31 +826,30 @@
 .poseInput {
   margin-top: 0.5rem;
   font-size: 0.875rem;
-  border: 1px solid vars.$text-color;
+  border: 1px solid $text-color;
   border-radius: 0.25rem;
   padding: 0.25rem 0.5rem;
   width: 100%;
-  color: vars.$text-color;
-  font-family: vars.$title-font;
+  color: $text-color;
+  font-family: $title-font;
 
   &:focus {
     outline: none;
     ring: 0;
-    border-color: vars.$text-color;
+    border-color: $text-color;
   }
 }
 
-.deleteButton {
-  position: absolute;
+.deleteButtonPose {
   top: 0.25rem;
   right: 0.5rem;
-  color: #ef4444;
+  color: $accent-color;
   font-size: 1.125rem;
   font-weight: bold;
-  transition: vars.$transition;
+  transition: $transition;
 
   &:hover {
-    color: #dc2626;
+    color: $accent-hover-color;
   }
 }
 
@@ -641,34 +861,85 @@
   max-width: 1000px;
 }
 
-.guidelines {
-  background-color: white;
-  border-radius: 1rem;
-  padding: 2.5rem;
-  margin-top: 10rem;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-  max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
-  text-align: left;
+.guidelinesSection {
+  margin-bottom: 2rem;
+  max-width: 100%;
+  width: 100%;
 }
 
-.guidelinesTitle {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: vars.$primary-color;
-  margin-bottom: 1.5rem;
-  text-align: center;
+.guidelinesToggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: rgba($accent-color, 0.1);
+  border: 1px solid rgba($accent-color, 0.3);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: $text-color;
+  font-size: 1rem;
+  font-weight: 500;
+
+  &:hover {
+    background: rgba($accent-color, 0.15);
+    border-color: rgba($accent-color, 0.4);
+  }
+
+  .guidelinesTitle {
+    flex: 1;
+    text-align: left;
+    font-weight: 600;
+    color: $text-color;
+    text-align: center;
+  }
+
+  .guidelinesArrow {
+    font-size: 0.875rem;
+    transition: transform 0.2s ease;
+    color: $text-color-2;
+  }
+}
+
+.guidelinesContent {
+  margin-top: 0.5rem;
+  padding: 2rem 3rem;
+  background: $muted-bg-2;
+  border-radius: 12px;
+  border: 1px solid $border-color;
+  animation: slideDown 0.2s ease-out;
+  max-width: 100%;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .guidelinesList {
-  list-style-type: disc;
-  list-style-position: inside;
-  space-y: 0.5rem;
-  color: #1f2937;
-  font-size: 1rem;
-  line-height: 1.625;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    margin-bottom: 0.75rem;
+    padding-left: 0;
+    color: $text-color;
+    line-height: 1.6;
+    text-align: left;
+
+    strong {
+      color: $primary-color;
+      font-weight: 600;
+    }
+  }
 }
 
 @media (min-width: 640px) {
@@ -694,5 +965,482 @@
 @media (min-width: 1024px) {
   .grid {
     grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+// Enhanced Form Styles following 15 UI Tips
+.sequenceInfoSection {
+  background: $background-color;
+  border-radius: $border-radius;
+  padding: 2rem;
+  margin: 2rem 0;
+  box-shadow: $box-shadow;
+  border: 1px solid $border-color;
+}
+
+.sequenceInfoTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  color: $text-color;
+  margin-bottom: 0.5rem;
+  font-family: $title-font;
+}
+
+.sequenceInfoSubtitle {
+  color: $text-color-2;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  font-family: $body-font;
+}
+
+.sequenceForm {
+  display: grid;
+  gap: 1.25rem;
+}
+
+/* Group cards */
+.formGroup {
+  background: $muted-bg;
+  border: 1px solid rgba($border-color, 0.3);
+  border-radius: calc(#{$border-radius} - 0.25rem);
+  padding: clamp(0.9rem, 2.2vw, 1.25rem);
+  display: grid;
+  gap: 1rem;
+}
+
+.groupTitle {
+  margin: 0 0 .25rem;
+  font-family: $title-font;
+  font-size: 1rem;
+  color: $subtitle-color;
+}
+
+/* Fields */
+.formField {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.fieldLabel {
+  display: flex;
+  gap: .35rem;
+  align-items: baseline;
+  font-weight: 600;
+  color: $primary-color;
+  font-size: .95rem;
+}
+
+.required {
+  color: $accent-color;
+}
+
+.fieldInput,
+.fieldTextarea,
+.fieldSelect {
+  appearance: none;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgba($border-color, .55);
+  border-radius: 12px;
+  background: #fff;
+  color: $text-color;
+  font-family: $font-family;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  transition: $transition;
+}
+
+.fieldTextarea { 
+  resize: vertical; 
+}
+
+.fieldInput::placeholder,
+.fieldTextarea::placeholder {
+  color: rgba($text-color-2, .8);
+}
+
+/* Focus + valid */
+.fieldInput:focus,
+.fieldTextarea:focus,
+.fieldSelect:focus {
+  outline: none;
+  border-color: $accent-color;
+  box-shadow:
+    0 0 0 3px rgba($accent-color, .1),
+    inset 0 1px 0 rgba(255,255,255,.4);
+}
+
+/* Help text */
+.fieldHelp {
+  font-size: 0.85rem;
+  color: $text-color-2;
+}
+
+/* Radios */
+.radioGroup {
+  display: grid;
+  gap: .6rem;
+}
+
+.radioOption {
+  display: grid;
+  grid-template-columns: 20px 1fr;
+  align-items: start;
+  gap: .6rem;
+  padding: .65rem .75rem;
+  background: $background-color;
+  border: 1px solid rgba($border-color, .35);
+  border-radius: 12px;
+  transition: $transition;
+
+  &:hover {
+    border-color: $accent-color;
+    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+  }
+}
+
+.radioInput {
+  accent-color: $accent-color;
+  margin-top: .2rem;
+}
+
+.radioLabel {
+  display: grid;
+  gap: .15rem;
+
+  strong { color: $primary-color; }
+  .radioDescription { color: $text-color-2; font-size: .9rem; }
+}
+
+/* New category inline form */
+.newCategoryForm {
+  display: grid;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.createCategoryButton {
+  justify-self: start;
+  background: $accent-color;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.55rem 0.9rem;
+  font-weight: 700;
+  transition: $transition;
+  cursor: pointer;
+
+  &:hover { background: $accent-hover-color; }
+}
+
+/* Silhouettes / poses grid */
+.silhouetteSection {
+  margin-top: 1rem;
+  background: $background-color;
+  border: 1px solid rgba($border-color, .35);
+  border-radius: $border-radius;
+  padding: clamp(1rem, 2.6vw, 1.5rem);
+  box-shadow: $box-shadow;
+}
+
+.silhouetteTitle {
+  margin: 0 0 .75rem;
+  font-size: 1.05rem;
+  color: $primary-color;
+}
+
+.posesGrid {
+  display: grid;
+  gap: .75rem;
+}
+
+/* Action buttons row */
+.actionButtons {
+  margin-top: 1rem;
+  display: flex;
+  gap: .6rem;
+  flex-wrap: wrap;
+}
+
+.resetButton,
+.chooseFileButton {
+  border: 1px solid rgba($border-color,.35);
+  background: $background-color;
+  color: $primary-color;
+  padding: .6rem .9rem;
+  border-radius: 12px;
+  font-weight: 700;
+  transition: $transition;
+  cursor: pointer;
+
+  &:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,.06); }
+}
+
+.resetButton { color: $dark-color; }
+.chooseFileButton {
+  background: $primary-color;
+  color: #fff;
+
+  &:hover { background: $button-hover-color; }
+}
+
+/* Upload buttons container */
+.buttonContainer {
+  margin-top: .75rem;
+  display: flex;
+  gap: .6rem;
+  flex-wrap: wrap;
+}
+
+/* Loading */
+.loadingText {
+  margin-top: .75rem;
+  color: $text-color-2;
+}
+
+/* Responsive fields: put two columns where it makes sense */
+@media (min-width: 680px) {
+  .formGroup {
+    gap: 1.1rem;
+  }
+  .formGroup > .formField {
+    /* keep single column by default; override selectively if you add a wrapper */
+  }
+}
+
+.formActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid $muted-bg;
+}
+
+.primaryButton {
+  background: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 0.75rem;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition;
+  font-family: $title-font;
+  min-width: 160px;
+  
+  &:hover:not(:disabled) {
+    background: $button-hover-color;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  &:disabled {
+    background: $text-color-2;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+.secondaryButton {
+  background: white;
+  color: $text-color;
+  border: 2px solid $border-color;
+  border-radius: 0.75rem;
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition;
+  font-family: $title-font;
+  min-width: 120px;
+  
+  &:hover {
+    border-color: $primary-color;
+    color: $primary-color;
+    transform: translateY(-1px);
+  }
+}
+
+// Silhouette/Pose Display Styles
+.posesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.poseCard {
+  background-color: white;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 0.75rem;
+  position: relative;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.poseHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  height: 40px;
+}
+
+.poseNumber {
+  font-weight: 600;
+  color: $primary-color;
+  font-size: 0.875rem;
+  flex: 1;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+}
+
+.dragHandle,
+.deleteButtonPose {
+  color: $text-color-2;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  transition: $transition;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  width: 40px;
+  margin: 0;
+  box-sizing: border-box;
+  
+  &:hover {
+    background-color: $muted-bg;
+    color: $text-color;
+  }
+}
+
+.dragHandle {
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.deleteButtonPose {
+  svg {
+    transform: translateY(1px);
+  }
+}
+
+.poseImage {
+  width: 100%;
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: $muted-bg;
+  border-radius: 0.5rem;
+  margin-bottom: 0.75rem;
+  
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+}
+
+.poseName {
+  margin-top: 0.5rem;
+}
+
+.poseNameInput {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid $border-color;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-family: $body-font;
+  
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba(184, 51, 106, 0.1);
+  }
+}
+
+.silhouetteSection {
+  margin-top: 2rem;
+}
+
+.silhouetteTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $text-color;
+  margin-bottom: 1rem;
+  font-family: $title-font;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.actionButtonsSpacing {
+  margin-top: 4rem !important;
+}
+
+.saveButton,
+.downloadButton,
+.clearButton {
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  border: none;
+  font-family: $title-font;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: $transition;
+  min-width: 160px;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.saveButton {
+  background-color: $primary-color;
+  color: white;
+  
+  &:hover {
+    background-color: $button-hover-color;
+  }
+}
+
+.downloadButton {
+  background-color: $accent-color;
+  color: white;
+  
+  &:hover {
+    background-color: $accent-hover-color;
+  }
+}
+
+.clearButton {
+  background-color: $text-color-2;
+  color: white;
+  
+  &:hover {
+    background-color: $dark-color;
   }
 }

@@ -1,0 +1,271 @@
+@use './variables.scss' as vars;
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+
+.modal {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.closeButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  color: vars.$text-color-2;
+  transition: vars.$transition;
+  z-index: 10;
+
+  &:hover {
+    background-color: vars.$muted-bg;
+    color: vars.$text-color;
+  }
+}
+
+.content {
+  padding: 3rem 2rem 2rem;
+}
+
+.step {
+  text-align: center;
+}
+
+.icon {
+  margin-bottom: 1.5rem;
+  color: vars.$accent-color;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: vars.$text-color;
+  margin-bottom: 0.5rem;
+  font-family: vars.$title-font;
+}
+
+.description {
+  color: vars.$text-color-2;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+  font-family: vars.$body-font;
+}
+
+.fileLabel {
+  display: inline-block;
+  padding: 0.75rem 2rem;
+  background-color: vars.$primary-color;
+  color: white;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: vars.$transition;
+  font-family: vars.$title-font;
+  font-weight: 600;
+  font-size: 0.875rem;
+  min-width: 140px;
+  text-align: center;
+  white-space: nowrap;
+  margin-bottom: 1.5rem;
+
+  &:hover {
+    background-color: vars.$button-hover-color;
+    transform: translateY(-1px);
+  }
+}
+
+.fileInput {
+  display: none;
+}
+
+.fileInfo {
+  background-color: vars.$muted-bg;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.fileInfoText {
+  margin: 0.25rem 0;
+  font-size: 0.875rem;
+  font-family: vars.$body-font;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.uploadButton, .processButton {
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  background-color: vars.$accent-color;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: vars.$transition;
+  font-family: vars.$title-font;
+  font-weight: 600;
+  font-size: 0.875rem;
+  min-width: 160px;
+  text-align: center;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background-color: vars.$accent-hover-color;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.changeFileButton {
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  background-color: transparent;
+  color: vars.$text-color-2;
+  border: 2px solid vars.$text-color-2;
+  cursor: pointer;
+  transition: vars.$transition;
+  font-family: vars.$title-font;
+  font-weight: 600;
+  font-size: 0.875rem;
+  min-width: 120px;
+  text-align: center;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background-color: vars.$text-color-2;
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.processButton {
+  background-color: vars.$primary-color;
+
+  &:hover:not(:disabled) {
+    background-color: vars.$button-hover-color;
+  }
+}
+
+.completeButton {
+  background-color: vars.$accent-color;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+  transition: vars.$transition;
+  font-family: vars.$title-font;
+  font-weight: 600;
+  font-size: 0.875rem;
+  min-width: 200px;
+  text-align: center;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: vars.$accent-hover-color;
+    transform: translateY(-1px);
+  }
+}
+
+.processingInfo {
+  background-color: vars.$muted-bg;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.processorContainer {
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.processingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid vars.$muted-bg;
+  border-top: 4px solid vars.$accent-color;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+.processingText {
+  margin: 0;
+  font-size: 0.875rem;
+  font-family: vars.$body-font;
+  color: vars.$text-color-2;
+}
+
+.resultsInfo {
+  background-color: vars.$muted-bg;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.resultsText {
+  margin: 0.25rem 0;
+  font-size: 0.875rem;
+  font-family: vars.$body-font;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 640px) {
+  .overlay {
+    padding: 1rem;
+  }
+
+  .modal {
+    max-width: 100%;
+  }
+
+  .content {
+    padding: 2rem 1.5rem 1.5rem;
+  }
+
+  .title {
+    font-size: 1.25rem;
+  }
+}

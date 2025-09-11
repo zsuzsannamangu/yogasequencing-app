@@ -26,7 +26,7 @@ const faqData: FAQItem[] = [
   {
     id: 3,
     question: "How long can my videos be?",
-    answer: "Currently, we support videos up to 10 minutes in length. For longer sequences, we recommend breaking them into smaller segments for optimal processing and clarity."
+    answer: "We support videos of any length! Our system is optimized to handle long-form content including full classes, workshops, and extended practice sessions. For very long videos (over 60 minutes), processing may take longer but will complete successfully."
   },
   {
     id: 4,

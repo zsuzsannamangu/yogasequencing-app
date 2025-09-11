@@ -1,7 +1,8 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
+import axios from 'axios';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,7 +11,10 @@ import { useInView } from 'react-intersection-observer';
 import styles from '@/styles/HomePage.module.scss';
 
 const FadeInSection = ({ children }: { children: React.ReactNode }) => {
-    const [ref, inView] = useInView({ triggerOnce: false, threshold: 0.2 });
+    const { ref, inView } = useInView({ 
+        triggerOnce: false, 
+        threshold: 0.2 
+    });
 
     return (
         <motion.div
@@ -31,6 +35,65 @@ export default function HomePage() {
         firstName: 'John',
         lastName: 'Doe',
         profileImage: null
+    };
+
+    // Contact form state
+    const [contactForm, setContactForm] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+        phone: '',
+        message: ''
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+    const [errorMessage, setErrorMessage] = useState('');
+
+    // Handle form input changes
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setContactForm(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    // Handle form submission
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setSubmitStatus('idle');
+        setErrorMessage('');
+
+        try {
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001'}/contact`, contactForm);
+            
+            if (response.data.success) {
+                setSubmitStatus('success');
+                setContactForm({
+                    firstName: '',
+                    lastName: '',
+                    email: '',
+                    phone: '',
+                    message: ''
+                });
+                // Clear success message after 5 seconds
+                setTimeout(() => {
+                    setSubmitStatus('idle');
+                }, 5000);
+            } else {
+                setSubmitStatus('error');
+                setErrorMessage('Failed to send message. Please try again.');
+            }
+        } catch (error: any) {
+            setSubmitStatus('error');
+            setErrorMessage(
+                error.response?.data?.detail || 
+                'Failed to send message. Please try again later.'
+            );
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -402,18 +465,73 @@ export default function HomePage() {
                 <div className={styles.contactFormWrapper}>
                     <FadeInSection>
                         <h2 className={styles.contactTitle}>Connect</h2>
-                        <form className={styles.contactForm}>
+                        <form className={styles.contactForm} onSubmit={handleSubmit}>
                             <div className={styles.inputRow}>
-                                <input type="text" placeholder="First name *" className={styles.input} />
-                                <input type="text" placeholder="Last name *" className={styles.input} />
+                                <input 
+                                    type="text" 
+                                    name="firstName"
+                                    placeholder="First name *" 
+                                    className={styles.input}
+                                    value={contactForm.firstName}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                                <input 
+                                    type="text" 
+                                    name="lastName"
+                                    placeholder="Last name *" 
+                                    className={styles.input}
+                                    value={contactForm.lastName}
+                                    onChange={handleInputChange}
+                                    required
+                                />
                             </div>
                             <div className={styles.inputRow}>
-                                <input type="email" placeholder="Email *" className={styles.input} />
-                                <input type="text" placeholder="Phone" className={styles.input} />
+                                <input 
+                                    type="email" 
+                                    name="email"
+                                    placeholder="Email *" 
+                                    className={styles.input}
+                                    value={contactForm.email}
+                                    onChange={handleInputChange}
+                                    required
+                                />
+                                <input 
+                                    type="text" 
+                                    name="phone"
+                                    placeholder="Phone" 
+                                    className={styles.input}
+                                    value={contactForm.phone}
+                                    onChange={handleInputChange}
+                                />
                             </div>
-                            <textarea placeholder="Message" className={styles.textarea}></textarea>
-                            <button type="submit" className={styles.primaryButton}>
-                                Submit
+                            <textarea 
+                                name="message"
+                                placeholder="Message" 
+                                className={styles.textarea}
+                                value={contactForm.message}
+                                onChange={handleInputChange}
+                                required
+                            ></textarea>
+                            
+                            {/* Status Messages */}
+                            {submitStatus === 'success' && (
+                                <div className={styles.successMessage}>
+                                    Thank you! Your message has been sent successfully.
+                                </div>
+                            )}
+                            {submitStatus === 'error' && (
+                                <div className={styles.errorMessage}>
+                                    {errorMessage}
+                                </div>
+                            )}
+                            
+                            <button 
+                                type="submit" 
+                                className={styles.primaryButton}
+                                disabled={isSubmitting}
+                            >
+                                {isSubmitting ? 'Sending...' : 'Submit'}
                             </button>
                         </form>
                     </FadeInSection>

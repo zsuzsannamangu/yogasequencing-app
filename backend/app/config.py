@@ -19,6 +19,11 @@ class Settings(BaseSettings):
     # Security
     secret_key: str = "your-secret-key-here-change-in-production"
     
+    # SendGrid Configuration
+    sendgrid_api_key: str = ""
+    sendgrid_from_email: str = ""
+    sendgrid_to_email: str = ""
+    
     class Config:
         env_file = ".env"
         case_sensitive = False
