@@ -53,17 +53,37 @@ export default function SequencesPage() {
         const sequencesResponse = await axios.get('http://localhost:8000/sequences/');
         console.log('Sequences API response:', sequencesResponse.data);
         
-                        const transformedSequences = sequencesResponse.data.map((seq: any) => ({
-                  id: seq.id,
-                  name: seq.name,
-                  description: seq.description,
-                  createdAt: seq.createdAt,
-                  duration: seq.duration,
-                  poseCount: seq.poseCount,
-                  thumbnail: seq.poses?.[0]?.filePath || '/images/yoga2.jpg',
-                  category: seq.category,
-                  privacy: seq.privacy || 'private'
-                }));
+                        const transformedSequences = sequencesResponse.data.map((seq: any) => {
+          console.log('Processing sequence:', seq.name, 'poses:', seq.poses);
+          let thumbnail = '/images/yoga2.jpg'; // Default fallback
+          
+          if (seq.poses && seq.poses.length > 0 && seq.poses[0].filePath) {
+            const filePath = seq.poses[0].filePath;
+            console.log('First pose filePath:', filePath);
+            
+            // Check if it's already a complete URL
+            if (filePath.startsWith('http://') || filePath.startsWith('https://')) {
+              thumbnail = filePath;
+            } else {
+              // Extract filename and construct URL
+              const filename = filePath.split('/').pop();
+              thumbnail = `http://localhost:8000/silhouettes/${filename}`;
+            }
+            console.log('Constructed thumbnail URL:', thumbnail);
+          }
+          
+          return {
+            id: seq.id,
+            name: seq.name,
+            description: seq.description,
+            createdAt: seq.createdAt,
+            duration: seq.duration,
+            poseCount: seq.poseCount,
+            thumbnail: thumbnail,
+            category: seq.category,
+            privacy: seq.privacy || 'private'
+          };
+        });
         
         console.log('Transformed sequences:', transformedSequences);
         setSequences(transformedSequences);

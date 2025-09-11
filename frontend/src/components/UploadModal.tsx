@@ -154,7 +154,7 @@ export default function UploadModal({
                   disabled={uploading}
                   className={styles.changeFileButton}
                 >
-                  Change File
+                  Cancel
                 </button>
               </div>
             </div>
@@ -185,7 +185,7 @@ export default function UploadModal({
                   onClick={() => setStep('select')}
                   className={styles.changeFileButton}
                 >
-                  Change File
+                  Cancel
                 </button>
               </div>
             </div>
@@ -206,16 +206,16 @@ export default function UploadModal({
               
               <div className={styles.buttonGroup}>
                 <button
-                  onClick={handleStartProcessing}
-                  className={styles.processButton}
+                  onClick={() => setStep('select')}
+                  className={styles.cancelButton}
                 >
-                  Start Processing
+                  Cancel
                 </button>
                 <button
-                  onClick={() => setStep('select')}
-                  className={styles.changeFileButton}
+                  onClick={handleStartProcessing}
+                  className={styles.primaryButton}
                 >
-                  Change File
+                  Start Processing
                 </button>
               </div>
             </div>
@@ -228,6 +228,11 @@ export default function UploadModal({
               </div>
               <h2 className={styles.title}>Process Your Video</h2>
               <p className={styles.description}>Extract poses from your video. This may take 2-10 minutes...</p>
+              
+              <div className={styles.fileInfo}>
+                <p className={styles.fileInfoText}><strong>File:</strong> {selectedFile?.name}</p>
+                <p className={styles.fileInfoText}><strong>Status:</strong> Ready to process</p>
+              </div>
               
               <div className={styles.processorContainer}>
                 <LongVideoProcessor
@@ -261,12 +266,14 @@ export default function UploadModal({
                 <p className={styles.resultsText}><strong>Status:</strong> Ready for sequence creation ✓</p>
               </div>
               
-              <button
-                onClick={handleClose}
-                className={styles.completeButton}
-              >
-                Continue to Sequence Editor
-              </button>
+              <div className={styles.buttonGroup}>
+                <button
+                  onClick={handleClose}
+                  className={styles.primaryButton}
+                >
+                  Continue to Sequence Editor
+                </button>
+              </div>
             </div>
           )}
         </div>

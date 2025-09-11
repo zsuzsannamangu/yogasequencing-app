@@ -8,6 +8,9 @@ import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import LongVideoProcessor from '@/components/LongVideoProcessor';
 import UploadModal from '@/components/UploadModal';
+import SequenceDetailsModal from '@/components/SequenceDetailsModal';
+import CategorySelectionModal from '@/components/CategorySelectionModal';
+import PreviewModal from '@/components/PreviewModal';
 import Swal from 'sweetalert2';
 import {
   DndContext,
@@ -23,7 +26,7 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { GripVertical, Plus, Trash2 } from 'lucide-react';
+import { GripVertical, Plus, Trash2, Save, Download } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import styles from '@/styles/Upload.module.scss';
 
@@ -82,8 +85,10 @@ const DraggablePose = ({ id, poseName, image, index, onDelete, onNameChange }) =
       </div>
       <div className={styles.poseImage}>
         <img 
-          src={`http://localhost:8001/silhouettes/${image}`} 
+          src={image} 
           alt={`Pose ${index + 1}`}
+          onLoad={() => console.log(`Image ${index} loaded successfully:`, image)}
+          onError={(e) => console.error(`Image ${index} failed to load:`, e, 'URL:', image)}
         />
       </div>
       <div className={styles.poseName}>
@@ -112,13 +117,17 @@ export default function UploadPage() {
   const [sequenceTitle, setSequenceTitle] = useState('');
   const [sequenceDescription, setSequenceDescription] = useState('');
   const [sequenceDuration, setSequenceDuration] = useState('');
-  const [sequencePrivacy, setSequencePrivacy] = useState<'private' | 'public'>('private');
+  const [privacy, setPrivacy] = useState<'private' | 'public'>('private');
   const [selectedLabel, setSelectedLabel] = useState<string>('Yoga'); // Default to Yoga
   const labelHeight = 16;
   const [uploading, setUploading] = useState(false);
   const [uploadComplete, setUploadComplete] = useState(false);
   const [showGuidelines, setShowGuidelines] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showSequenceDetailsModal, setShowSequenceDetailsModal] = useState(false);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+  const [modalFlowCompleted, setModalFlowCompleted] = useState(false);
   const [processingStarted, setProcessingStarted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -130,7 +139,7 @@ export default function UploadPage() {
     
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:8001/sequences/categories/', {
+        const response = await axios.get('http://localhost:8000/sequences/categories/', {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -178,7 +187,7 @@ export default function UploadPage() {
     console.log(`Starting upload of ${selectedFile.name} (${(selectedFile.size / 1024 / 1024).toFixed(2)} MB)`);
     
     try {
-      const res = await axios.post('http://localhost:8001/upload', formData, {
+      const res = await axios.post('http://localhost:8000/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -228,7 +237,7 @@ export default function UploadPage() {
     console.log(`Starting upload of ${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)`);
     
     try {
-      const res = await axios.post('http://localhost:8001/fast/fast-upload', formData, {
+      const res = await axios.post('http://localhost:8000/fast/fast-upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -274,12 +283,22 @@ export default function UploadPage() {
 
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:8001/detect', {
+      const response = await axios.post('http://localhost:8000/detect', {
         filename: filename,
       });
 
       if (response.data.silhouette_files && response.data.silhouette_files.length > 0) {
-        setSilhouettes(response.data.silhouette_files);
+        console.log('Old upload method - received silhouette_files:', response.data.silhouette_files);
+        // Convert silhouette paths to full URLs
+        const silhouetteUrls = response.data.silhouette_files.map((filepath: string) => {
+          // Extract just the filename from the path
+          const filename = filepath.split('/').pop();
+          const url = `http://localhost:8000/silhouettes/${filename}`;
+          console.log('Old upload - converting filepath:', filepath, 'to URL:', url);
+          return url;
+        });
+        console.log('Old upload - final silhouette URLs:', silhouetteUrls);
+        setSilhouettes(silhouetteUrls);
         setPoseNames(response.data.silhouette_files.map((_, index) => `Pose ${index + 1}`));
       } else {
         Swal.fire({
@@ -359,7 +378,7 @@ export default function UploadPage() {
     }
 
     try {
-      const response = await axios.post('http://localhost:8001/sequences/categories/', {
+      const response = await axios.post('http://localhost:8000/sequences/categories/', {
         name: newCategoryName,
         description: newCategoryDescription,
       }, {
@@ -418,26 +437,49 @@ export default function UploadPage() {
         poseName: poseNames[index] || `Pose ${index + 1}`
       }));
 
-      const response = await axios.post('http://localhost:8001/sequences/', {
+      const sequenceData = {
         name: sequenceTitle,
         description: sequenceDescription,
         duration: sequenceDuration,
         poseCount: silhouettes.length,
         poses: poses,
         category: selectedCategory || null,
-        privacy: sequencePrivacy,
+        privacy: privacy,
         industryLabel: selectedLabel,
-      }, {
+      };
+
+      console.log('Saving sequence with data:', sequenceData);
+      console.log('User token:', token ? 'Present' : 'Missing');
+
+      const response = await axios.post('http://localhost:8000/sequences/', sequenceData, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
 
+      console.log('Save sequence response:', response.data);
+
+      // Get the sequence ID from the response
+      const sequenceId = response.data?.id;
+      
       Swal.fire({
         title: 'Success!',
         text: 'Sequence saved to library successfully',
         icon: 'success',
         confirmButtonColor: '#b8336a',
+        showCancelButton: true,
+        confirmButtonText: sequenceId ? 'View & Edit Sequence' : 'Go to Library',
+        cancelButtonText: 'Stay Here'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          if (sequenceId) {
+            // Redirect to the specific sequence page
+            window.location.href = `/sequences/${sequenceId}`;
+          } else {
+            // Redirect to the sequences library page
+            window.location.href = '/sequences';
+          }
+        }
       });
 
       // Reset form
@@ -445,7 +487,7 @@ export default function UploadPage() {
       setSequenceDescription('');
       setSequenceDuration('');
       setSelectedCategory('');
-      setSequencePrivacy('private');
+      setPrivacy('private');
       setSelectedLabel('Yoga');
       setSilhouettes([]);
       setPoseNames([]);
@@ -455,9 +497,36 @@ export default function UploadPage() {
       setProcessingStarted(false);
     } catch (error) {
       console.error('Failed to save sequence:', error);
+      
+      let errorMessage = 'Failed to save sequence. Please try again.';
+      
+      if (error.response) {
+        // Server responded with error status
+        console.error('Error response:', error.response.data);
+        console.error('Error status:', error.response.status);
+        
+        if (error.response.status === 401) {
+          errorMessage = 'Authentication failed. Please log in again.';
+        } else if (error.response.status === 422) {
+          errorMessage = 'Invalid data. Please check your sequence details.';
+        } else if (error.response.status === 500) {
+          errorMessage = 'Server error. Please try again later.';
+        } else if (error.response.data && error.response.data.detail) {
+          errorMessage = error.response.data.detail;
+        }
+      } else if (error.request) {
+        // Request was made but no response received
+        console.error('No response received:', error.request);
+        errorMessage = 'Unable to connect to server. Please check your connection.';
+      } else {
+        // Something else happened
+        console.error('Error setting up request:', error.message);
+        errorMessage = 'An unexpected error occurred.';
+      }
+      
       Swal.fire({
         title: 'Error',
-        text: 'Failed to save sequence. Please try again.',
+        text: errorMessage,
         icon: 'error',
         confirmButtonColor: '#f87171',
       });
@@ -528,7 +597,7 @@ export default function UploadPage() {
         y += 40;
 
         for (let i = 0; i < silhouettes.length; i++) {
-          if (y > pageHeight - 200) {
+          if (y > pageHeight - 50) {
             pdf.addPage();
             y = spacingY;
           }
@@ -538,32 +607,14 @@ export default function UploadPage() {
           pdf.setFont('helvetica', 'bold');
           pdf.setTextColor(176, 51, 106);
           pdf.text(`Pose ${i + 1}: ${poseNames[i] || `Pose ${i + 1}`}`, x, y + 20);
-          y += 30;
+          y += 20;
 
-          // Add silhouette image
-          try {
-            const img = new Image();
-            img.crossOrigin = 'anonymous';
-            img.onload = () => {
-              const imgWidth = maxWidth;
-              const imgHeight = (img.height * imgWidth) / img.width;
-              
-              if (y + imgHeight > pageHeight - 50) {
-                pdf.addPage();
-                y = spacingY;
-              }
-              
-              pdf.addImage(img, 'PNG', x, y, imgWidth, imgHeight);
-              y += imgHeight + spacingY;
-            };
-            img.src = silhouettes[i];
-          } catch (error) {
-            console.error('Error loading image:', error);
-            pdf.setFontSize(10);
-            pdf.setTextColor(150, 150, 150);
-            pdf.text('Image not available', x, y + 20);
-            y += 30;
-          }
+          // Add placeholder for image
+          pdf.setFontSize(10);
+          pdf.setFont('helvetica', 'italic');
+          pdf.setTextColor(100, 100, 100);
+          pdf.text('[Silhouette image would appear here]', x, y + 15);
+          y += 30;
         }
       }
 
@@ -596,12 +647,64 @@ export default function UploadPage() {
     setSequenceDescription('');
     setSequenceDuration('');
     setSelectedCategory('');
-    setSequencePrivacy('private');
+    setPrivacy('private');
     setSelectedLabel('Yoga');
     setFilename('');
     setSelectedFile(null);
     setUploadComplete(false);
     setProcessingStarted(false);
+    setShowSequenceDetailsModal(false);
+    setShowCategoryModal(false);
+    setShowPreviewModal(false);
+    setModalFlowCompleted(false);
+  };
+
+
+  // Modal handlers
+  const handleSequenceDetailsNext = (details: {
+    title: string;
+    description: string;
+    duration: string;
+    privacy: 'private' | 'public';
+  }) => {
+    setSequenceTitle(details.title);
+    setSequenceDescription(details.description);
+    setSequenceDuration(details.duration);
+    setPrivacy(details.privacy);
+    setShowSequenceDetailsModal(false);
+    setShowCategoryModal(true);
+  };
+
+  const handleCategoryNext = (selection: {
+    categoryId: string | null;
+    industryLabel: string;
+  }) => {
+    setSelectedCategory(selection.categoryId || '');
+    setSelectedLabel(selection.industryLabel);
+    setShowCategoryModal(false);
+    setShowPreviewModal(true);
+  };
+
+  const handlePreviewConfirm = () => {
+    setShowPreviewModal(false);
+    setModalFlowCompleted(true);
+    // Now show the pose editor (the existing form)
+  };
+
+  // Modal close handlers - reset flow when closed without completing
+  const handleSequenceDetailsClose = () => {
+    setShowSequenceDetailsModal(false);
+    // Don't reset modalFlowCompleted here - user might just be going back
+  };
+
+  const handleCategoryClose = () => {
+    setShowCategoryModal(false);
+    setShowSequenceDetailsModal(true); // Go back to previous step
+  };
+
+  const handlePreviewClose = () => {
+    setShowPreviewModal(false);
+    setShowCategoryModal(true); // Go back to previous step
   };
 
   return (
@@ -658,199 +761,6 @@ export default function UploadPage() {
           </div>
         </div>
 
-        {/* Sequence Information Section - Show when silhouettes are available */}
-        {silhouettes.length > 0 && (
-          <div className={styles.sequenceInfoSection}>
-            <h3 className={styles.sequenceInfoTitle}>Create Your Sequence</h3>
-            <p className={styles.sequenceInfoSubtitle}>Fill in the details below to save your sequence to your library</p>
-            
-            <form className={styles.sequenceForm}>
-              {/* Basic Information Group */}
-              <div className={styles.formGroup}>
-                <h4 className={styles.groupTitle}>Basic Information</h4>
-                
-                <div className={styles.formField}>
-                  <label htmlFor="sequenceTitle" className={styles.fieldLabel}>
-                    Sequence Title
-                    <span className={styles.required}>*</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="sequenceTitle"
-                    value={sequenceTitle}
-                    onChange={(e) => setSequenceTitle(e.target.value)}
-                    placeholder="e.g., Morning Yoga Flow"
-                    className={styles.fieldInput}
-                    maxLength={100}
-                    required
-                  />
-                  <div className={styles.fieldHelp}>
-                    Give your sequence a descriptive name (max 100 characters)
-                  </div>
-                </div>
-
-                <div className={styles.formField}>
-                  <label htmlFor="sequenceDescription" className={styles.fieldLabel}>
-                    Description
-                  </label>
-                  <textarea
-                    id="sequenceDescription"
-                    value={sequenceDescription}
-                    onChange={(e) => setSequenceDescription(e.target.value)}
-                    placeholder="Describe what this sequence focuses on, who it's for, and any special instructions..."
-                    className={styles.fieldTextarea}
-                    rows={4}
-                    maxLength={500}
-                  />
-                  <div className={styles.fieldHelp}>
-                    Help others understand your sequence (max 500 characters)
-                  </div>
-                </div>
-              </div>
-
-              {/* Classification Group */}
-              <div className={styles.formGroup}>
-                <h4 className={styles.groupTitle}>Classification</h4>
-                
-                <div className={styles.formField}>
-                  <label htmlFor="industryLabel" className={styles.fieldLabel}>
-                    Industry Label
-                    <span className={styles.required}>*</span>
-                  </label>
-                  <select
-                    id="industryLabel"
-                    value={selectedLabel}
-                    onChange={(e) => setSelectedLabel(e.target.value)}
-                    className={styles.fieldSelect}
-                    required
-                  >
-                    {AVAILABLE_INDUSTRY_LABELS.map((label) => (
-                      <option key={label} value={label}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                  <div className={styles.fieldHelp}>
-                    Choose the industry this sequence belongs to
-                  </div>
-                </div>
-
-                <div className={styles.formField}>
-                  <label htmlFor="sequenceCategory" className={styles.fieldLabel}>
-                    Category
-                  </label>
-                  <select
-                    id="sequenceCategory"
-                    value={selectedCategory}
-                    onChange={(e) => setSelectedCategory(e.target.value)}
-                    className={styles.fieldSelect}
-                  >
-                    <option value="">Choose a category (optional)</option>
-                    {categories.map((category) => (
-                      <option key={category.id} value={category.id}>
-                        {category.name}
-                      </option>
-                    ))}
-                    <option value="new">Create New Category</option>
-                  </select>
-                  {selectedCategory === 'new' && (
-                    <div className={styles.newCategoryForm}>
-                      <input
-                        type="text"
-                        value={newCategoryName}
-                        onChange={(e) => setNewCategoryName(e.target.value)}
-                        placeholder="e.g., Beginner Yoga"
-                        className={styles.fieldInput}
-                        maxLength={50}
-                      />
-                      <input
-                        type="text"
-                        value={newCategoryDescription}
-                        onChange={(e) => setNewCategoryDescription(e.target.value)}
-                        placeholder="e.g., Sequences for yoga beginners"
-                        className={styles.fieldInput}
-                        maxLength={100}
-                      />
-                      <button
-                        type="button"
-                        onClick={handleCreateCategory}
-                        className={styles.createCategoryButton}
-                      >
-                        Create Category
-                      </button>
-                    </div>
-                  )}
-                  <div className={styles.fieldHelp}>
-                    Organize your sequences with categories
-                  </div>
-                </div>
-              </div>
-
-              {/* Details Group */}
-              <div className={styles.formGroup}>
-                <h4 className={styles.groupTitle}>Sequence Details</h4>
-                
-                <div className={styles.formField}>
-                  <label htmlFor="sequenceDuration" className={styles.fieldLabel}>
-                    Duration
-                  </label>
-                  <input
-                    type="text"
-                    id="sequenceDuration"
-                    value={sequenceDuration}
-                    onChange={(e) => setSequenceDuration(e.target.value)}
-                    placeholder="e.g., 45 minutes, 1 hour, 30-45 min"
-                    className={styles.fieldInput}
-                    maxLength={20}
-                  />
-                  <div className={styles.fieldHelp}>
-                    How long does this sequence take to complete?
-                  </div>
-                </div>
-
-                <div className={styles.formField}>
-                  <label className={styles.fieldLabel}>
-                    Privacy Setting
-                    <span className={styles.required}>*</span>
-                  </label>
-                  <div className={styles.radioGroup}>
-                    <label className={styles.radioOption}>
-                      <input
-                        type="radio"
-                        name="privacy"
-                        value="private"
-                        checked={sequencePrivacy === 'private'}
-                        onChange={(e) => setSequencePrivacy(e.target.value as 'private' | 'public')}
-                        className={styles.radioInput}
-                      />
-                      <span className={styles.radioLabel}>
-                        <strong>Private</strong>
-                        <span className={styles.radioDescription}>Only visible to you</span>
-                      </span>
-                    </label>
-                    <label className={styles.radioOption}>
-                      <input
-                        type="radio"
-                        name="privacy"
-                        value="public"
-                        checked={sequencePrivacy === 'public'}
-                        onChange={(e) => setSequencePrivacy(e.target.value as 'private' | 'public')}
-                        className={styles.radioInput}
-                      />
-                      <span className={styles.radioLabel}>
-                        <strong>Public</strong>
-                        <span className={styles.radioDescription}>Visible to everyone</span>
-                      </span>
-                    </label>
-                  </div>
-                  <div className={styles.fieldHelp}>
-                    Choose who can see this sequence
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-        )}
 
         {/* Upload Section - Only show if no silhouettes */}
         {silhouettes.length === 0 && (
@@ -882,10 +792,23 @@ export default function UploadPage() {
           onUpload={handleUploadFromModal}
           onStartProcessing={handleStartProcessing}
           onComplete={(result) => {
-            console.log('Video processing completed:', result);
+            console.log('UploadModal onComplete - result:', result);
             if (result?.silhouette_files) {
-              setSilhouettes(result.silhouette_files);
+              console.log('UploadModal - received silhouette_files:', result.silhouette_files);
+              // Convert silhouette paths to full URLs
+              const silhouetteUrls = result.silhouette_files.map((filepath: string) => {
+                // Extract just the filename from the path
+                const filename = filepath.split('/').pop();
+                const url = `http://localhost:8000/silhouettes/${filename}`;
+                console.log('UploadModal - converting filepath:', filepath, 'to URL:', url);
+                return url;
+              });
+              console.log('UploadModal - final silhouette URLs:', silhouetteUrls);
+              setSilhouettes(silhouetteUrls);
               setPoseNames(result.silhouette_files.map((_, index) => `Pose ${index + 1}`));
+              // Close upload modal and show sequence details modal
+              setShowUploadModal(false);
+              setShowSequenceDetailsModal(true);
             }
           }}
           onError={(error) => {
@@ -905,10 +828,50 @@ export default function UploadPage() {
           silhouettes={silhouettes}
         />
 
-        {/* Silhouette Display and Management - Show when silhouettes are available */}
-        {silhouettes.length > 0 && (
+        {/* Sequence Details Modal */}
+        <SequenceDetailsModal
+          isOpen={showSequenceDetailsModal}
+          onClose={handleSequenceDetailsClose}
+          onNext={handleSequenceDetailsNext}
+          initialData={{
+            title: sequenceTitle,
+            description: sequenceDescription,
+            duration: sequenceDuration,
+            privacy: privacy
+          }}
+        />
+
+        {/* Category Selection Modal */}
+        <CategorySelectionModal
+          isOpen={showCategoryModal}
+          onClose={handleCategoryClose}
+          onNext={handleCategoryNext}
+          initialData={{
+            categoryId: selectedCategory,
+            industryLabel: selectedLabel
+          }}
+        />
+
+        {/* Preview Modal */}
+        <PreviewModal
+          isOpen={showPreviewModal}
+          onClose={handlePreviewClose}
+          onConfirm={handlePreviewConfirm}
+          sequenceData={{
+            title: sequenceTitle,
+            description: sequenceDescription,
+        duration: sequenceDuration,
+        privacy: privacy,
+            categoryName: categories.find(cat => cat.id === selectedCategory)?.name,
+            industryLabel: selectedLabel,
+            poseCount: silhouettes.length
+          }}
+        />
+
+        {/* Silhouette Display and Management - Show when silhouettes are available and modal flow is completed */}
+        {silhouettes.length > 0 && modalFlowCompleted && (
           <div className={styles.silhouetteSection}>
-            <h3 className={styles.silhouetteTitle}>Your Sequence ({silhouettes.length} poses)</h3>
+            <h3 className={styles.silhouetteTitle}>{silhouettes.length} poses</h3>
             
             <DndContext
               sensors={sensors}
@@ -917,43 +880,47 @@ export default function UploadPage() {
             >
               <SortableContext items={silhouettes} strategy={verticalListSortingStrategy}>
                 <div className={styles.posesGrid}>
-                  {silhouettes.map((silhouette, index) => (
-                    <DraggablePose
-                      key={silhouette}
-                      id={silhouette}
-                      poseName={poseNames[index]}
-                      image={silhouette}
-                      index={index}
-                      onDelete={handleDeletePose}
-                      onNameChange={handlePoseNameChange}
-                    />
-                  ))}
+                  {silhouettes.map((silhouette, index) => {
+                    console.log(`Rendering pose ${index}:`, silhouette);
+                    return (
+                      <DraggablePose
+                        key={silhouette}
+                        id={silhouette}
+                        poseName={poseNames[index]}
+                        image={silhouette}
+                        index={index}
+                        onDelete={handleDeletePose}
+                        onNameChange={handlePoseNameChange}
+                      />
+                    );
+                  })}
                 </div>
               </SortableContext>
             </DndContext>
 
-            {silhouettes.length > 0 && (
-              <div className={`${styles.actionButtons} ${styles.actionButtonsSpacing}`}>
-                <button
-                  onClick={handleSaveToLibrary}
-                  className={styles.saveButton}
-                >
-                  Save to Library
-                </button>
-                <button
-                  onClick={handleDownloadSequence}
-                  className={styles.downloadButton}
-                >
-                  Download Sequence
-                </button>
-                <button
-                  onClick={handleClearSequence}
-                  className={styles.clearButton}
-                >
-                  Clear Sequence
-                </button>
-              </div>
-            )}
+            <div className={`${styles.actionButtons} ${styles.actionButtonsSpacing}`}>
+              <button
+                onClick={handleSaveToLibrary}
+                className={styles.saveButton}
+              >
+                
+                Save to Library
+              </button>
+              <button
+                onClick={handleDownloadSequence}
+                className={styles.downloadButton}
+              >
+                
+                Download Sequence
+              </button>
+              <button
+                onClick={handleClearSequence}
+                className={styles.clearButton}
+              >
+                
+                Clear Sequence
+              </button>
+            </div>
           </div>
         )}
 

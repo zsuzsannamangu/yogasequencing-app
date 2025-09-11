@@ -66,7 +66,7 @@ export default function HomePage() {
         setErrorMessage('');
 
         try {
-            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001'}/contact`, contactForm);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/contact`, contactForm);
             
             if (response.data.success) {
                 setSubmitStatus('success');

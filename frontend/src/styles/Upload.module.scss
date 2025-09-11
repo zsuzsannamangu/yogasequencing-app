@@ -1383,8 +1383,9 @@
   font-size: 1.5rem;
   font-weight: 600;
   color: $text-color;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   font-family: $title-font;
+  padding: 2rem;
 }
 
 .actionButtons {
@@ -1403,7 +1404,7 @@
 .saveButton,
 .downloadButton,
 .clearButton {
-  padding: 0.75rem 2rem;
+  padding: 0.50rem 1rem;
   border-radius: 9999px;
   border: none;
   font-family: $title-font;
@@ -1411,7 +1412,7 @@
   font-size: 1rem;
   cursor: pointer;
   transition: $transition;
-  min-width: 160px;
+
   
   &:hover {
     transform: translateY(-2px);
@@ -1443,4 +1444,162 @@
   &:hover {
     background-color: $dark-color;
   }
+}
+
+.previewButton {
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  border: none;
+  font-family: $title-font;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: $transition;
+  min-width: 160px;
+  background-color: $accent-color;
+  color: white;
+  
+  &:hover {
+    background-color: $accent-hover-color;
+    transform: translateY(-2px);
+  }
+}
+
+.editButton {
+  padding: 0.75rem 2rem;
+  border-radius: 9999px;
+  border: 2px solid $primary-color;
+  font-family: $title-font;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: $transition;
+  min-width: 160px;
+  background-color: transparent;
+  color: $primary-color;
+  
+  &:hover {
+    background-color: $primary-color;
+    color: white;
+    transform: translateY(-2px);
+  }
+}
+
+// Sequence Preview Styles
+.sequencePreview {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-top: 2rem;
+}
+
+.previewHeader {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid rgba($border-color, 0.2);
+}
+
+.previewTitle {
+  font-family: $title-font;
+  font-size: 2rem;
+  font-weight: 700;
+  color: $primary-color;
+  margin-bottom: 0.5rem;
+}
+
+.previewDescription {
+  font-family: $body-font;
+  font-size: 1.1rem;
+  color: $text-color-2;
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.previewMeta {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: $body-font;
+  font-size: 0.9rem;
+  color: $text-color-2;
+  font-weight: 500;
+}
+
+.previewPoses {
+  margin-bottom: 2rem;
+}
+
+.previewPosesTitle {
+  font-family: $title-font;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: $primary-color;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.previewPosesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.previewPoseItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  transition: $transition;
+  
+  &:hover {
+    border-color: $primary-color;
+    transform: translateY(-2px);
+  }
+}
+
+.previewPoseNumber {
+  font-family: $title-font;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: $primary-color;
+  background: white;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.previewPoseImage {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  border: 2px solid rgba($primary-color, 0.2);
+}
+
+.previewPoseName {
+  font-family: $body-font;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: $text-color;
+  text-align: center;
+  line-height: 1.3;
 }

@@ -1,4 +1,4 @@
-@use './variables.scss' as vars;
+@import './_variables.scss';
 
 .overlay {
   position: fixed;
@@ -34,13 +34,13 @@
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 50%;
-  color: vars.$text-color-2;
-  transition: vars.$transition;
+  color: $text-color-2;
+  transition: $transition;
   z-index: 10;
 
   &:hover {
-    background-color: vars.$muted-bg;
-    color: vars.$text-color;
+    background-color: $muted-bg;
+    color: $text-color;
   }
 }
 
@@ -52,35 +52,44 @@
   text-align: center;
 }
 
+.step .formGroup {
+  text-align: left;
+}
+
+.step .formGroup .stepTitle,
+.step .formGroup .stepDescription {
+  text-align: left;
+}
+
 .icon {
   margin-bottom: 1.5rem;
-  color: vars.$accent-color;
+  color: $accent-color;
 }
 
 .title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: vars.$text-color;
+  color: $text-color;
   margin-bottom: 0.5rem;
-  font-family: vars.$title-font;
+  font-family: $title-font;
 }
 
 .description {
-  color: vars.$text-color-2;
+  color: $text-color-2;
   margin-bottom: 2rem;
   line-height: 1.5;
-  font-family: vars.$body-font;
+  font-family: $body-font;
 }
 
 .fileLabel {
   display: inline-block;
   padding: 0.75rem 2rem;
-  background-color: vars.$primary-color;
+  background-color: $primary-color;
   color: white;
   border-radius: 9999px;
   cursor: pointer;
-  transition: vars.$transition;
-  font-family: vars.$title-font;
+  transition: $transition;
+  font-family: $title-font;
   font-weight: 600;
   font-size: 0.875rem;
   min-width: 140px;
@@ -89,7 +98,7 @@
   margin-bottom: 1.5rem;
 
   &:hover {
-    background-color: vars.$button-hover-color;
+    background-color: $button-hover-color;
     transform: translateY(-1px);
   }
 }
@@ -99,7 +108,7 @@
 }
 
 .fileInfo {
-  background-color: vars.$muted-bg;
+  background-color: $muted-bg;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
@@ -109,7 +118,7 @@
 .fileInfoText {
   margin: 0.25rem 0;
   font-size: 0.875rem;
-  font-family: vars.$body-font;
+  font-family: $body-font;
 }
 
 .buttonGroup {
@@ -123,12 +132,12 @@
 .uploadButton, .processButton {
   padding: 0.75rem 2rem;
   border-radius: 9999px;
-  background-color: vars.$accent-color;
+  background-color: $accent-color;
   color: white;
   border: none;
   cursor: pointer;
-  transition: vars.$transition;
-  font-family: vars.$title-font;
+  transition: $transition;
+  font-family: $title-font;
   font-weight: 600;
   font-size: 0.875rem;
   min-width: 160px;
@@ -136,7 +145,7 @@
   white-space: nowrap;
 
   &:hover:not(:disabled) {
-    background-color: vars.$accent-hover-color;
+    background-color: $accent-hover-color;
     transform: translateY(-1px);
   }
 
@@ -150,11 +159,11 @@
   padding: 0.75rem 1.5rem;
   border-radius: 9999px;
   background-color: transparent;
-  color: vars.$text-color-2;
-  border: 2px solid vars.$text-color-2;
+  color: $text-color-2;
+  border: 2px solid $text-color-2;
   cursor: pointer;
-  transition: vars.$transition;
-  font-family: vars.$title-font;
+  transition: $transition;
+  font-family: $title-font;
   font-weight: 600;
   font-size: 0.875rem;
   min-width: 120px;
@@ -162,7 +171,7 @@
   white-space: nowrap;
 
   &:hover:not(:disabled) {
-    background-color: vars.$text-color-2;
+    background-color: $text-color-2;
     color: white;
     transform: translateY(-1px);
   }
@@ -174,22 +183,22 @@
 }
 
 .processButton {
-  background-color: vars.$primary-color;
+  background-color: $primary-color;
 
   &:hover:not(:disabled) {
-    background-color: vars.$button-hover-color;
+    background-color: $button-hover-color;
   }
 }
 
 .completeButton {
-  background-color: vars.$accent-color;
+  background-color: $accent-color;
   color: white;
   border: none;
   border-radius: 9999px;
   padding: 0.75rem 2rem;
   cursor: pointer;
-  transition: vars.$transition;
-  font-family: vars.$title-font;
+  transition: $transition;
+  font-family: $title-font;
   font-weight: 600;
   font-size: 0.875rem;
   min-width: 200px;
@@ -197,13 +206,13 @@
   white-space: nowrap;
 
   &:hover {
-    background-color: vars.$accent-hover-color;
+    background-color: $accent-hover-color;
     transform: translateY(-1px);
   }
 }
 
 .processingInfo {
-  background-color: vars.$muted-bg;
+  background-color: $muted-bg;
   padding: 2rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
@@ -219,8 +228,8 @@
 .processingSpinner {
   width: 40px;
   height: 40px;
-  border: 4px solid vars.$muted-bg;
-  border-top: 4px solid vars.$accent-color;
+  border: 4px solid $muted-bg;
+  border-top: 4px solid $accent-color;
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem;
@@ -229,12 +238,12 @@
 .processingText {
   margin: 0;
   font-size: 0.875rem;
-  font-family: vars.$body-font;
-  color: vars.$text-color-2;
+  font-family: $body-font;
+  color: $text-color-2;
 }
 
 .resultsInfo {
-  background-color: vars.$muted-bg;
+  background-color: $muted-bg;
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
@@ -244,7 +253,7 @@
 .resultsText {
   margin: 0.25rem 0;
   font-size: 0.875rem;
-  font-family: vars.$body-font;
+  font-family: $body-font;
 }
 
 @keyframes spin {
@@ -268,4 +277,308 @@
   .title {
     font-size: 1.25rem;
   }
+}
+
+/* Additional styles for new modals */
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin: 1rem 0;
+  text-align: left;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba($border-color, 0.2);
+}
+
+.primaryButton {
+  padding: 0.75rem 2rem;
+  background-color: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  font-family: $title-font;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: $transition;
+  min-width: 120px;
+
+  &:hover:not(:disabled) {
+    background-color: $button-hover-color;
+    transform: translateY(-1px);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.cancelButton {
+  padding: 0.75rem 2rem;
+  background-color: transparent;
+  color: $text-color-2;
+  border: 2px solid $text-color-2;
+  border-radius: 9999px;
+  font-family: $title-font;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: $transition;
+  min-width: 120px;
+
+  &:hover:not(:disabled) {
+    background-color: $text-color-2;
+    color: white;
+  }
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.fieldLabel {
+  font-weight: 600;
+  color: $text-color;
+  font-family: $title-font;
+  font-size: 0.9rem;
+}
+
+.input, .textarea, .select {
+  padding: 0.75rem;
+  border: 2px solid rgba($border-color, 0.3);
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: $body-font;
+  transition: $transition;
+  background: $background-color;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba($primary-color, 0.1);
+  }
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.radioGroup {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.radioOption {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  border: 2px solid rgba($border-color, 0.3);
+  border-radius: 8px;
+  transition: $transition;
+
+  &:hover {
+    border-color: $primary-color;
+    background: rgba($primary-color, 0.05);
+  }
+
+  input[type="radio"] {
+    margin: 0;
+  }
+
+  input[type="radio"]:checked + .radioLabel {
+    color: $primary-color;
+    font-weight: 600;
+  }
+}
+
+.radioLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: $body-font;
+  transition: $transition;
+}
+
+.categorySection {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.select {
+  flex: 1;
+}
+
+.addCategoryButton {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: $accent-color;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: $title-font;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition;
+  white-space: nowrap;
+
+  &:hover {
+    background: $accent-hover-color;
+    transform: translateY(-1px);
+  }
+}
+
+.newCategoryForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: rgba($primary-color, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba($primary-color, 0.2);
+}
+
+.createButton {
+  padding: 0.5rem 1rem;
+  background: $primary-color;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-family: $title-font;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    background: $button-hover-color;
+  }
+}
+
+.labelGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+
+.labelOption {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 2px solid rgba($border-color, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: $transition;
+
+  &:hover {
+    border-color: $primary-color;
+    background: rgba($primary-color, 0.05);
+  }
+
+  input[type="radio"] {
+    margin: 0;
+  }
+
+  input[type="radio"]:checked + .labelText {
+    color: $primary-color;
+    font-weight: 600;
+  }
+}
+
+.labelText {
+  font-family: $body-font;
+  transition: $transition;
+}
+
+.previewCard {
+  background: rgba($primary-color, 0.05);
+  border: 1px solid rgba($primary-color, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.previewHeader {
+  margin-bottom: 1rem;
+}
+
+.previewTitle {
+  font-family: $title-font;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $primary-color;
+  margin: 0 0 0.75rem 0;
+}
+
+.previewMeta {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: $text-color-2;
+  font-family: $body-font;
+}
+
+.previewDescription {
+  color: $text-color;
+  font-family: $body-font;
+  line-height: 1.5;
+  margin: 0 0 1rem 0;
+}
+
+.previewDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detailRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba($border-color, 0.2);
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.detailLabel {
+  font-weight: 600;
+  color: $text-color-2;
+  font-family: $body-font;
+  font-size: 0.9rem;
+}
+
+.detailValue {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: $text-color;
+  font-family: $body-font;
+  font-size: 0.9rem;
 }

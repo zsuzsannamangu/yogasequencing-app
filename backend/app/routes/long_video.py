@@ -26,7 +26,7 @@ async def process_video(filename: str, background_tasks: BackgroundTasks):
     video_path = os.path.join("uploads", filename)
     
     if not os.path.exists(video_path):
-        raise HTTPException(status_code=404, detail="Video file not found")
+        raise HTTPException(status_code=404, detail="Video file not found. Please upload the video again. Videos are not stored and are deleted after a few minutes.")
     
     # Generate job ID
     import time
@@ -103,11 +103,14 @@ async def process_video_background(job_id: str, video_path: str):
         if os.path.exists("temp_analysis"):
             shutil.rmtree("temp_analysis")
         
+        # Convert filenames to full paths
+        full_silhouette_paths = [os.path.join(silhouettes_dir, filename) for filename in silhouette_files]
+        
         # Update job status
         processing_jobs[job_id]["status"] = "completed"
         processing_jobs[job_id]["progress"] = 100
         processing_jobs[job_id]["result"] = {
-            "silhouette_files": silhouette_files,
+            "silhouette_files": full_silhouette_paths,
             "total_silhouettes": len(silhouette_files),
             "still_ranges": still_ranges,
             "video_info": motion_result["video_info"]

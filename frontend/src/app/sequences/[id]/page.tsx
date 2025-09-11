@@ -113,7 +113,7 @@ export default function SequenceDetailPage() {
           <GripVertical size={16} />
         </div>
         <img
-          src={`http://localhost:8000/${image}`}
+          src={image}
           alt={`Pose ${index + 1}`}
           className={styles.poseImage}
         />
@@ -270,8 +270,8 @@ export default function SequenceDetailPage() {
           
           try {
             if (pose.filePath) {
-              console.log(`Fetching SVG from: http://localhost:8000/${pose.filePath}`); // Debug log
-              const res = await fetch(`http://localhost:8000/${pose.filePath}`);
+              console.log(`Fetching SVG from: ${pose.filePath}`); // Debug log
+              const res = await fetch(pose.filePath);
               const svgText = await res.text();
               const parser = new DOMParser!();
               const svgDoc = parser.parseFromString(svgText, 'image/svg+xml').documentElement;
@@ -303,7 +303,7 @@ export default function SequenceDetailPage() {
           } catch (error) {
             console.error(`Failed to add pose ${i}:`, error);
             console.error(`Pose filePath: ${pose.filePath}`);
-            console.error(`Full URL: http://localhost:8000/${pose.filePath}`);
+            console.error(`Full URL: ${pose.filePath}`);
             // Continue with next pose
             x += maxWidth + spacingX;
             if (x + maxWidth > pageWidth - spacingX) {
@@ -368,7 +368,7 @@ export default function SequenceDetailPage() {
         
         try {
           // Fetch SVG content
-          const response = await fetch(`http://localhost:8000/${pose.filePath}`);
+          const response = await fetch(pose.filePath);
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           
           const svgText = await response.text();
@@ -967,7 +967,7 @@ export default function SequenceDetailPage() {
                   <div key={index} className={styles.poseCard}>
                     <div className={styles.poseImage}>
                       <img 
-                        src={`http://localhost:8000/${pose.filePath}`}
+                        src={pose.filePath}
                         alt={pose.poseName}
                         className={styles.poseSvg}
                       />

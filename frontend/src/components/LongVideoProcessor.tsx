@@ -40,7 +40,7 @@ export default function LongVideoProcessor({ filename, onComplete, onError }: Lo
             setIsProcessing(true);
             setProgressMessage('Starting video processing...');
 
-            const response = await axios.post('http://localhost:8001/long-video/process-video', null, {
+            const response = await axios.post('http://localhost:8000/long-video/process-video', null, {
                 params: { filename }
             });
 
@@ -60,7 +60,7 @@ export default function LongVideoProcessor({ filename, onComplete, onError }: Lo
     const pollProgress = async (jobId: string) => {
         const pollInterval = setInterval(async () => {
             try {
-                const response = await axios.get(`http://localhost:8001/long-video/progress/${jobId}`);
+                const response = await axios.get(`http://localhost:8000/long-video/progress/${jobId}`);
                 const jobData = response.data;
 
                 setJob(jobData);
@@ -108,7 +108,7 @@ export default function LongVideoProcessor({ filename, onComplete, onError }: Lo
         if (!job?.job_id) return;
 
         try {
-            await axios.delete(`http://localhost:8001/long-video/job/${job.job_id}`);
+            await axios.delete(`http://localhost:8000/long-video/job/${job.job_id}`);
             setProgressMessage('Processing cancelled');
             setIsProcessing(false);
         } catch (error) {
@@ -152,7 +152,7 @@ export default function LongVideoProcessor({ filename, onComplete, onError }: Lo
                         </button>
                     )}
                 </div>
-                <p>Processing: {filename}</p>
+                {job && <p>Processing: {filename}</p>}
             </div>
 
             {job && (
@@ -209,17 +209,19 @@ export default function LongVideoProcessor({ filename, onComplete, onError }: Lo
                 </div>
             )}
 
-            <div className={styles.progressContainer}>
-                <div className={styles.progressBar}>
-                    <div
-                        className={styles.progressFill}
-                        style={{ width: `${job?.progress || 0}%` }}
-                    />
+            {job && (
+                <div className={styles.progressContainer}>
+                    <div className={styles.progressBar}>
+                        <div
+                            className={styles.progressFill}
+                            style={{ width: `${job?.progress || 0}%` }}
+                        />
+                    </div>
+                    <div className={styles.progressText}>
+                        {job?.progress || 0}% - {progressMessage}
+                    </div>
                 </div>
-                <div className={styles.progressText}>
-                    {job?.progress || 0}% - {progressMessage}
-                </div>
-            </div>
+            )}
 
 
         </div>
