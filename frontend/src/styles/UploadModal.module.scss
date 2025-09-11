@@ -469,3 +469,71 @@
   font-family: $body-font;
   font-size: 0.9rem;
 }
+
+// Form styling to match settings page
+.formSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  label {
+    font-weight: 600;
+    color: $text-color;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-family: $title-font;
+  }
+}
+
+.input, .select {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: $title-font;
+  transition: $transition;
+  background-color: white;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba(0, 50, 33, 0.1);
+  }
+
+  &:disabled {
+    background-color: #f9fafb;
+    color: $text-color-2;
+    cursor: not-allowed;
+  }
+}
+
+.textarea {
+  padding: 0.75rem 1rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  font-family: $title-font;
+  transition: $transition;
+  background-color: white;
+  resize: vertical;
+  min-height: 120px;
+
+  &:focus {
+    outline: none;
+    border-color: $primary-color;
+    box-shadow: 0 0 0 3px rgba(0, 50, 33, 0.1);
+  }
+
+  &:disabled {
+    background-color: #f9fafb;
+    color: $text-color-2;
+    cursor: not-allowed;
+  }
+}

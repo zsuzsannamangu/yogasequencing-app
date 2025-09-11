@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { Download, Edit, Trash2, Calendar, Clock, Share2, Tag, Layers, Lock, Globe } from 'lucide-react';
+import { Download, Edit, Trash2, Calendar, Clock, Share2, Tag, Layers, Lock, Globe, FileText } from 'lucide-react';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import styles from '@/styles/Sequences.module.scss';
@@ -422,7 +422,9 @@ export default function SequencesPage() {
 
           {filteredAndSortedSequences.length === 0 ? (
             <div className={styles.emptyState}>
-              <div className={styles.emptyIcon}>📚</div>
+              <div className={styles.emptyIcon}>
+                <FileText size={64} />
+              </div>
               <h3>No sequences found</h3>
               <p>Create your first sequence by uploading a video</p>
               <Link href="/upload" className={styles.emptyButton}>

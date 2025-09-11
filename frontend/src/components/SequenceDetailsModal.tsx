@@ -72,9 +72,9 @@ export default function SequenceDetailsModal({
               Add a title, description, and duration for your yoga sequence
             </p>
 
-            <div className={styles.formGroup}>
-              <div className={styles.formField}>
-                <label htmlFor="title" className={styles.fieldLabel}>
+            <div className={styles.formSection}>
+              <div className={styles.formGroup}>
+                <label htmlFor="title">
                   Sequence Title *
                 </label>
                 <input
@@ -88,8 +88,8 @@ export default function SequenceDetailsModal({
                 />
               </div>
 
-              <div className={styles.formField}>
-                <label htmlFor="description" className={styles.fieldLabel}>
+              <div className={styles.formGroup}>
+                <label htmlFor="description">
                   Description *
                 </label>
                 <textarea
@@ -103,8 +103,8 @@ export default function SequenceDetailsModal({
                 />
               </div>
 
-              <div className={styles.formField}>
-                <label htmlFor="duration" className={styles.fieldLabel}>
+              <div className={styles.formGroup}>
+                <label htmlFor="duration">
                   Duration *
                 </label>
                 <input
@@ -118,8 +118,8 @@ export default function SequenceDetailsModal({
                 />
               </div>
 
-              <div className={styles.formField}>
-                <label className={styles.fieldLabel}>Privacy</label>
+              <div className={styles.formGroup}>
+                <label>Privacy</label>
                 <div className={styles.radioGroup}>
                   <label className={styles.radioOption}>
                     <input

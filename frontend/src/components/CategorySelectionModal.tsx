@@ -159,10 +159,10 @@ export default function CategorySelectionModal({
               Choose a category and industry label for your sequence
             </p>
 
-            <div className={styles.formGroup}>
+            <div className={styles.formSection}>
               {/* Category Selection */}
-              <div className={styles.formField}>
-                <label className={styles.fieldLabel}>Category</label>
+              <div className={styles.formGroup}>
+                <label>Category</label>
                 <div className={styles.categorySection}>
                   <select
                     value={selectedCategory}
@@ -213,8 +213,8 @@ export default function CategorySelectionModal({
               </div>
 
               {/* Industry Label Selection */}
-              <div className={styles.formField}>
-                <label className={styles.fieldLabel}>Industry Label</label>
+              <div className={styles.formGroup}>
+                <label>Industry Label</label>
                 <div className={styles.labelGrid}>
                   {industryLabels.map((label) => (
                     <label key={label} className={styles.labelOption}>

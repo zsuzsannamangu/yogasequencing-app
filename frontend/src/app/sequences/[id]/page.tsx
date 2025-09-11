@@ -782,132 +782,72 @@ export default function SequenceDetailPage() {
 
               {/* Basic Information */}
               <div className={styles.formSection}>
-                <h3>Basic Information</h3>
-                <div className={styles.inputRow}>
-                  <div className={styles.inputGroup}>
-                    <label htmlFor="editTitle" className={styles.label}>Sequence Title *</label>
-                    <input
-                      type="text"
-                      id="editTitle"
-                      value={editTitle}
-                      onChange={(e) => setEditTitle(e.target.value)}
-                      className={styles.input}
-                      required
-                    />
-                  </div>
-
-                  <div className={styles.inputGroup}>
-                    <label htmlFor="editDescription" className={styles.label}>Description</label>
-                    <textarea
-                      id="editDescription"
-                      value={editDescription}
-                      onChange={(e) => setEditDescription(e.target.value)}
-                      className={styles.textarea}
-                      rows={3}
-                    />
-                  </div>
+                <div className={styles.formGroup}>
+                  <label htmlFor="editTitle">Sequence Title *</label>
+                  <input
+                    type="text"
+                    id="editTitle"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    className={styles.input}
+                    required
+                  />
                 </div>
 
-
+                <div className={styles.formGroup}>
+                  <label htmlFor="editDescription">Description</label>
+                  <textarea
+                    id="editDescription"
+                    value={editDescription}
+                    onChange={(e) => setEditDescription(e.target.value)}
+                    className={styles.textarea}
+                    rows={3}
+                  />
+                </div>
               </div>
 
               {/* Classification and Privacy */}
               <div className={styles.formSection}>
-                <h3>Classification & Privacy</h3>
-                <div className={styles.inputRowThree}>
-                  <div className={styles.inputGroup}>
-                    <label htmlFor="editCategory" className={styles.label}>Category</label>
-                    <div className={styles.categoryInput}>
-                      <select
-                        id="editCategory"
-                        value={editCategory}
-                        onChange={(e) => setEditCategory(e.target.value)}
-                        className={styles.select}
-                      >
-                        <option value="">Select a category</option>
-                        {categories.map((category) => (
-                          <option key={category.id} value={category.name}>
-                            {category.name}
-                          </option>
-                        ))}
-                      </select>
-                      <button
-                        type="button"
-                        onClick={() => setShowNewCategoryForm(true)}
-                        className="btn-secondary btn-sm"
-                        title="Create New Category"
-                      >
-                        <Plus size={16} />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className={styles.inputGroup}>
-                    <label htmlFor="editIndustryLabel" className={styles.label}>Industry Label *</label>
+                <div className={styles.formGroup}>
+                  <label htmlFor="editCategory">Category</label>
+                  <div className={styles.categoryInput}>
                     <select
-                      id="editIndustryLabel"
-                      value={editIndustryLabel}
-                      onChange={(e) => setEditIndustryLabel(e.target.value)}
+                      id="editCategory"
+                      value={editCategory}
+                      onChange={(e) => setEditCategory(e.target.value)}
                       className={styles.select}
-                      required
                     >
-                      {AVAILABLE_INDUSTRY_LABELS.map((label) => (
-                        <option key={label} value={label}>
-                          {label}
+                      <option value="">Select a category</option>
+                      {categories.map((category) => (
+                        <option key={category.id} value={category.name}>
+                          {category.name}
                         </option>
                       ))}
                     </select>
-                  </div>
-
-                  <div className={styles.inputGroup}>
-                    <label htmlFor="editPrivacy" className={styles.label}>Privacy Setting *</label>
-                    <div className={styles.privacyContainer}>
-                      <label className={styles.privacyOption}>
-                        <input
-                          type="radio"
-                          name="editPrivacy"
-                          value="private"
-                          checked={editPrivacy === 'private'}
-                          onChange={(e) => setEditPrivacy(e.target.value as 'private' | 'public')}
-                          className={styles.radio}
-                        />
-                        <span className={styles.privacyLabel}>
-                          <Lock size={16} className={styles.privacyIcon} />
-                          Private
-                        </span>
-                      </label>
-                      <label className={styles.privacyOption}>
-                        <input
-                          type="radio"
-                          name="editPrivacy"
-                          value="public"
-                          checked={editPrivacy === 'public'}
-                          onChange={(e) => setEditPrivacy(e.target.value as 'private' | 'public')}
-                          className={styles.radio}
-                        />
-                        <span className={styles.privacyLabel}>
-                          <Globe size={16} className={styles.privacyIcon} />
-                          Public
-                        </span>
-                      </label>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setShowNewCategoryForm(true)}
+                      className="btn-secondary btn-sm"
+                      title="Create New Category"
+                    >
+                      <Plus size={16} />
+                    </button>
                   </div>
                 </div>
-              </div>
 
-              {/* New Category Form */}
-              {showNewCategoryForm && (
-                <div className={styles.newCategoryForm}>
-                  <h4>Create New Category</h4>
-                  <div className={styles.newCategoryInputs}>
+                {/* New Category Form */}
+                {showNewCategoryForm && (
+                  <div className={styles.formGroup}>
+                    <label htmlFor="newCategoryName">New Category Name</label>
                     <input
+                      id="newCategoryName"
                       type="text"
-                      placeholder="Category name..."
+                      placeholder="Enter category name"
                       value={newCategoryName}
                       onChange={(e) => setNewCategoryName(e.target.value)}
                       className={styles.input}
                     />
-                    <div className={styles.newCategoryActions}>
+                    <div className={`${styles.newCategoryActions} ${styles.leftAligned}`}>
                       <button onClick={handleCreateCategory} className="btn-primary btn-sm">
                         Create
                       </button>
@@ -923,8 +863,60 @@ export default function SequenceDetailPage() {
                       </button>
                     </div>
                   </div>
+                )}
+
+                <div className={styles.formGroup}>
+                  <label htmlFor="editIndustryLabel">Industry Label *</label>
+                  <select
+                    id="editIndustryLabel"
+                    value={editIndustryLabel}
+                    onChange={(e) => setEditIndustryLabel(e.target.value)}
+                    className={styles.select}
+                    required
+                  >
+                    {AVAILABLE_INDUSTRY_LABELS.map((label) => (
+                      <option key={label} value={label}>
+                        {label}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              )}
+
+                <div className={styles.formGroup}>
+                  <label>Privacy Setting *</label>
+                  <div className={styles.privacyContainer}>
+                    <label className={styles.privacyOption}>
+                      <input
+                        type="radio"
+                        name="editPrivacy"
+                        value="private"
+                        checked={editPrivacy === 'private'}
+                        onChange={(e) => setEditPrivacy(e.target.value as 'private' | 'public')}
+                        className={styles.radio}
+                      />
+                      <span className={styles.privacyLabel}>
+                        <Lock size={16} className={styles.privacyIcon} />
+                        Private
+                      </span>
+                    </label>
+                    <label className={styles.privacyOption}>
+                      <input
+                        type="radio"
+                        name="editPrivacy"
+                        value="public"
+                        checked={editPrivacy === 'public'}
+                        onChange={(e) => setEditPrivacy(e.target.value as 'private' | 'public')}
+                        className={styles.radio}
+                      />
+                      <span className={styles.privacyLabel}>
+                        <Globe size={16} className={styles.privacyIcon} />
+                        Public
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
 
               {/* Editable Poses */}
               <div className={styles.formSection}>

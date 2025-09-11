@@ -94,7 +94,7 @@ export default function BusinessCategoryPage() {
 
           <button 
             onClick={handleContinue}
-            className={`btn-primary ${!selectedCategory ? 'disabled' : ''}`}
+            className={`btn-secondary ${!selectedCategory ? 'disabled' : ''}`}
             disabled={!selectedCategory}
           >
             CONTINUE

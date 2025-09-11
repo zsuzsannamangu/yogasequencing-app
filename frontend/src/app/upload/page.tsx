@@ -870,7 +870,7 @@ export default function UploadPage() {
         {/* Silhouette Display and Management - Show when silhouettes are available and modal flow is completed */}
         {silhouettes.length > 0 && modalFlowCompleted && (
           <div className={styles.silhouetteSection}>
-            <h3 className={styles.silhouetteTitle}>{silhouettes.length} poses</h3>
+            <h3 className={styles.silhouetteTitle}>{silhouettes.length} POSES</h3>
 
             <DndContext
               sensors={sensors}
