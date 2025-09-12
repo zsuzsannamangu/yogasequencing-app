@@ -90,12 +90,19 @@ async def process_video_background(job_id: str, video_path: str):
         processing_jobs[job_id]["status"] = "extracting_silhouettes"
         processing_jobs[job_id]["progress"] = 80
         
-        # Step 2: Extract silhouettes from still ranges
+        # Step 2: Extract silhouettes from still ranges with progress callback
         silhouettes_dir = "silhouettes"
         os.makedirs(silhouettes_dir, exist_ok=True)
         
+        def update_silhouette_progress(progress_data):
+            # Map silhouette extraction progress from 80-95%
+            silhouette_progress = 80 + int((progress_data["progress"] * 15) / 100)
+            processing_jobs[job_id]["progress"] = silhouette_progress
+            processing_jobs[job_id]["status"] = "extracting_silhouettes"
+            logger.info(f"Silhouette extraction progress: {silhouette_progress}% - {progress_data['message']}")
+        
         silhouette_files = await silhouette_extractor.extract_silhouettes_batch(
-            video_path, still_ranges, silhouettes_dir
+            video_path, still_ranges, silhouettes_dir, progress_callback=update_silhouette_progress
         )
         
         # Clean up temp analysis directory

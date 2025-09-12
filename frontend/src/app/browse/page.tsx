@@ -87,7 +87,7 @@ export default function BrowsePage() {
           createdAt: seq.createdAt,
           duration: seq.duration,
           poseCount: seq.poseCount,
-          thumbnail: seq.poses?.[0]?.filePath || '/images/yoga2.jpg',
+          thumbnail: seq.poses?.[0]?.filePath ? `http://localhost:8000/silhouettes/${seq.poses[0].filePath}` : '/images/yoga2.jpg',
           industryLabel: seq.industryLabel || 'Yoga', // Default to Yoga if no industry label
           category: seq.category, // Include the category field
           privacy: seq.privacy || 'public',
@@ -169,7 +169,7 @@ export default function BrowsePage() {
 
           try {
             if (pose.filePath) {
-              const filePath = pose.filePath;
+              const filePath = `http://localhost:8000/silhouettes/${pose.filePath}`;
               const res = await fetch(`http://localhost:8000/${filePath}`);
               const svgText = await res.text();
               const parser = new DOMParser!();
@@ -311,7 +311,7 @@ export default function BrowsePage() {
 
           try {
             if (pose.filePath) {
-              const filePath = pose.filePath;
+              const filePath = `http://localhost:8000/silhouettes/${pose.filePath}`;
               const res = await fetch(`http://localhost:8000/${filePath}`);
               const svgText = await res.text();
               const parser = new DOMParser!();

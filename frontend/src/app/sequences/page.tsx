@@ -198,7 +198,7 @@ export default function SequencesPage() {
       // Add poses with silhouettes
       for (let i = 0; i < sequenceData.poses.length; i++) {
         const pose = sequenceData.poses[i];
-        const filePath = pose.filePath;
+        const filePath = `http://localhost:8000/silhouettes/${pose.filePath}`;
         
         try {
           if (!DOMParser) {
@@ -543,7 +543,7 @@ export default function SequencesPage() {
                                     // Add poses with silhouettes
                                     for (let i = 0; i < sequenceData.poses.length; i++) {
                                       const pose = sequenceData.poses[i];
-                                      const filePath = pose.filePath;
+                                      const filePath = `http://localhost:8000/silhouettes/${pose.filePath}`;
                                       
                                       try {
                                         if (!DOMParser) {

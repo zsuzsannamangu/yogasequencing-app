@@ -289,7 +289,7 @@ export default function SequenceDetailPage() {
           try {
             if (pose.filePath) {
               console.log(`Fetching SVG from: ${pose.filePath}`); // Debug log
-              const res = await fetch(pose.filePath);
+              const res = await fetch(`http://localhost:8000/silhouettes/${pose.filePath}`);
               const svgText = await res.text();
               const parser = new DOMParser!();
               const svgDoc = parser.parseFromString(svgText, 'image/svg+xml').documentElement;
@@ -386,7 +386,7 @@ export default function SequenceDetailPage() {
 
         try {
           // Fetch SVG content
-          const response = await fetch(pose.filePath);
+          const response = await fetch(`http://localhost:8000/silhouettes/${pose.filePath}`);
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
           const svgText = await response.text();
@@ -936,7 +936,7 @@ export default function SequenceDetailPage() {
                           key={pose.filePath}
                           id={pose.filePath}
                           poseName={editPoseNames[index] || ''}
-                          image={pose.filePath}
+                          image={`http://localhost:8000/silhouettes/${pose.filePath}`}
                           index={index}
                           onDelete={handleDeletePose}
                           onNameChange={handlePoseNameChange}
@@ -965,9 +965,14 @@ export default function SequenceDetailPage() {
                   <div key={index} className={styles.poseCard}>
                     <div className={styles.poseImage}>
                       <img
-                        src={pose.filePath}
+                        src={`http://localhost:8000/silhouettes/${pose.filePath}`}
                         alt={pose.poseName}
                         className={styles.poseSvg}
+                        onError={(e) => {
+                          console.error('Failed to load image:', pose.filePath);
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                        }}
                       />
                     </div>
                     <div className={styles.poseInfo}>

@@ -53,3 +53,28 @@ def get_current_user_id(token: str) -> Optional[str]:
     if payload:
         return payload.get("user_id")  # Our tokens use 'user_id' field
     return None
+
+def create_long_lived_token(data: dict) -> str:
+    """Create a long-lived JWT token for video processing sessions"""
+    to_encode = data.copy()
+    
+    # Use longer expiration for video processing
+    expire = datetime.utcnow() + timedelta(minutes=settings.jwt_video_processing_expire_minutes)
+    
+    to_encode.update({"exp": expire, "type": "video_processing"})
+    
+    encoded_jwt = jwt.encode(
+        to_encode, 
+        settings.supabase_jwt_secret, 
+        algorithm=settings.jwt_algorithm
+    )
+    
+    return encoded_jwt
+
+def refresh_token(token: str) -> Optional[str]:
+    """Refresh an existing token with extended expiration"""
+    payload = verify_token(token)
+    if payload and payload.get("user_id"):
+        # Create new token with extended expiration
+        return create_long_lived_token({"user_id": payload["user_id"]})
+    return None

@@ -7,7 +7,7 @@ from datetime import timedelta, datetime
 
 from ..database import database
 from ..schemas import UserRegister, UserLogin, UserResponse, Token
-from ..auth import get_password_hash, verify_password, create_access_token, get_current_user_id
+from ..auth import get_password_hash, verify_password, create_access_token, get_current_user_id, refresh_token, create_long_lived_token
 from typing import Optional
 # We're using raw SQL queries instead of SQLAlchemy models
 from ..config import settings
@@ -132,6 +132,67 @@ async def login_user(user_data: UserLogin):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Login failed: {str(e)}"
+        )
+
+@router.post("/refresh", response_model=Token)
+async def refresh_access_token(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Refresh an access token with extended expiration for video processing"""
+    try:
+        # Try to refresh the token
+        new_token = refresh_token(credentials.credentials)
+        
+        if not new_token:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid or expired token"
+            )
+        
+        return Token(
+            access_token=new_token,
+            token_type="bearer",
+            expires_in=settings.jwt_video_processing_expire_minutes * 60  # Convert to seconds
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Token refresh failed: {str(e)}"
+        )
+
+@router.post("/video-processing-token", response_model=Token)
+async def create_video_processing_token(
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Create a long-lived token specifically for video processing sessions"""
+    try:
+        # Verify current token and get user ID
+        user_id = get_current_user_id(credentials.credentials)
+        
+        if not user_id:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid or expired token"
+            )
+        
+        # Create long-lived token
+        long_token = create_long_lived_token({"user_id": user_id})
+        
+        return Token(
+            access_token=long_token,
+            token_type="bearer",
+            expires_in=settings.jwt_video_processing_expire_minutes * 60  # Convert to seconds
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to create video processing token: {str(e)}"
         )
 
 @router.get("/me", response_model=UserResponse)

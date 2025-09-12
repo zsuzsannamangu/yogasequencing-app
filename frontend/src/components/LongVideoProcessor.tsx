@@ -34,6 +34,8 @@ export default function LongVideoProcessor({ filename, onComplete, onError }: Lo
     const [job, setJob] = useState<ProcessingJob | null>(null);
     const [isProcessing, setIsProcessing] = useState(false);
     const [progressMessage, setProgressMessage] = useState('');
+    const [lastProgressUpdate, setLastProgressUpdate] = useState<number>(Date.now());
+    const [isProgressStuck, setIsProgressStuck] = useState(false);
 
     const startProcessing = async () => {
         try {
@@ -63,9 +65,23 @@ export default function LongVideoProcessor({ filename, onComplete, onError }: Lo
                 const response = await axios.get(`http://localhost:8000/long-video/progress/${jobId}`);
                 const jobData = response.data;
 
+                // Check if progress has changed
+                const currentTime = Date.now();
+                const progressChanged = job?.progress !== jobData.progress;
+                
+                if (progressChanged) {
+                    setLastProgressUpdate(currentTime);
+                    setIsProgressStuck(false);
+                } else {
+                    // Check if progress has been stuck for more than 30 seconds
+                    if (currentTime - lastProgressUpdate > 30000) {
+                        setIsProgressStuck(true);
+                    }
+                }
+
                 setJob(jobData);
 
-                // Update progress message based on status
+                // Update progress message based on status with more detailed messages
                 switch (jobData.status) {
                     case 'starting':
                         setProgressMessage('Initializing video processing...');
@@ -74,24 +90,31 @@ export default function LongVideoProcessor({ filename, onComplete, onError }: Lo
                         setProgressMessage('Analyzing video for motion patterns...');
                         break;
                     case 'extracting_silhouettes':
-                        setProgressMessage('Extracting silhouettes from video...');
+                        if (isProgressStuck) {
+                            setProgressMessage('Extracting silhouettes... This may take several minutes for long videos. Please be patient.');
+                        } else {
+                            setProgressMessage(`Extracting silhouettes from video... ${jobData.progress}% complete`);
+                        }
                         break;
                     case 'completed':
                         setProgressMessage('Processing completed successfully!');
                         clearInterval(pollInterval);
                         setIsProcessing(false);
+                        setIsProgressStuck(false);
                         onComplete(jobData.result);
                         break;
                     case 'error':
                         setProgressMessage(`Error: ${jobData.error}`);
                         clearInterval(pollInterval);
                         setIsProcessing(false);
+                        setIsProgressStuck(false);
                         onError(jobData.error || 'Unknown error occurred');
                         break;
                     case 'cancelled':
                         setProgressMessage('Processing cancelled');
                         clearInterval(pollInterval);
                         setIsProcessing(false);
+                        setIsProgressStuck(false);
                         break;
                 }
 
@@ -99,6 +122,7 @@ export default function LongVideoProcessor({ filename, onComplete, onError }: Lo
                 console.error('Error polling progress:', error);
                 clearInterval(pollInterval);
                 setIsProcessing(false);
+                setIsProgressStuck(false);
                 onError('Failed to check processing status');
             }
         }, 2000); // Poll every 2 seconds
@@ -213,13 +237,26 @@ export default function LongVideoProcessor({ filename, onComplete, onError }: Lo
                 <div className={styles.progressContainer}>
                     <div className={styles.progressBar}>
                         <div
-                            className={styles.progressFill}
+                            className={`${styles.progressFill} ${isProgressStuck ? styles.progressPulse : ''}`}
                             style={{ width: `${job?.progress || 0}%` }}
                         />
                     </div>
                     <div className={styles.progressText}>
                         {job?.progress || 0}% - {progressMessage}
                     </div>
+                    {isProgressStuck && isProcessing && (
+                        <div className={styles.stuckProgressActions}>
+                            <p className={styles.stuckProgressMessage}>
+                                Processing is taking longer than expected. You can wait or cancel if needed.
+                            </p>
+                            <button
+                                className={styles.cancelButton}
+                                onClick={cancelProcessing}
+                            >
+                                Cancel Processing
+                            </button>
+                        </div>
+                    )}
                 </div>
             )}
 

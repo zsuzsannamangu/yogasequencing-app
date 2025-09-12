@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     # JWT Configuration
     jwt_algorithm: str = "HS256"
     jwt_expire_minutes: int = 30
+    jwt_video_processing_expire_minutes: int = 180  # 3 hours for video processing
     
     # Security
     secret_key: str = "your-secret-key-here-change-in-production"

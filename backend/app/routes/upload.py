@@ -260,3 +260,45 @@ async def delete_profile_image(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Delete failed: {str(e)}"
         )
+
+@router.delete("/{filename}")
+async def delete_uploaded_file(
+    filename: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
+    """Delete an uploaded video file"""
+    try:
+        # Get current user ID (optional - for logging/security)
+        user_id = get_current_user_id(credentials.credentials)
+        
+        # Construct file path
+        file_path = os.path.join(UPLOAD_DIR, filename)
+        
+        # Check if file exists
+        if not os.path.exists(file_path):
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="File not found"
+            )
+        
+        # Delete the file
+        os.remove(file_path)
+        
+        # Also try to delete any associated silhouette files
+        try:
+            # Look for silhouette files that might be associated with this video
+            # This is a best-effort cleanup - silhouettes might be in different locations
+            pass
+        except Exception:
+            # Silently continue if silhouette cleanup fails
+            pass
+        
+        return {"message": f"File '{filename}' deleted successfully"}
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Delete failed: {str(e)}"
+        )

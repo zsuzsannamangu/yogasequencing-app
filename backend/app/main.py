@@ -55,7 +55,7 @@ app.add_middleware(
 # Register API routers
 app.include_router(auth.router)
 app.include_router(sequences.router)
-app.include_router(upload.router)
+app.include_router(upload.router, prefix="/api/upload", tags=["upload"])
 app.include_router(fast_upload.router, prefix="/fast", tags=["fast-upload"])
 app.include_router(detect.router)
 app.include_router(silhouettes.router)

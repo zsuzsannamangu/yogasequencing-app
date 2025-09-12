@@ -104,7 +104,7 @@ const DraggablePose = ({ id, poseName, image, index, onDelete, onNameChange }) =
 };
 
 export default function UploadPage() {
-  const { user, token } = useAuth();
+  const { user, token, createVideoProcessingToken, refreshToken } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filename, setFilename] = useState('');
   const [silhouettes, setSilhouettes] = useState<string[]>([]);
@@ -187,7 +187,7 @@ export default function UploadPage() {
     console.log(`Starting upload of ${selectedFile.name} (${(selectedFile.size / 1024 / 1024).toFixed(2)} MB)`);
     
     try {
-      const res = await axios.post('http://localhost:8000/upload', formData, {
+      const res = await axios.post('http://localhost:8000/api/upload/upload', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -267,7 +267,17 @@ export default function UploadPage() {
     }
   };
 
-  const handleStartProcessing = () => {
+  const handleStartProcessing = async () => {
+    // Create a long-lived token for video processing
+    try {
+      const videoToken = await createVideoProcessingToken();
+      if (videoToken) {
+        console.log('Video processing token created successfully');
+      }
+    } catch (error) {
+      console.error('Failed to create video processing token:', error);
+    }
+    
     setProcessingStarted(true);
   };
 
@@ -432,10 +442,14 @@ export default function UploadPage() {
 
     try {
       // Transform data to match backend expectations
-      const poses = silhouettes.map((silhouette, index) => ({
-        filePath: silhouette,
-        poseName: poseNames[index] || `Pose ${index + 1}`
-      }));
+      const poses = silhouettes.map((silhouette, index) => {
+        // Extract just the filename from the full URL
+        const filename = silhouette.includes('/') ? silhouette.split('/').pop() : silhouette;
+        return {
+          filePath: filename,
+          poseName: poseNames[index] || `Pose ${index + 1}`
+        };
+      });
 
       const sequenceData = {
         name: sequenceTitle,
@@ -450,11 +464,34 @@ export default function UploadPage() {
 
       console.log('Saving sequence with data:', sequenceData);
       console.log('User token:', token ? 'Present' : 'Missing');
+      console.log('Poses data:', poses);
+      console.log('Silhouettes:', silhouettes);
 
+      // Try to save with current token, refresh if needed
+      let currentToken = token;
+      
       const response = await axios.post('http://localhost:8000/sequences/', sequenceData, {
         headers: {
-          'Authorization': `Bearer ${token}`
+          'Authorization': `Bearer ${currentToken}`
+        },
+        timeout: 120000 // 2 minute timeout for large sequences
+      }).catch(async (error) => {
+        // If 401 error, try to refresh token
+        if (error.response?.status === 401) {
+          console.log('Token expired, attempting to refresh...');
+          const refreshed = await refreshToken();
+          if (refreshed) {
+            // Try again with refreshed token
+            currentToken = localStorage.getItem('auth_token');
+            return axios.post('http://localhost:8000/sequences/', sequenceData, {
+              headers: {
+                'Authorization': `Bearer ${currentToken}`
+              },
+              timeout: 120000 // 2 minute timeout for large sequences
+            });
+          }
         }
+        throw error;
       });
 
       console.log('Save sequence response:', response.data);
@@ -462,9 +499,19 @@ export default function UploadPage() {
       // Get the sequence ID from the response
       const sequenceId = response.data?.id;
       
+      // Check if poses were truncated (compare original vs saved count)
+      const originalPoseCount = poses.length;
+      const savedPoseCount = response.data?.poseCount || poses.length;
+      const wasTruncated = originalPoseCount > savedPoseCount;
+      
+      let successMessage = 'Sequence saved to library successfully';
+      if (wasTruncated) {
+        successMessage = `Sequence saved to library successfully. Note: Your video had ${originalPoseCount} poses, but only the first ${savedPoseCount} poses were saved due to size limits.`;
+      }
+      
     Swal.fire({
         title: 'Success!',
-        text: 'Sequence saved to library successfully',
+        text: successMessage,
       icon: 'success',
       confirmButtonColor: '#b8336a',
         showCancelButton: true,
@@ -640,7 +687,24 @@ export default function UploadPage() {
     }
   };
 
-  const handleClearSequence = () => {
+  const handleClearSequence = async () => {
+    // Delete uploaded video file from backend storage if it exists
+    if (filename && filename.trim()) {
+      try {
+        // Delete uploaded video file from backend
+        await axios.delete(`http://localhost:8000/api/upload/${encodeURIComponent(filename)}`, {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : undefined
+          }
+        });
+        console.log('Video file deleted successfully:', filename);
+      } catch (error) {
+        console.error('Failed to delete video file:', error);
+        // Don't show error to user - file might already be deleted or not exist
+      }
+    }
+
+    // Clear all state
     setSilhouettes([]);
     setPoseNames([]);
     setSequenceTitle('');

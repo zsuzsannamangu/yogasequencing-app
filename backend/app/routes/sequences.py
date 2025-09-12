@@ -140,11 +140,51 @@ async def create_sequence(
         
         # Debug logging
         print(f"Creating sequence for user: {user_id}")
-        print(f"Received sequence data: {sequence.dict()}")
         print(f"Industry Label: {sequence.industryLabel}")
+        print(f"Number of poses: {len(sequence.poses)}")
+        print(f"Sequence name: {sequence.name}")
+        print(f"Sequence description length: {len(sequence.description) if sequence.description else 0}")
         
-        # Generate unique ID
-        sequence_id = f"seq_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{hash(sequence.name)}"
+        # Validate sequence data
+        if not sequence.name or not sequence.name.strip():
+            raise HTTPException(status_code=400, detail="Sequence name is required")
+        
+        if len(sequence.name) > 255:
+            raise HTTPException(status_code=400, detail="Sequence name is too long")
+        
+        if sequence.description and len(sequence.description) > 10000:
+            raise HTTPException(status_code=400, detail="Sequence description is too long")
+        
+        # Check if poses data is too large and validate pose data
+        validated_poses = []
+        for i, pose in enumerate(sequence.poses):
+            # Clean filePath
+            file_path = pose.filePath.split('/').pop() if '/' in pose.filePath else pose.filePath
+            # Clean pose name (remove any problematic characters)
+            pose_name = pose.poseName.strip() if pose.poseName else f"Pose {i+1}"
+            
+            validated_poses.append({
+                "filePath": file_path,
+                "poseName": pose_name
+            })
+        
+        poses_json = json.dumps(validated_poses)
+        
+        poses_size = len(poses_json)
+        print(f"Pose data size: {poses_size} characters")
+        
+        # If poses data is too large (>1MB), truncate it
+        if poses_size > 1000000:  # 1MB limit
+            print(f"WARNING: Pose data too large ({poses_size} chars), truncating to first 100 poses")
+            truncated_poses = validated_poses[:100]  # Keep only first 100 poses
+            poses_json = json.dumps(truncated_poses)
+            print(f"Truncated pose data size: {len(poses_json)} characters")
+            
+            # Update pose count to reflect truncation
+            sequence.poseCount = len(truncated_poses)
+        
+        # Generate unique ID (use absolute value of hash to avoid negative numbers)
+        sequence_id = f"seq_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{abs(hash(sequence.name))}"
         
         # Save to database - handle missing columns gracefully
         try:
@@ -162,7 +202,7 @@ async def create_sequence(
                     "description": sequence.description,
                     "duration": sequence.duration,
                     "pose_count": sequence.poseCount,
-                    "poses": json.dumps([pose.dict() for pose in sequence.poses]),
+                    "poses": poses_json,
                     "created_at": datetime.now(),
                     "user_id": user_id,
                     "category": sequence.category,
@@ -186,7 +226,7 @@ async def create_sequence(
                         "description": sequence.description,
                         "duration": sequence.duration,
                         "pose_count": sequence.poseCount,
-                        "poses": json.dumps([pose.dict() for pose in sequence.poses]),
+                        "poses": poses_json,
                         "created_at": datetime.now(),
                         "user_id": user_id,
                         "category": sequence.category,
@@ -208,14 +248,15 @@ async def create_sequence(
                         "description": sequence.description,
                         "duration": sequence.duration,
                         "pose_count": sequence.poseCount,
-                        "poses": json.dumps([pose.dict() for pose in sequence.poses]),
+                        "poses": poses_json,
                         "created_at": datetime.now(),
                         "user_id": user_id,
                         "category": sequence.category
                     }
                 )
         
-        return SequenceResponse(
+        # Prepare response
+        response = SequenceResponse(
             id=sequence_id,
             name=sequence.name,
             description=sequence.description,
@@ -228,8 +269,29 @@ async def create_sequence(
             industryLabel=sequence.industryLabel if hasattr(sequence, 'industryLabel') else "Yoga"
         )
         
+        # Add warning if poses were truncated
+        if poses_size > 1000000:
+            print(f"Returning sequence with {len(sequence.poses)} poses (truncated from original)")
+        
+        return response
+        
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to create sequence: {str(e)}")
+        print(f"Database error: {str(e)}")
+        print(f"Error type: {type(e)}")
+        print(f"Sequence data that failed: {sequence.dict()}")
+        import traceback
+        print(f"Traceback: {traceback.format_exc()}")
+        
+        # Provide more specific error messages
+        error_detail = str(e)
+        if "duplicate key" in error_detail.lower():
+            error_detail = "Sequence with this name already exists"
+        elif "connection" in error_detail.lower():
+            error_detail = "Database connection error"
+        elif "permission" in error_detail.lower():
+            error_detail = "Database permission error"
+            
+        raise HTTPException(status_code=500, detail=f"Failed to create sequence: {error_detail}")
 
 @router.get("/", response_model=List[SequenceResponse])
 async def get_sequences(credentials: HTTPAuthorizationCredentials = Depends(security)):

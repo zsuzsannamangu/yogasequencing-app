@@ -197,7 +197,7 @@ export default function UploadModal({
                 <Settings size={48} />
               </div>
               <h2 className={styles.title}>Process your video</h2>
-              <p className={styles.description}>Extract silhouettes from your video, this may take 2-10 minutes.</p>
+              <p className={styles.description}>Extract silhouettes from your video, this may take 10-30 minutes.</p>
               
               <div className={styles.fileInfo}>
                 <p className={styles.fileInfoText}><strong>File:</strong> {selectedFile?.name}</p>
@@ -227,7 +227,7 @@ export default function UploadModal({
                 <Settings size={48} />
               </div>
               <h2 className={styles.title}>Process Your Video</h2>
-              <p className={styles.description}>Extract poses from your video. This may take 2-10 minutes...</p>
+              <p className={styles.description}>Extract poses from your video. This may take 10-30 minutes for longer videos. The progress bar will show real-time updates. Please don't close the browser or refresh the page.</p>
               
               <div className={styles.fileInfo}>
                 <p className={styles.fileInfoText}><strong>File:</strong> {selectedFile?.name}</p>

@@ -125,8 +125,9 @@ class OptimizedSilhouetteExtractor:
             return None
     
     async def extract_silhouettes_batch(self, video_path: str, still_ranges: List[Tuple[int, int]], 
-                                      output_dir: str, max_concurrent: int = 3) -> List[str]:
-        """Extract silhouettes from multiple still ranges concurrently"""
+                                      output_dir: str, max_concurrent: int = 3, 
+                                      progress_callback=None) -> List[str]:
+        """Extract silhouettes from multiple still ranges concurrently with progress reporting"""
         os.makedirs(output_dir, exist_ok=True)
         
         # Create tasks for each still range
@@ -137,8 +138,10 @@ class OptimizedSilhouetteExtractor:
             task = self.extract_silhouette_from_frame(video_path, mid_frame, output_dir, i)
             tasks.append(task)
         
-        # Process in batches to avoid overwhelming the system
+        total_tasks = len(tasks)
         silhouette_files = []
+        
+        # Process in batches to avoid overwhelming the system
         for i in range(0, len(tasks), max_concurrent):
             batch = tasks[i:i + max_concurrent]
             batch_results = await asyncio.gather(*batch, return_exceptions=True)
@@ -148,6 +151,18 @@ class OptimizedSilhouetteExtractor:
                     silhouette_files.append(result)
                 elif isinstance(result, Exception):
                     logger.error(f"Batch processing error: {result}")
+            
+            # Report progress
+            completed = min(i + max_concurrent, total_tasks)
+            progress_percent = int((completed / total_tasks) * 100)
+            
+            if progress_callback:
+                progress_callback({
+                    "progress": progress_percent,
+                    "completed": completed,
+                    "total": total_tasks,
+                    "message": f"Extracting silhouettes... {completed}/{total_tasks} completed"
+                })
             
             # Small delay between batches
             await asyncio.sleep(0.1)

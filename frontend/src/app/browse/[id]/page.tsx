@@ -133,7 +133,7 @@ export default function BrowseSequenceDetailPage() {
 
                 try {
                     // Fetch SVG content
-                    const response = await fetch(`http://localhost:8000/${pose.filePath}`);
+                    const response = await fetch(`http://localhost:8000/silhouettes/${pose.filePath}`);
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                     const svgText = await response.text();
@@ -170,7 +170,7 @@ export default function BrowseSequenceDetailPage() {
                 } catch (error) {
                     console.error(`Failed to add pose ${i}:`, error);
                     console.error(`Pose filePath: ${pose.filePath}`);
-                    console.error(`Full URL: http://localhost:8000/${pose.filePath}`);
+                    console.error(`Full URL: http://localhost:8000/silhouettes/${pose.filePath}`);
                     // Continue with next pose
                     x += maxWidth + spacingX;
                     if (x + maxWidth > pageWidth - spacingX) {
@@ -241,7 +241,7 @@ export default function BrowseSequenceDetailPage() {
 
                 try {
                     // Fetch SVG content
-                    const response = await fetch(`http://localhost:8000/${pose.filePath}`);
+                    const response = await fetch(`http://localhost:8000/silhouettes/${pose.filePath}`);
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                     const svgText = await response.text();
@@ -422,9 +422,10 @@ export default function BrowseSequenceDetailPage() {
                                 <div key={index} className={styles.poseCard}>
                                     <div className={styles.poseSilhouette}>
                                         <img
-                                            src={`http://localhost:8000/${pose.filePath}`}
+                                            src={`http://localhost:8000/silhouettes/${pose.filePath}`}
                                             alt={pose.poseName || `Pose ${index + 1}`}
                                             onError={(e) => {
+                                                console.error('Failed to load image:', pose.filePath);
                                                 const target = e.target as HTMLImageElement;
                                                 target.style.display = 'none';
                                                 const fallback = target.nextElementSibling as HTMLElement;

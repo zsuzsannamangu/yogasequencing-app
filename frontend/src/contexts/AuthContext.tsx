@@ -26,6 +26,8 @@ interface AuthContextType {
   register: (userData: RegisterData) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
+  refreshToken: () => Promise<boolean>;
+  createVideoProcessingToken: () => Promise<string | null>;
 }
 
 interface RegisterData {
@@ -147,6 +149,50 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     delete axios.defaults.headers.common['Authorization'];
   };
 
+  const refreshToken = async (): Promise<boolean> => {
+    try {
+      if (!token) return false;
+      
+      const response = await axios.post('http://localhost:8000/auth/refresh', {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      const newToken = response.data.access_token;
+      setToken(newToken);
+      localStorage.setItem('auth_token', newToken);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
+      
+      return true;
+    } catch (error) {
+      console.error('Token refresh failed:', error);
+      logout();
+      return false;
+    }
+  };
+
+  const createVideoProcessingToken = async (): Promise<string | null> => {
+    try {
+      if (!token) return null;
+      
+      const response = await axios.post('http://localhost:8000/auth/video-processing-token', {}, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      const videoToken = response.data.access_token;
+      // Store the video processing token separately
+      localStorage.setItem('video_processing_token', videoToken);
+      
+      return videoToken;
+    } catch (error) {
+      console.error('Failed to create video processing token:', error);
+      return null;
+    }
+  };
+
   const value: AuthContextType = {
     user,
     token,
@@ -155,6 +201,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     register,
     logout,
     isAuthenticated: !!user && !!token,
+    refreshToken,
+    createVideoProcessingToken,
   };
 
   return (
