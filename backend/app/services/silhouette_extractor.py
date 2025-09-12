@@ -161,7 +161,7 @@ class OptimizedSilhouetteExtractor:
                     "progress": progress_percent,
                     "completed": completed,
                     "total": total_tasks,
-                    "message": f"Extracting silhouettes... {completed}/{total_tasks} completed"
+                    "message": "Extracting silhouettes from detected poses..."
                 })
             
             # Small delay between batches

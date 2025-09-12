@@ -86,17 +86,17 @@ async def process_video_background(job_id: str, video_path: str):
         still_ranges = motion_result["still_ranges"]
         logger.info(f"Found {len(still_ranges)} still ranges for job {job_id}")
         
-        # Update progress
+        # Update progress - continue from where motion detection left off
         processing_jobs[job_id]["status"] = "extracting_silhouettes"
-        processing_jobs[job_id]["progress"] = 80
+        processing_jobs[job_id]["progress"] = 90  # Continue from 90% instead of jumping back
         
         # Step 2: Extract silhouettes from still ranges with progress callback
         silhouettes_dir = "silhouettes"
         os.makedirs(silhouettes_dir, exist_ok=True)
         
         def update_silhouette_progress(progress_data):
-            # Map silhouette extraction progress from 80-95%
-            silhouette_progress = 80 + int((progress_data["progress"] * 15) / 100)
+            # Map silhouette extraction progress from 90-98%
+            silhouette_progress = 90 + int((progress_data["progress"] * 8) / 100)
             processing_jobs[job_id]["progress"] = silhouette_progress
             processing_jobs[job_id]["status"] = "extracting_silhouettes"
             logger.info(f"Silhouette extraction progress: {silhouette_progress}% - {progress_data['message']}")

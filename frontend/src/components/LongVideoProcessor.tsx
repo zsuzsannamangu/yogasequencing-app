@@ -93,7 +93,7 @@ export default function LongVideoProcessor({ filename, onComplete, onError }: Lo
                         if (isProgressStuck) {
                             setProgressMessage('Extracting silhouettes... This may take several minutes for long videos. Please be patient.');
                         } else {
-                            setProgressMessage(`Extracting silhouettes from video... ${jobData.progress}% complete`);
+                            setProgressMessage('Extracting silhouettes from detected poses...');
                         }
                         break;
                     case 'completed':
@@ -242,7 +242,7 @@ export default function LongVideoProcessor({ filename, onComplete, onError }: Lo
                         />
                     </div>
                     <div className={styles.progressText}>
-                        {job?.progress || 0}% - {progressMessage}
+                        {progressMessage} ({job?.progress || 0}%)
                     </div>
                     {isProgressStuck && isProcessing && (
                         <div className={styles.stuckProgressActions}>
