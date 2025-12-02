@@ -668,6 +668,16 @@
         }
 
         @media (max-width: 768px) {
+            padding-left: 0;
+            text-align: center;
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            p {
+                font-size: 1rem;
+            }
             grid-template-columns: 1fr;
             max-width: 400px;
         }

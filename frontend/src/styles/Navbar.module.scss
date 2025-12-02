@@ -55,3 +55,161 @@
     text-decoration: underline;
   }
 }
+
+// Mobile Menu Button
+.mobileMenuButton {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  z-index: 1001;
+}
+
+.hamburger {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 24px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+
+  span {
+    width: 100%;
+    height: 3px;
+    background-color: vars.$accent-color;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    transform-origin: center;
+
+    &:nth-child(1) {
+      transform: translateY(0);
+    }
+
+    &:nth-child(2) {
+      opacity: 1;
+    }
+
+    &:nth-child(3) {
+      transform: translateY(0);
+    }
+  }
+
+  &.open {
+    span:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+
+    span:nth-child(2) {
+      opacity: 0;
+    }
+
+    span:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+  }
+}
+
+// Mobile Navigation
+.mobileNav {
+  display: none;
+  position: fixed;
+  top: 40px;
+  left: 0;
+  right: 0;
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  z-index: 1000;
+  max-height: calc(100vh - 40px);
+  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+
+  &.open {
+    transform: translateX(0);
+  }
+}
+
+.mobileNavLink {
+  display: block;
+  padding: 1rem;
+  color: vars.$text-color;
+  text-decoration: none;
+  font-family: vars.$title-font;
+  font-size: 1.125rem;
+  font-weight: 600;
+  border-bottom: 1px solid #e5e7eb;
+  transition: vars.$transition;
+
+  &:hover {
+    color: vars.$accent-color;
+    background-color: vars.$muted-bg;
+  }
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.mobileUserInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-bottom: 2px solid vars.$accent-color;
+  margin-bottom: 0.5rem;
+  font-family: vars.$title-font;
+  font-weight: 600;
+  color: vars.$text-color;
+}
+
+.mobileProfileImage {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+  .nav {
+    display: none;
+  }
+
+  .mobileMenuButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobileNav {
+    display: block;
+  }
+
+  .header {
+    padding: 0.5rem 1rem;
+  }
+
+  .logo {
+    img {
+      width: 100px;
+      height: auto;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 0.5rem;
+  }
+
+  .logo {
+    img {
+      width: 80px;
+    }
+  }
+}

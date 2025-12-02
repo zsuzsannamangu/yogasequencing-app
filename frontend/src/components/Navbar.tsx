@@ -17,6 +17,7 @@ interface NavbarProps {
 
 export default function Navbar({ showUserMenu = false, firstName = '', lastName = '', profileImage }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const isHomepage = pathname === '/';
   const { user, isAuthenticated } = useAuth();
@@ -31,9 +32,17 @@ export default function Navbar({ showUserMenu = false, firstName = '', lastName 
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <header className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
-      <Link href="/" className={styles.logo}>
+      <Link href="/" className={styles.logo} onClick={closeMobileMenu}>
         <Image 
           src="/logo/logonew.png" 
           alt="MoveMosaic Logo" 
@@ -42,6 +51,8 @@ export default function Navbar({ showUserMenu = false, firstName = '', lastName 
           priority
         />
       </Link>
+      
+      {/* Desktop Navigation */}
       <nav className={styles.nav}>
         {!isAuthenticated && (
           <>
@@ -64,6 +75,54 @@ export default function Navbar({ showUserMenu = false, firstName = '', lastName 
           <>
             <Link href="/register" className={styles.navLink}>Register</Link>
             <Link href="/login" className={styles.navLink}>Login</Link>
+          </>
+        )}
+      </nav>
+
+      {/* Mobile Menu Button */}
+      <button 
+        className={styles.mobileMenuButton}
+        onClick={toggleMobileMenu}
+        aria-label="Toggle mobile menu"
+      >
+        <span className={`${styles.hamburger} ${isMobileMenuOpen ? styles.open : ''}`}>
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+
+      {/* Mobile Menu */}
+      <nav className={`${styles.mobileNav} ${isMobileMenuOpen ? styles.open : ''}`}>
+        {!isAuthenticated && (
+          <>
+            <Link href="/browse" className={styles.mobileNavLink} onClick={closeMobileMenu}>Browse</Link>
+            <Link href="/#contact" className={styles.mobileNavLink} onClick={closeMobileMenu}>Contact</Link>
+            <Link href="/register" className={styles.mobileNavLink} onClick={closeMobileMenu}>Register</Link>
+            <Link href="/login" className={styles.mobileNavLink} onClick={closeMobileMenu}>Login</Link>
+          </>
+        )}
+        {isAuthenticated && user && (
+          <>
+            <div className={styles.mobileUserInfo}>
+              {user.profile_image && (
+                <img 
+                  src={user.profile_image.startsWith('http') ? 
+                    user.profile_image : 
+                    `http://localhost:8000/${user.profile_image}`} 
+                  alt={`${user.first_name} ${user.last_name}`}
+                  className={styles.mobileProfileImage}
+                />
+              )}
+              <span>{user.first_name} {user.last_name}</span>
+            </div>
+            <Link href="/" className={styles.mobileNavLink} onClick={closeMobileMenu}>Home</Link>
+            <Link href="/dashboard" className={styles.mobileNavLink} onClick={closeMobileMenu}>Dashboard</Link>
+            <Link href="/upload" className={styles.mobileNavLink} onClick={closeMobileMenu}>Upload Video</Link>
+            <Link href="/sequences" className={styles.mobileNavLink} onClick={closeMobileMenu}>View Sequences</Link>
+            <Link href="/browse" className={styles.mobileNavLink} onClick={closeMobileMenu}>Browse</Link>
+            <Link href="/help" className={styles.mobileNavLink} onClick={closeMobileMenu}>Help & Support</Link>
+            <Link href="/settings" className={styles.mobileNavLink} onClick={closeMobileMenu}>Account Settings</Link>
           </>
         )}
       </nav>
