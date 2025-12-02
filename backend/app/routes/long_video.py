@@ -1,5 +1,6 @@
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Depends
 from fastapi.responses import StreamingResponse
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 import os
 import json
 import asyncio
@@ -10,19 +11,30 @@ from app.services.video_processor import video_processor
 from app.services.silhouette_extractor import silhouette_extractor
 from app.services.fast_processor import fast_processor
 from app.services.ultra_fast_processor import ultra_fast_processor
+from app.auth import get_current_user_id
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
+security = HTTPBearer()
 
 # Store processing jobs
 processing_jobs: Dict[str, Dict[str, Any]] = {}
 
 @router.post("/process-video")
-async def process_video(filename: str, background_tasks: BackgroundTasks):
+async def process_video(
+    filename: str, 
+    background_tasks: BackgroundTasks,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     """
     Start processing a video file for silhouette extraction.
     Returns a job ID for tracking progress.
     """
+    # Verify user authentication
+    user_id = get_current_user_id(credentials.credentials)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid or expired authentication token")
+    
     video_path = os.path.join("uploads", filename)
     
     if not os.path.exists(video_path):
@@ -131,8 +143,16 @@ async def process_video_background(job_id: str, video_path: str):
         processing_jobs[job_id]["error"] = str(e)
 
 @router.get("/progress/{job_id}")
-async def get_progress(job_id: str):
+async def get_progress(
+    job_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     """Get the progress of a video processing job"""
+    # Verify user authentication
+    user_id = get_current_user_id(credentials.credentials)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid or expired authentication token")
+    
     if job_id not in processing_jobs:
         raise HTTPException(status_code=404, detail="Job not found")
     
@@ -186,8 +206,16 @@ async def stream_progress(job_id: str):
     )
 
 @router.delete("/job/{job_id}")
-async def cancel_job(job_id: str):
+async def cancel_job(
+    job_id: str,
+    credentials: HTTPAuthorizationCredentials = Depends(security)
+):
     """Cancel a processing job"""
+    # Verify user authentication
+    user_id = get_current_user_id(credentials.credentials)
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Invalid or expired authentication token")
+    
     if job_id not in processing_jobs:
         raise HTTPException(status_code=404, detail="Job not found")
     

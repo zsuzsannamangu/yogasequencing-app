@@ -76,6 +76,19 @@
     ├── src/app/silhouettes/  # View + export silhouettes
     ├── src/components/       # Shared React components
 
+## Deployment
+
+This app can be deployed to production for portfolio purposes. See deployment guides:
+
+- **Quick Start**: See [QUICK_DEPLOY.md](./QUICK_DEPLOY.md) for a 5-step deployment checklist
+- **Full Guide**: See [DEPLOYMENT.md](./DEPLOYMENT.md) for comprehensive deployment instructions
+
+**Quick Overview**:
+1. Deploy backend to Railway/Render (FastAPI)
+2. Deploy frontend to Vercel (Next.js)
+3. Set environment variables
+4. Update CORS settings
+
 ## Future improvements
 - Train a custom yoga pose classifier
 - Add user authentication + pose library

@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: yoga-app-backend
+    env: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: http://localhost:3000,https://*.vercel.app
+      - key: SENDGRID_API_KEY
+        sync: false
+        optional: true
+      - key: SENDGRID_FROM_EMAIL
+        sync: false
+        optional: true
+      - key: SENDGRID_TO_EMAIL
+        sync: false
+        optional: true
+

@@ -90,12 +90,12 @@ class UltraFastProcessor:
                 motion = np.sum(diff > 10) / diff.size
                 
                 # Look for pauses - motion should be consistently low for a period
-                if motion < 0.02:  # Very low motion threshold for pauses
+                if motion < 0.025:  # Very low motion threshold for holds
                     if start_idx is None:
                         start_idx = idx
                 else:
-                    # Require longer still periods to confirm a pose
-                    if start_idx is not None and idx - start_idx >= int(fps * 1.5):  # At least 1.5 seconds still
+                    # Require longer still period to confirm a meaningful pose hold
+                    if start_idx is not None and idx - start_idx >= int(fps * 2.5):  # At least 2.5 seconds still
                         still_ranges.append((start_idx, idx))
                     start_idx = None
             
@@ -107,7 +107,7 @@ class UltraFastProcessor:
                 await asyncio.sleep(0.001)  # Small delay
         
         # Handle final still range
-        if start_idx is not None and frame_count - start_idx >= int(fps * 1.5):
+        if start_idx is not None and frame_count - start_idx >= int(fps * 2.5):
             still_ranges.append((start_idx, frame_count))
         
         return still_ranges
@@ -147,18 +147,18 @@ class UltraFastProcessor:
                     motion = np.sum(diff > 10) / diff.size
                     
                     # Look for pauses in long videos too
-                    if motion < 0.025:  # Low motion threshold for pauses
+                    if motion < 0.03:  # Very low motion threshold for holds
                         if start_idx is None:
                             start_idx = frame_idx
                     else:
-                        if start_idx is not None and frame_idx - start_idx >= int(fps * 1.2):  # At least 1.2 seconds still
+                        if start_idx is not None and frame_idx - start_idx >= int(fps * 2.0):  # At least 2.0 seconds still
                             still_ranges.append((start_idx, frame_idx))
                         start_idx = None
                 
                 prev_gray = gray
             
             # Handle final still range in window
-            if start_idx is not None and window_end - start_idx >= int(fps * 1.2):
+            if start_idx is not None and window_end - start_idx >= int(fps * 2.0):
                 still_ranges.append((start_idx, window_end))
             
             # Update progress
