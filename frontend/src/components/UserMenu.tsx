@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Upload, BookOpen, HelpCircle, Settings, LogOut, List, Search, Home } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -13,10 +14,9 @@ interface UserMenuProps {
   lastName: string;
   profileImage?: string | null;
   location?: string;
-  onLogout?: () => void;
 }
 
-export default function UserMenu({ firstName, lastName, profileImage, location, onLogout }: UserMenuProps) {
+export default function UserMenu({ firstName, lastName, profileImage, location }: UserMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const userInitials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
   const { logout } = useAuth();
@@ -89,10 +89,13 @@ export default function UserMenu({ firstName, lastName, profileImage, location, 
         onClick={toggleMenu}
       >
         {profileImage && profileImage !== '/images/default-avatar.png' ? (
-          <img 
+          <Image 
             src={profileImage} 
             alt={`${firstName} ${lastName}`}
+            width={40}
+            height={40}
             className={styles.profileImage}
+            unoptimized={profileImage.startsWith('http')}
           />
         ) : (
           <span>{userInitials}</span>

@@ -75,7 +75,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           try {
             const response = await axios.get('http://localhost:8000/auth/me');
             setUser(response.data);
-          } catch (error) {
+          } catch {
             // Token is invalid, clear it
             console.log('Token verification failed, clearing auth state');
             localStorage.removeItem('auth_token');
@@ -117,9 +117,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       console.log('Login successful, user set:', userResponse.data);
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Login error:', error);
-      const errorMessage = error.response?.data?.detail || 'Login failed';
+      const errorMessage = (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail || 'Login failed';
       throw new Error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -129,13 +129,13 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const register = async (userData: RegisterData) => {
     try {
       setIsLoading(true);
-      const response = await axios.post('http://localhost:8000/auth/register', userData);
+      await axios.post('http://localhost:8000/auth/register', userData);
       
       // After successful registration, automatically log the user in
       await login(userData.email, userData.password);
       
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.detail || 'Registration failed';
+    } catch (error: unknown) {
+      const errorMessage = (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail || 'Registration failed';
       throw new Error(errorMessage);
     } finally {
       setIsLoading(false);

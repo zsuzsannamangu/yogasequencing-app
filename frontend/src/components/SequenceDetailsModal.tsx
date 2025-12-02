@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { X, FileText, Clock, Lock, Globe } from 'lucide-react';
+import { X, FileText, Lock, Globe } from 'lucide-react';
 import styles from '@/styles/UploadModal.module.scss';
 
 interface SequenceDetailsModalProps {
