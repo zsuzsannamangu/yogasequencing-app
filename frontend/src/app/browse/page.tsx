@@ -9,6 +9,7 @@ import Navbar from '@/components/Navbar';
 import styles from '@/styles/Browse.module.scss';
 import { svg2pdf } from 'svg2pdf.js';
 import { apiUrl, silhouetteUrl, profileImageUrl } from '@/lib/api';
+import Image from 'next/image';
 
 interface UserInfo {
   id: string;
@@ -32,6 +33,20 @@ interface Sequence {
   user?: UserInfo;
 }
 
+interface ApiSequence {
+  id: string;
+  name: string;
+  description: string;
+  createdAt: string;
+  duration: string;
+  poseCount: number;
+  poses?: Array<{ filePath: string; poseName?: string }>;
+  industryLabel?: string;
+  category?: string;
+  privacy?: 'private' | 'public';
+  user?: UserInfo;
+}
+
 // Define the available industry labels based on the homepage professional categories
 const AVAILABLE_INDUSTRY_LABELS = [
   'Yoga',
@@ -46,28 +61,16 @@ const AVAILABLE_INDUSTRY_LABELS = [
 ];
 
 export default function BrowsePage() {
-  // Add DOMParser for PDF generation
-  const DOMParser = typeof window !== 'undefined' ? window.DOMParser : null;
-
-  // Early return if DOMParser is not available
-  if (typeof window !== 'undefined' && !DOMParser) {
-    return (
-      <main className={styles.main}>
-        <Navbar />
-        <div className={styles.errorContainer}>
-          <div className={styles.errorText}>DOMParser not available in this environment</div>
-        </div>
-        <Footer />
-      </main>
-    );
-  }
-
+  // All hooks must be called at the top level, before any conditional returns
   const [sequences, setSequences] = useState<Sequence[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIndustryLabel, setSelectedIndustryLabel] = useState('all');
   const [sortBy, setSortBy] = useState('dateCreated');
+
+  // Add DOMParser for PDF generation
+  const DOMParser = typeof window !== 'undefined' ? window.DOMParser : null;
 
   // Fetch public sequences and categories from API on component mount
   useEffect(() => {
@@ -81,7 +84,7 @@ export default function BrowsePage() {
         const sequencesResponse = await axios.get(apiUrl('sequences/public/'));
         console.log('Public sequences API response:', sequencesResponse.data);
 
-        const transformedSequences = sequencesResponse.data.map((seq: any) => ({
+        const transformedSequences = sequencesResponse.data.map((seq: ApiSequence) => ({
           id: seq.id,
           name: seq.name,
           description: seq.description,
@@ -255,7 +258,7 @@ export default function BrowsePage() {
         // Don't show error to user, download still succeeded
       }
 
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to generate PDF:', error);
       alert('Failed to generate PDF. Please try again.');
     }
@@ -393,7 +396,7 @@ export default function BrowsePage() {
 
         alert('PDF downloaded! You can now share it manually.');
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Failed to share sequence:', error);
       alert('Failed to share sequence. Please try again.');
     }
@@ -553,10 +556,13 @@ export default function BrowsePage() {
                           <span className={styles.uploadedByCompact}>by</span>
                             <div className={styles.userAvatar}>
                               {sequence.user.profile_image ? (
-                                <img 
+                                <Image 
                                   src={profileImageUrl(sequence.user.profile_image)} 
                                   alt={`${sequence.user.first_name} ${sequence.user.last_name}`}
                                   className={styles.avatarImage}
+                                  width={40}
+                                  height={40}
+                                  unoptimized
                                 />
                               ) : (
                                 <div className={styles.avatarPlaceholder}>

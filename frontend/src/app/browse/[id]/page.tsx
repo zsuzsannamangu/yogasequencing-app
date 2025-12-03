@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import axios from 'axios';
 import { ArrowLeft, Download, Share2, Calendar, Clock, Tag, Layers, User } from 'lucide-react';
@@ -9,9 +9,9 @@ import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import styles from '@/styles/BrowseDetail.module.scss';
 import { svg2pdf } from 'svg2pdf.js';
-import jsPDF from 'jspdf';
 import Swal from 'sweetalert2';
 import { apiUrl, silhouetteUrl } from '@/lib/api';
+import Image from 'next/image';
 
 interface PoseData {
     filePath: string;
@@ -42,7 +42,6 @@ interface Sequence {
 
 export default function BrowseSequenceDetailPage() {
     const params = useParams();
-    const router = useRouter();
     const sequenceId = params.id as string;
 
     // Debug logging
@@ -75,9 +74,10 @@ export default function BrowseSequenceDetailPage() {
                 const sequenceData = response.data;
                 setSequence(sequenceData);
 
-            } catch (error: any) {
+            } catch (error: unknown) {
                 console.error('Failed to fetch sequence:', error);
-                if (error.response?.status === 404) {
+                const axiosError = error as { response?: { status?: number } };
+                if (axiosError.response?.status === 404) {
                     setError('Sequence not found');
                 } else {
                     setError('Failed to load sequence. Please try again.');
@@ -186,7 +186,7 @@ export default function BrowseSequenceDetailPage() {
             const filename = `${sequence.name.replace(/[^a-zA-Z0-9]/g, '_')}_sequence.pdf`;
             pdf.save(filename);
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Failed to generate PDF:', error);
             Swal.fire({
                 title: 'Error',
@@ -422,9 +422,12 @@ export default function BrowseSequenceDetailPage() {
                             {sequence.poses.map((pose, index) => (
                                 <div key={index} className={styles.poseCard}>
                                     <div className={styles.poseSilhouette}>
-                                        <img
+                                        <Image
                                             src={silhouetteUrl(pose.filePath)}
                                             alt={pose.poseName || `Pose ${index + 1}`}
+                                            width={200}
+                                            height={200}
+                                            unoptimized
                                             onError={(e) => {
                                                 console.error('Failed to load image:', pose.filePath);
                                                 const target = e.target as HTMLImageElement;

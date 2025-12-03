@@ -6,17 +6,20 @@ import axios from 'axios';
 import { Upload, List, HelpCircle } from 'lucide-react';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
-import UserMenu from '@/components/UserMenu';
 import { useAuth } from '@/contexts/AuthContext';
+import { apiUrl } from '@/lib/api';
 import styles from '@/styles/Dashboard.module.scss';
 
+interface SequencePrivacy {
+  privacy?: 'public' | 'private';
+}
+
 export default function DashboardPage() {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   
   // Get user data from authentication context
   const firstName = user?.first_name || "User";
   const lastName = user?.last_name || "";
-  const userInitials = `${firstName.charAt(0)}${lastName.charAt(0)}`.toUpperCase();
 
   // Check if profile is complete
   const isProfileComplete = user?.location && user?.bio && user?.profile_image;
@@ -38,21 +41,21 @@ export default function DashboardPage() {
         setError(null);
 
         // Fetch all sequences to count public vs private
-        const sequencesResponse = await axios.get('http://localhost:8000/sequences/', {
+        const sequencesResponse = await axios.get(apiUrl('sequences/'), {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
           }
         });
-        const sequences = sequencesResponse.data;
+        const sequences = sequencesResponse.data as SequencePrivacy[];
 
         // Count public and private sequences
-        const publicCount = sequences.filter((seq: any) => seq.privacy === 'public').length;
-        const privateCount = sequences.filter((seq: any) => seq.privacy === 'private').length;
+        const publicCount = sequences.filter((seq) => seq.privacy === 'public').length;
+        const privateCount = sequences.filter((seq) => seq.privacy === 'private').length;
 
         // Get actual download count for user's public sequences from browse page
         let totalDownloads = 0;
         try {
-          const downloadStatsResponse = await axios.get('http://localhost:8000/sequences/my-download-stats', {
+          const downloadStatsResponse = await axios.get(apiUrl('sequences/my-download-stats'), {
             headers: {
               'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
             }
@@ -71,9 +74,10 @@ export default function DashboardPage() {
           totalDownloads: totalDownloads
         });
 
-      } catch (error: any) {
+      } catch (error: unknown) {
         console.error('Failed to fetch dashboard stats:', error);
-        setError(error.message || 'Failed to fetch dashboard statistics');
+        const errorMessage = (error as { message?: string })?.message || 'Failed to fetch dashboard statistics';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -130,7 +134,7 @@ export default function DashboardPage() {
                   <HelpCircle size={32} />
                 </div>
                 <h3>Help & Support</h3>
-                <p>Get help with using MoveMosaic</p>
+                <p>Get help with using Sequ</p>
               </Link>
             </div>
           </div>

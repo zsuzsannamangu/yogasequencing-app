@@ -33,12 +33,9 @@ export default function Navbar() {
   return (
     <header className={`${styles.header} ${isScrolled ? styles.scrolled : ''}`}>
       <Link href="/" className={styles.logo} onClick={closeMobileMenu}>
-        <Image 
+        <img 
           src="/logo/logonew.png" 
-          alt="SequencePrint Logo" 
-          width={120} 
-          height={40}
-          priority
+          alt="SequencePrint Logo"
         />
       </Link>
       
