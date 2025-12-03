@@ -8,18 +8,10 @@ import UserMenu from './UserMenu';
 import { useAuth } from '@/contexts/AuthContext';
 import styles from '../styles/Navbar.module.scss';
 
-interface NavbarProps {
-  showUserMenu?: boolean;
-  firstName?: string;
-  lastName?: string;
-  profileImage?: string | null;
-}
-
-export default function Navbar({ showUserMenu = false, firstName = '', lastName = '', profileImage }: NavbarProps) {
+export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const isHomepage = pathname === '/';
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
@@ -106,12 +98,14 @@ export default function Navbar({ showUserMenu = false, firstName = '', lastName 
           <>
             <div className={styles.mobileUserInfo}>
               {user.profile_image && (
-                <img 
+                <Image 
                   src={user.profile_image.startsWith('http') ? 
                     user.profile_image : 
                     `http://localhost:8000/${user.profile_image}`} 
                   alt={`${user.first_name} ${user.last_name}`}
                   className={styles.mobileProfileImage}
+                  width={40}
+                  height={40}
                 />
               )}
               <span>{user.first_name} {user.last_name}</span>

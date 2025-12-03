@@ -74,7 +74,7 @@ export default function HelpPage() {
 
   return (
     <main className={styles.main}>
-                <Navbar showUserMenu={true} firstName="User" lastName="Name" profileImage={null} />
+                <Navbar />
 
       <section className={styles.helpSection}>
         <div className={styles.helpContainer}>

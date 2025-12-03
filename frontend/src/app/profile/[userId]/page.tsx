@@ -74,7 +74,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   if (loading) {
     return (
       <main className={styles.main}>
-        <Navbar showUserMenu={false} firstName="" lastName="" profileImage={null} />
+        <Navbar />
         <div className={styles.loadingContainer}>
           <div className={styles.loadingSpinner}></div>
           <p>Loading profile...</p>
@@ -87,7 +87,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
   if (error || !user) {
     return (
       <main className={styles.main}>
-        <Navbar showUserMenu={false} firstName="" lastName="" profileImage={null} />
+        <Navbar />
         <div className={styles.errorContainer}>
           <h1>Profile Not Found</h1>
           <p>{error || 'The requested profile could not be found.'}</p>
@@ -132,7 +132,7 @@ export default function ProfilePage({ params }: ProfilePageProps) {
 
   return (
     <main className={styles.main}>
-      <Navbar showUserMenu={false} firstName="" lastName="" profileImage={null} />
+      <Navbar />
 
       <section className={styles.profileSection}>
         <div className={styles.profileContainer}>

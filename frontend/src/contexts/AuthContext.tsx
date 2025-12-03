@@ -84,7 +84,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             delete axios.defaults.headers.common['Authorization'];
           }
         }
-      } catch (error) {
+      } catch (error: unknown) {
         console.error('Auth initialization error:', error);
       } finally {
         setIsLoading(false);
@@ -165,7 +165,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       axios.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
       
       return true;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Token refresh failed:', error);
       logout();
       return false;
@@ -187,7 +187,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       localStorage.setItem('video_processing_token', videoToken);
       
       return videoToken;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to create video processing token:', error);
       return null;
     }

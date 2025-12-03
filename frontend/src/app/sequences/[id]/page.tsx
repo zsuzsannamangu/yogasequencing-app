@@ -690,7 +690,7 @@ export default function SequenceDetailPage() {
   if (loading) {
     return (
       <main className={styles.main}>
-        <Navbar showUserMenu={true} firstName="User" lastName="Name" profileImage={null} />
+        <Navbar />
         <section className={styles.loadingSection}>
           <div className={styles.loadingSpinner}>⏳</div>
           <p>Loading sequence...</p>
@@ -703,7 +703,7 @@ export default function SequenceDetailPage() {
   if (error || !sequence) {
     return (
       <main className={styles.main}>
-        <Navbar showUserMenu={true} firstName="User" lastName="Name" profileImage={null} />
+        <Navbar />
         <section className={styles.errorSection}>
           <h1>Sequence Not Found</h1>
           <p>{error || 'The sequence you are looking for does not exist.'}</p>
@@ -719,7 +719,7 @@ export default function SequenceDetailPage() {
 
   return (
     <main className={styles.main}>
-      <Navbar showUserMenu={true} firstName="User" lastName="Name" profileImage={null} />
+      <Navbar />
 
       <section className={styles.sequenceSection}>
         <div className={styles.container}>

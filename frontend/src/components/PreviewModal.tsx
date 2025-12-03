@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { X, CheckCircle, Clock, Eye, EyeOff, Tag, FileText, Lock, Globe } from 'lucide-react';
+import { X, CheckCircle, Clock, Tag, FileText, Lock, Globe } from 'lucide-react';
 import styles from '@/styles/UploadModal.module.scss';
 
 interface PreviewModalProps {

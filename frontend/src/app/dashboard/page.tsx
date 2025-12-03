@@ -84,7 +84,7 @@ export default function DashboardPage() {
 
   return (
     <main className={styles.main}>
-      <Navbar showUserMenu={true} firstName={firstName} lastName={lastName} profileImage={null} />
+      <Navbar />
       <section className={styles.dashboardSection}>
         <div className={styles.dashboardContainer}>
 

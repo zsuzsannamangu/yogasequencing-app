@@ -685,7 +685,7 @@ export default function SettingsPage() {
   if (!isAuthenticated) {
     return (
       <main className={styles.main}>
-        <Navbar showUserMenu={false} firstName="" lastName="" profileImage={null} />
+        <Navbar />
         <div style={{ textAlign: 'center', padding: '2rem' }}>
           <h1>Please log in to access settings</h1>
         </div>
@@ -696,7 +696,7 @@ export default function SettingsPage() {
 
   return (
     <main className={styles.main}>
-      <Navbar showUserMenu={true} firstName={user?.first_name || ''} lastName={user?.last_name || ''} profileImage={profileImage} />
+      <Navbar />
 
       <section className={styles.settingsSection}>
         <div className={styles.settingsContainer}>

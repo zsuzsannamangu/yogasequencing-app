@@ -98,12 +98,7 @@ export default function HomePage() {
 
     return (
         <main className={styles.main}>
-            <Navbar 
-                showUserMenu={isAuthenticated} 
-                firstName={isAuthenticated ? userData.firstName : ''} 
-                lastName={isAuthenticated ? userData.lastName : ''}
-                profileImage={isAuthenticated ? userData.profileImage : undefined}
-            />
+            <Navbar />
 
             {/* HERO SECTION */}
             <section className={styles.heroSection}>
@@ -149,10 +144,7 @@ export default function HomePage() {
                         <div className={styles.content}>
                             <h2 className={styles.sectionTitle}>About Us</h2>
                             <p className={styles.sectionText}>
-                                MoveMosaic helps you remember the sequences that live in your body. We turn your recorded practice into clear, printable visual guides, so your teaching can grow from your lived experience.
-                            </p>
-                            <p className={styles.sectionText}>
-                                Every movement professional has experienced that moment when a student asks, "Can you show me that sequence again?" or "What was that flow we did last week?" With MoveMosaic, you'll never have to rely on memory alone. Your embodied knowledge becomes a tangible, shareable resource that grows with every practice session.
+                                SequencePrint helps you remember the sequences that live in your body. We turn your recorded practice into clear, printable visual guides, so your teaching can grow from your lived experience.
                             </p>
                             <button 
                                 className="btn-primary"
@@ -280,18 +272,9 @@ export default function HomePage() {
                     <div className={styles.container}>
                         <div className={`${styles.section} ${styles.reverse}`}>
                             <div className={styles.content}>
-                                <h2 className={styles.sectionTitle}>Why MoveMosaic?</h2>
+                                <h2 className={styles.sectionTitle}>Why SequencePrint?</h2>
                                 <p className={styles.sectionText}>
-                                    In the world of movement education, there's a gap between what you know in your body and what you can share with your students. Traditional methods like written notes or generic diagrams often fall short of capturing the nuance and flow of your practice.
-                                </p>
-                                <p className={styles.sectionText}>
-                                    MoveMosaic bridges this gap by capturing the exact moments of your sequences. Our technology creates visual representations that preserve the essence of your teaching style.
-                                </p>
-                                <p className={styles.sectionText}>
-                                    What sets us apart is our commitment to personalization. Every sequence you create becomes part of your unique library, reflecting your teaching philosophy, your students' needs, and your evolving practice.
-                                </p>
-                                <p className={styles.sectionText}>
-                                    <strong>What makes MoveMosaic truly special?</strong> Unlike other apps that use generic, pre-drawn figures, 
+                                    Unlike other apps that use generic, pre-drawn figures, 
                                     our silhouettes are extracted directly from <em>your own body</em> in the videos you upload. Every silhouette reflects your actual body proportions, 
                                     posture, and movement patterns, not a generic template. Students see the real you, your actual form, your real movements, your authentic teaching style.
                                 </p>
@@ -336,7 +319,7 @@ export default function HomePage() {
                         <div className={styles.featureList}>
                             <div className={styles.featureItem}>
                                 <h4>Pose Detection</h4>
-                                <p>Our advanced machine learning algorithms automatically identify and capture key poses from your video, ensuring nothing important is missed.</p>
+                                <p>Our advanced machine learning algorithms automatically identify and capture key poses from your video.</p>
                             </div>
                             <div className={styles.featureItem}>
                                 <h4>Customizable Sequences</h4>
@@ -344,15 +327,11 @@ export default function HomePage() {
                             </div>
                             <div className={styles.featureItem}>
                                 <h4>Professional Export Options</h4>
-                                <p>Download your sequences in multiple formats including PDF, SVG, and high-resolution images perfect for printing or digital sharing.</p>
+                                <p>Download your sequences in multiple formats including PDF, SVG, and high-resolution images.</p>
                             </div>
                             <div className={styles.featureItem}>
                                 <h4>Client Management</h4>
-                                <p>Organize sequences by client, class type, or therapeutic focus. Build comprehensive libraries that grow with your practice.</p>
-                            </div>
-                            <div className={styles.featureItem}>
-                                <h4>Mobile-First Design</h4>
-                                <p>Record and upload videos directly from your phone, then access your sequences anywhere, anytime.</p>
+                                <p>Organize sequences by client, class type, or therapeutic focus. Build libraries that grow with your practice.</p>
                             </div>
                         </div>
                     </div>
@@ -378,7 +357,7 @@ export default function HomePage() {
                         <div className={styles.benefitsContent}>
                             <h2 className={styles.sectionTitle}>Transform Your Teaching Practice</h2>
                             <p className={styles.sectionText}>
-                                SequenceFlow is a fundamental shift in how movement professionals document and share their knowledge. By digitizing your embodied expertise, you're creating a legacy that extends far beyond individual sessions.
+                                SequencePrint is a shift in how movement professionals document and share their work.
                             </p>
                             <div className={styles.benefitsGrid}>
                                 <div className={styles.benefitCard}>

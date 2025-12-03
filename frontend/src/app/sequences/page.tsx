@@ -327,7 +327,7 @@ export default function SequencesPage() {
   if (loading) {
     return (
       <main className={styles.main}>
-        <Navbar showUserMenu={true} firstName="User" lastName="Name" profileImage={null} />
+        <Navbar />
         <div className={styles.loadingState}>
           <div className={styles.loadingSpinner}>⏳</div>
           <h3>Loading sequences...</h3>
@@ -342,7 +342,7 @@ export default function SequencesPage() {
   if (error) {
     return (
       <main className={styles.main}>
-        <Navbar showUserMenu={true} firstName="User" lastName="Name" profileImage={null} />
+        <Navbar />
         <div className={styles.errorState}>
           <h3>Error loading sequences</h3>
           <p>{error}</p>

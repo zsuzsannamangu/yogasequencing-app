@@ -773,7 +773,7 @@ export default function UploadPage() {
 
   return (
     <main className={styles.main}>
-      <Navbar showUserMenu={true} firstName="User" lastName="" profileImage={null} />
+      <Navbar />
       <section className={styles.section}>
         <div className={styles.header}>
           <h1 className={styles.title}>Create New Sequence</h1>
