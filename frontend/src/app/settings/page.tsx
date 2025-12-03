@@ -635,7 +635,7 @@ export default function SettingsPage() {
     <div className={styles.tabContent}>
       <div className={styles.sectionHeader}>
         <h2>Account Preferences</h2>
-        <p>Customize your MoveMosaic experience</p>
+        <p>Customize your SequencePrint experience</p>
       </div>
 
       <div className={styles.preferencesSection}>

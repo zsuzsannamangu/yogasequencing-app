@@ -6,11 +6,7 @@
 const getApiUrl = (): string => {
   // In production, use environment variable
   // In development, default to localhost
-  if (typeof window !== 'undefined') {
-    return process.env.NEXT_PUBLIC_API_URL || 'process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"';
-  }
-  // Server-side rendering
-  return process.env.NEXT_PUBLIC_API_URL || 'process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"';
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 };
 
 export const API_BASE_URL = getApiUrl();
@@ -21,7 +17,14 @@ export const API_BASE_URL = getApiUrl();
 export const apiUrl = (path: string): string => {
   // Remove leading slash if present to avoid double slashes
   const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-  return `${API_BASE_URL}/${cleanPath}`;
+  const url = `${API_BASE_URL}/${cleanPath}`;
+  
+  // Log in development for debugging
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`[API] Calling: ${url}`);
+  }
+  
+  return url;
 };
 
 /**

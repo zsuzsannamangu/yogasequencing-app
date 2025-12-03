@@ -81,7 +81,7 @@ export default function AboutYouPage() {
       
       // Show success message
       Swal.fire({
-        title: 'Welcome to MoveMosaic!',
+        title: 'Welcome to SequencePrint!',
         text: 'Your account has been created successfully.',
         icon: 'success',
         confirmButtonColor: '#b8336a',

@@ -37,7 +37,7 @@ export default function PaymentPage() {
           </div>
 
           <h1 className={styles.title}>Start Your Free Trial</h1>
-          <p className={styles.subtitle}>Get started with MoveMosaic today and transform how you create movement sequences.</p>
+          <p className={styles.subtitle}>Get started with SequencePrint today and transform how you create movement sequences.</p>
 
           <div className={styles.pricingCard}>
             <div className={styles.priceHeader}>

@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import axios from 'axios';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -85,12 +86,10 @@ export default function HomePage() {
                 setSubmitStatus('error');
                 setErrorMessage('Failed to send message. Please try again.');
             }
-        } catch (error: any) {
+        } catch (error: unknown) {
             setSubmitStatus('error');
-            setErrorMessage(
-                error.response?.data?.detail || 
-                'Failed to send message. Please try again later.'
-            );
+            const errorMessage = (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail || 'Failed to send message. Please try again later.';
+            setErrorMessage(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
@@ -102,10 +101,13 @@ export default function HomePage() {
 
             {/* HERO SECTION */}
             <section className={styles.heroSection}>
-                <img
-                    src="images/yoga2.jpg"
+                <Image
+                    src="/images/yoga2.jpg"
                     alt="Yoga Hero"
                     className={styles.heroImage}
+                    width={1920}
+                    height={1080}
+                    priority
                 />
                 <div className={styles.heroContent}>
                     <motion.h1
@@ -158,10 +160,12 @@ export default function HomePage() {
                             </button>
                         </div>
                         <div className={styles.imageContainer}>
-                            <img
+                            <Image
                                 src="/images/yoga5.jpg"
                                 alt="Yoga Pose"
                                 className={styles.aboutImage}
+                                width={600}
+                                height={800}
                             />
                         </div>
                     </div>
@@ -194,7 +198,7 @@ export default function HomePage() {
                 <div id="professionalsGrid" className={styles.professionalsGrid}>
                     <div className={styles.professionalCard}>
                         <div className={styles.cardIcon}>
-                            <img src="/images/yogaicon.png" alt="Yoga" />
+                            <Image src="/images/yogaicon.png" alt="Yoga" width={64} height={64} />
                         </div>
                         <h4>Yoga Teachers & Therapists</h4>
                         <p>Capture your flows and therapeutic sequences in a printable format to share with students for home practice or rehab.</p>
@@ -202,7 +206,7 @@ export default function HomePage() {
                     
                     <div className={styles.professionalCard}>
                         <div className={styles.cardIcon}>
-                            <img src="/images/pilatesicon.png" alt="Pilates" />
+                            <Image src="/images/pilatesicon.png" alt="Pilates" width={64} height={64} />
                         </div>
                         <h4>Pilates Instructors</h4>
                         <p>Turn your Pilates routines into easy-to-follow visual guides to support client learning and technique.</p>
@@ -210,7 +214,7 @@ export default function HomePage() {
                     
                     <div className={styles.professionalCard}>
                         <div className={styles.cardIcon}>
-                            <img src="/images/pystherapyicon.png" alt="Physical Therapy" />
+                            <Image src="/images/pystherapyicon.png" alt="Physical Therapy" width={64} height={64} />
                         </div>
                         <h4>Physical Therapists</h4>
                         <p>Generate customized exercise sheets from live demonstrations to enhance patient recovery and compliance.</p>
@@ -218,7 +222,7 @@ export default function HomePage() {
                     
                     <div className={styles.professionalCard}>
                         <div className={styles.cardIcon}>
-                            <img src="/images/oticon.png" alt="Occupational Therapy" />
+                            <Image src="/images/oticon.png" alt="Occupational Therapy" width={64} height={64} />
                         </div>
                         <h4>Occupational Therapists</h4>
                         <p>Create tailored activity sequences that help clients build functional movement skills at their own pace.</p>
@@ -226,7 +230,7 @@ export default function HomePage() {
                     
                     <div className={styles.professionalCard}>
                         <div className={styles.cardIcon}>
-                            <img src="/images/dancericon.png" alt="Dance" />
+                            <Image src="/images/dancericon.png" alt="Dance" width={64} height={64} />
                         </div>
                         <h4>Dance Teachers & Choreographers</h4>
                         <p>Document choreography with precise pose visuals, helping dancers learn and rehearse complex sequences.</p>
@@ -234,7 +238,7 @@ export default function HomePage() {
                     
                     <div className={styles.professionalCard}>
                         <div className={styles.cardIcon}>
-                            <img src="/images/trainericon.png" alt="Fitness Training" />
+                            <Image src="/images/trainericon.png" alt="Fitness Training" width={64} height={64} />
                         </div>
                         <h4>Personal Trainers & Fitness Coaches</h4>
                         <p>Build workout plans with clear visual cues to improve client engagement and form.</p>
@@ -242,7 +246,7 @@ export default function HomePage() {
                     
                     <div className={styles.professionalCard}>
                         <div className={styles.cardIcon}>
-                            <img src="/images/martialartsicon.png" alt="Martial Arts" />
+                            <Image src="/images/martialartsicon.png" alt="Martial Arts" width={64} height={64} />
                         </div>
                         <h4>Martial Arts Instructors</h4>
                         <p>Break down forms, katas, and techniques into step-by-step pose sequences for student mastery.</p>
@@ -250,7 +254,7 @@ export default function HomePage() {
                     
                     <div className={styles.professionalCard}>
                         <div className={styles.cardIcon}>
-                            <img src="/images/coachicon.png" alt="Sports Training" />
+                            <Image src="/images/coachicon.png" alt="Sports Training" width={64} height={64} />
                         </div>
                         <h4>Sports Coaches</h4>
                         <p>Visualize sport-specific drills and preventive exercises for optimal performance and injury prevention.</p>
@@ -258,7 +262,7 @@ export default function HomePage() {
                     
                     <div className={styles.professionalCard}>
                         <div className={styles.cardIcon}>
-                            <img src="/images/chiroicon.png" alt="Chiropractic" />
+                            <Image src="/images/chiroicon.png" alt="Chiropractic" width={64} height={64} />
                         </div>
                         <h4>Chiropractors</h4>
                         <p>Provide patients with simple visual exercise guides to support spinal health and mobility.</p>
@@ -267,7 +271,7 @@ export default function HomePage() {
             </section>
 
             <div className={styles.contentContainer}>
-                {/* WHY MOVEMOSAIC SECTION */}
+                {/* WHY SequencePrint SECTION */}
                 <section className={styles.whySection}>
                     <div className={styles.container}>
                         <div className={`${styles.section} ${styles.reverse}`}>
@@ -280,11 +284,13 @@ export default function HomePage() {
                                 </p>
                             </div>
                             <div className={styles.imageContainer}>
-                                <img
-                                    src="/images/4.jpg"
-                                    alt="Why MoveMosaic"
-                                    className={styles.whyImage}
-                                />
+                            <Image
+                                src="/images/4.jpg"
+                                alt="Why SequencePrint"
+                                className={styles.whyImage}
+                                width={600}
+                                height={800}
+                            />
                             </div>
                         </div>
                     </div>
@@ -336,10 +342,12 @@ export default function HomePage() {
                         </div>
                     </div>
                     <div className={styles.imageContainer}>
-                        <img
+                        <Image
                             src="/images/9.jpg"
                             alt="App Features"
                             className={styles.featuresImage}
+                            width={600}
+                            height={800}
                         />
                     </div>
                 </section>
@@ -347,10 +355,12 @@ export default function HomePage() {
                 {/* BENEFITS SECTION */}
                 <section className={styles.benefitsSection}>
                     <FadeInSection>
-                        <img
+                        <Image
                             src="/images/8.jpg"
                             alt="Teaching Benefits"
                             className={styles.benefitsImage}
+                            width={600}
+                            height={800}
                         />
                     </FadeInSection>
                     <FadeInSection>
@@ -516,10 +526,12 @@ export default function HomePage() {
                     </FadeInSection>
                 </div>
                 <FadeInSection>
-                    <img
+                    <Image
                         src="/images/yoga3.jpg"
                         alt="Yoga Contact"
                         className={styles.contactImage}
+                        width={600}
+                        height={800}
                     />
                 </FadeInSection>
             </section>

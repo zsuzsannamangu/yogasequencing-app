@@ -3,7 +3,7 @@ import './globals.css'
 import { AuthProvider } from '@/contexts/AuthContext'
 
 export const metadata: Metadata = {
-  title: 'MoveMosaic - Movement Sequence Creation',
+  title: 'SequencePrint - Movement Sequence Creation',
   description: 'Create, manage, and share your movement sequences with AI-powered pose detection',
   icons: {
     icon: '/favicon.png',

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import styles from '@/styles/LongVideoProcessor.module.scss';
 
@@ -52,9 +52,10 @@ export default function LongVideoProcessor({ filename, onComplete, onError }: Lo
             // Start polling for progress
             pollProgress(jobId);
 
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.error('Failed to start processing:', error);
-            onError(error.response?.data?.detail || 'Failed to start video processing');
+            const errorMessage = (error as { response?: { data?: { detail?: string } } })?.response?.data?.detail || 'Failed to start video processing';
+            onError(errorMessage);
             setIsProcessing(false);
         }
     };

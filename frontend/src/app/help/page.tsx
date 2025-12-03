@@ -15,8 +15,8 @@ interface FAQItem {
 const faqData: FAQItem[] = [
   {
     id: 1,
-    question: "How does MoveMosaic work?",
-    answer: "MoveMosaic uses AI-powered pose detection to analyze your movement videos and automatically identify key poses. It then creates printable sequence guides that you can share with clients or students for home practice."
+    question: "How does SequencePrint work?",
+    answer: "SequencePrint uses AI-powered pose detection to analyze your movement videos and automatically identify key poses. It then creates printable sequence guides that you can share with clients or students for home practice."
   },
   {
     id: 2,
@@ -61,7 +61,7 @@ const faqData: FAQItem[] = [
   {
     id: 10,
     question: "Do you offer refunds?",
-    answer: "We offer a 2-week free trial so you can test MoveMosaic risk-free. If you're not satisfied within the first 30 days of paid subscription, we'll provide a full refund."
+    answer: "We offer a 2-week free trial so you can test SequencePrint risk-free. If you're not satisfied within the first 30 days of paid subscription, we'll provide a full refund."
   }
 ];
 
@@ -121,7 +121,7 @@ export default function HelpPage() {
           <div className={styles.simpleContactSection}>
             <h2 className={styles.sectionTitle}>Still Need Help?</h2>
             <p className={styles.contactText}>
-             Email us at <a href="mailto:support@movemosaic.com" className={styles.emailLink}>support@movemosaic.com</a> to get in touch.
+             Email us at <a href="mailto:support@SequencePrint.com" className={styles.emailLink}>support@SequencePrint.com</a> to get in touch.
             </p>
           </div>
         </div>

@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
 import UserMenu from './UserMenu';
 import { useAuth } from '@/contexts/AuthContext';
 import styles from '../styles/Navbar.module.scss';
@@ -11,7 +10,6 @@ import styles from '../styles/Navbar.module.scss';
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const pathname = usePathname();
   const { user, isAuthenticated } = useAuth();
 
   useEffect(() => {
@@ -37,7 +35,7 @@ export default function Navbar() {
       <Link href="/" className={styles.logo} onClick={closeMobileMenu}>
         <Image 
           src="/logo/logonew.png" 
-          alt="MoveMosaic Logo" 
+          alt="SequencePrint Logo" 
           width={120} 
           height={40}
           priority

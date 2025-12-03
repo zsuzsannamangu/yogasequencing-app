@@ -8,6 +8,7 @@ import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
 import styles from '@/styles/Browse.module.scss';
 import { svg2pdf } from 'svg2pdf.js';
+import { apiUrl, silhouetteUrl, profileImageUrl } from '@/lib/api';
 
 interface UserInfo {
   id: string;
@@ -77,7 +78,7 @@ export default function BrowsePage() {
         setError(null);
 
         // Fetch only public sequences
-        const sequencesResponse = await axios.get('http://localhost:8000/sequences/public/');
+        const sequencesResponse = await axios.get(apiUrl('sequences/public/'));
         console.log('Public sequences API response:', sequencesResponse.data);
 
         const transformedSequences = sequencesResponse.data.map((seq: any) => ({
@@ -87,7 +88,7 @@ export default function BrowsePage() {
           createdAt: seq.createdAt,
           duration: seq.duration,
           poseCount: seq.poseCount,
-          thumbnail: seq.poses?.[0]?.filePath ? `http://localhost:8000/silhouettes/${seq.poses[0].filePath}` : '/images/yoga2.jpg',
+          thumbnail: seq.poses?.[0]?.filePath ? silhouetteUrl(seq.poses[0].filePath) : '/images/yoga2.jpg',
           industryLabel: seq.industryLabel || 'Yoga', // Default to Yoga if no industry label
           category: seq.category, // Include the category field
           privacy: seq.privacy || 'public',
@@ -97,9 +98,18 @@ export default function BrowsePage() {
         console.log('Transformed public sequences:', transformedSequences);
         setSequences(transformedSequences);
 
-      } catch (error: any) {
-        console.error('Failed to fetch data:', error);
-        setError(error.message || 'Failed to fetch data');
+      } catch (error: unknown) {
+        console.error('Failed to fetch public sequences:', error);
+        const errorMessage = (error as { message?: string; code?: string })?.message || 'Failed to fetch data';
+        const errorCode = (error as { code?: string })?.code;
+        
+        // Provide more helpful error messages
+        if (errorCode === 'ERR_NETWORK' || errorMessage.includes('Network Error')) {
+          const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+          setError(`Unable to connect to backend API at ${apiBaseUrl}. Please ensure the backend server is running.`);
+        } else {
+          setError(errorMessage);
+        }
         setSequences([]);
       } finally {
         setLoading(false);
@@ -112,7 +122,7 @@ export default function BrowsePage() {
   const handleDownloadPDF = async (sequence: Sequence) => {
     try {
       // Get sequence data for PDF generation
-      const response = await axios.get(`http://localhost:8000/sequences/${sequence.id}`);
+      const response = await axios.get(apiUrl(`sequences/${sequence.id}`));
       const sequenceData = response.data;
 
       // Generate PDF using jsPDF
@@ -169,8 +179,8 @@ export default function BrowsePage() {
 
           try {
             if (pose.filePath) {
-              const filePath = `http://localhost:8000/silhouettes/${pose.filePath}`;
-              const res = await fetch(`http://localhost:8000/${filePath}`);
+              const filePath = silhouetteUrl(pose.filePath);
+              const res = await fetch(filePath);
               const svgText = await res.text();
               const parser = new DOMParser!();
               const svgDoc = parser.parseFromString(svgText, 'image/svg+xml').documentElement;
@@ -230,7 +240,7 @@ export default function BrowsePage() {
       // Track the download
       try {
         console.log('Tracking download for sequence:', sequence.id);
-        const response = await axios.post('http://localhost:8000/sequences/track-download', null, {
+        const response = await axios.post(apiUrl('sequences/track-download'), null, {
           params: {
             sequence_id: sequence.id,
             download_source: 'browse'
@@ -254,7 +264,7 @@ export default function BrowsePage() {
   const handleShare = async (sequence: Sequence) => {
     try {
       // Get sequence data for sharing
-      const response = await axios.get(`http://localhost:8000/sequences/${sequence.id}`);
+      const response = await axios.get(apiUrl(`sequences/${sequence.id}`));
       const sequenceData = response.data;
 
       // Generate PDF for sharing
@@ -311,8 +321,8 @@ export default function BrowsePage() {
 
           try {
             if (pose.filePath) {
-              const filePath = `http://localhost:8000/silhouettes/${pose.filePath}`;
-              const res = await fetch(`http://localhost:8000/${filePath}`);
+              const filePath = silhouetteUrl(pose.filePath);
+              const res = await fetch(filePath);
               const svgText = await res.text();
               const parser = new DOMParser!();
               const svgDoc = parser.parseFromString(svgText, 'image/svg+xml').documentElement;
@@ -544,9 +554,7 @@ export default function BrowsePage() {
                             <div className={styles.userAvatar}>
                               {sequence.user.profile_image ? (
                                 <img 
-                                  src={sequence.user.profile_image.startsWith('http') ? 
-                                    sequence.user.profile_image : 
-                                    `http://localhost:8000/${sequence.user.profile_image}`} 
+                                  src={profileImageUrl(sequence.user.profile_image)} 
                                   alt={`${sequence.user.first_name} ${sequence.user.last_name}`}
                                   className={styles.avatarImage}
                                 />

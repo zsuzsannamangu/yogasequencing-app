@@ -11,6 +11,7 @@ import styles from '@/styles/BrowseDetail.module.scss';
 import { svg2pdf } from 'svg2pdf.js';
 import jsPDF from 'jspdf';
 import Swal from 'sweetalert2';
+import { apiUrl, silhouetteUrl } from '@/lib/api';
 
 interface PoseData {
     filePath: string;
@@ -69,7 +70,7 @@ export default function BrowseSequenceDetailPage() {
                 setLoading(true);
                 setError(null);
 
-                const response = await axios.get(`http://localhost:8000/sequences/${sequenceId}`);
+                const response = await axios.get(apiUrl(`sequences/${sequenceId}`));
                 console.log('Sequence response:', response.data); // Debug log
                 const sequenceData = response.data;
                 setSequence(sequenceData);
@@ -133,7 +134,7 @@ export default function BrowseSequenceDetailPage() {
 
                 try {
                     // Fetch SVG content
-                    const response = await fetch(`http://localhost:8000/silhouettes/${pose.filePath}`);
+                    const response = await fetch(silhouetteUrl(pose.filePath));
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                     const svgText = await response.text();
@@ -170,7 +171,7 @@ export default function BrowseSequenceDetailPage() {
                 } catch (error) {
                     console.error(`Failed to add pose ${i}:`, error);
                     console.error(`Pose filePath: ${pose.filePath}`);
-                    console.error(`Full URL: http://localhost:8000/silhouettes/${pose.filePath}`);
+                    console.error(`Full URL: ${silhouetteUrl(pose.filePath)}`);
                     // Continue with next pose
                     x += maxWidth + spacingX;
                     if (x + maxWidth > pageWidth - spacingX) {
@@ -241,7 +242,7 @@ export default function BrowseSequenceDetailPage() {
 
                 try {
                     // Fetch SVG content
-                    const response = await fetch(`http://localhost:8000/silhouettes/${pose.filePath}`);
+                    const response = await fetch(silhouetteUrl(pose.filePath));
                     if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
                     const svgText = await response.text();
@@ -422,7 +423,7 @@ export default function BrowseSequenceDetailPage() {
                                 <div key={index} className={styles.poseCard}>
                                     <div className={styles.poseSilhouette}>
                                         <img
-                                            src={`http://localhost:8000/silhouettes/${pose.filePath}`}
+                                            src={silhouetteUrl(pose.filePath)}
                                             alt={pose.poseName || `Pose ${index + 1}`}
                                             onError={(e) => {
                                                 console.error('Failed to load image:', pose.filePath);
