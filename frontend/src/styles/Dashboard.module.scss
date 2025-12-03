@@ -1,3 +1,4 @@
+@use 'sass:color';
 @use './variables.scss' as vars;
 
 .main {
@@ -292,7 +293,7 @@
   box-shadow: 0 2px 4px rgba(184, 51, 106, 0.2);
 
   &:hover {
-    background-color: darken(vars.$accent-color, 10%);
+    background-color: color.adjust(vars.$accent-color, $lightness: -10%);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(184, 51, 106, 0.3);
   }

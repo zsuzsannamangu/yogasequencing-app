@@ -135,3 +135,4 @@ If you don't have them, you can find them in:
 - **Supabase Dashboard** → Settings → API (for Supabase credentials)
 - **Supabase Dashboard** → Settings → Database (for DATABASE_URL)
 
+
